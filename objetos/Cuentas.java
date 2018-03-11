@@ -1,24 +1,22 @@
 package objetos;
 
-import java.util.Date;
-
 import login.LoginRespuesta;
 
 public class Cuentas 
 {
 	protected int id;
 	private String usuario, password, apodo;
-	private Date fecha_abono;
+	private long tiempo_abono;
 	private LoginRespuesta login_respuesta = null;
 	protected boolean cuenta_baneada = false, esta_fila_espera = false;
 	
-	public Cuentas(int _id, String _usuario, String _password, String _apodo, Date _fecha_abono, boolean _baneado)
+	public Cuentas(int _id, String _usuario, String _password, String _apodo, long _tiempo_abono, boolean _baneado)
 	{
 		id = _id;
 		usuario = _usuario;
 		password = _password;
 		apodo = _apodo;
-		fecha_abono = _fecha_abono;
+		tiempo_abono = _tiempo_abono;
 		cuenta_baneada = _baneado;
 	}
 	
@@ -42,9 +40,9 @@ public class Cuentas
 		return apodo;
 	}
 	
-	public Date get_Fecha_abono()
+	public long get_Fecha_abono()
 	{
-		return fecha_abono;
+		return tiempo_abono;
 	}
 	
 	public void set_Usuario(String _usuario)
@@ -62,9 +60,9 @@ public class Cuentas
 		apodo = _apodo;
 	}
 
-	public void set_Fecha_abono(Date _fecha_abono)
+	public void set_Tiempo_Abono(long _tiempo_abono)
 	{
-		fecha_abono = _fecha_abono;
+		tiempo_abono = _tiempo_abono;
 	}
 
 	public LoginRespuesta get_Login_respuesta() 
@@ -89,7 +87,7 @@ public class Cuentas
 	
 	public boolean es_Cuenta_Abonada()
 	{
-		return fecha_abono.getTime() >= new Date().getTime();
+		return tiempo_abono >= System.currentTimeMillis();
 	}
 	
 	public boolean get_Fila_Espera()

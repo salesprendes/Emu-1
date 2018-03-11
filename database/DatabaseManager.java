@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class DatabaseManager
 {
-	private static Connection database_conexion;
+	protected static Connection database_conexion;
 	
 	public static final boolean ejecutar_Conexion()
 	{
@@ -43,10 +43,5 @@ public class DatabaseManager
 	{
 		p.clearParameters();
 		p.close();
-	}
-	
-	public static Connection get_Database_Conexion()
-	{
-		return database_conexion;
 	}
 }
