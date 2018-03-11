@@ -80,7 +80,7 @@ public class Fila
 		} 
 		catch (InterruptedException e) 
 		{
-			System.out.println("Error queue: " + e.getMessage());
+			System.out.println("Error fila interrumpida: " + e.getMessage());
 			e.printStackTrace();
 		} 
 		finally 
@@ -100,11 +100,13 @@ public class Fila
 	
 	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
 	{
-		StringBuilder paquete = new StringBuilder("Af").append(posicion + 50);
+		bloqueo.lock();
+		StringBuilder paquete = new StringBuilder("Af").append(posicion);
 		if(esta_abonado)
 		{
 			paquete.append("|").append(get_size_fila());
 		}
+		bloqueo.unlock();
 		return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(-1).toString();
 	}
 	
@@ -121,7 +123,7 @@ public class Fila
 			} 
 			catch (InterruptedException e) 
 			{
-				System.out.println("Error queue: " + e.getMessage());
+				System.out.println("Error fila interrumpida: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
