@@ -25,7 +25,7 @@ public class LoginRespuesta implements Runnable
 	protected Cuentas cuenta;
 	protected String hash_key, cuenta_paquete;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
-	private Fila fila = Main.get_Fila_Espera().queue();
+	private Fila fila = Main.get_Fila_Espera().get_Fila();
 
 	public LoginRespuesta(final Socket _socket)
 	{
@@ -34,6 +34,9 @@ public class LoginRespuesta implements Runnable
 		{
 			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			outputStream = new PrintWriter(socket.getOutputStream());
+			thread = new Thread(this);
+			thread.setDaemon(true);
+			thread.start();
 		} 
 		catch (final IOException e) 
 		{
@@ -46,9 +49,6 @@ public class LoginRespuesta implements Runnable
 				cuenta.set_Login_respuesta(null);
 			}
 		}
-		thread = new Thread(this);
-		thread.setDaemon(true);
-		thread.start();
 	}
 
 	public void run()
@@ -135,7 +135,7 @@ public class LoginRespuesta implements Runnable
 			case PASSWORD_CUENTA:
 				if (paquete.substring(0, 2).equalsIgnoreCase("#1"))
 				{
-					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Cuentas_DB.get_Existe_Cuenta_Campo_String("password", cuenta_paquete))))
+					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Cuentas_DB.get_Obtener_Cuenta_Campo_String("password", cuenta_paquete))))
 					{
 						cuenta = Cuentas_DB.get_Cuenta(cuenta_paquete);
 						

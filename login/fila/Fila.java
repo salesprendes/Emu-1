@@ -6,7 +6,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import login.Enum.EstadosLogin;
 import objetos.Cuentas;
 
 public class Fila
@@ -88,7 +87,6 @@ public class Fila
 		{
 			bloqueo.unlock();
 		}
-		cuenta.get_Login_respuesta().set_Estado_login(EstadosLogin.LISTA_SERVIDORES);
 		return cuenta;
 	}
 

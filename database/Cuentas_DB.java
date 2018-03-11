@@ -25,7 +25,7 @@ public class Cuentas_DB extends DatabaseManager
 		return cuenta;
 	}
 	
-	public static String get_Existe_Cuenta_Campo_String(final String campo, final String nombre_usuario)
+	public static String get_Obtener_Cuenta_Campo_String(final String campo, final String nombre_usuario)
 	{
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT " + campo + " FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
 		{
