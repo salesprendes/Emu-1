@@ -30,7 +30,7 @@ public class Fila
 		int posicion = 0;
 		try
 		{
-			posicion = size() + 1;
+			posicion = get_size_fila() + 1;
 			nodo = new NodoFila(account, posicion);
 			if(account.es_Cuenta_Abonada())
 			{
@@ -42,7 +42,7 @@ public class Fila
 				fila.addLast(nodo);
 				total_no_abonados++;
 			}
-			account.get_Login_respuesta().enviar_paquete(account.get_Login_respuesta().get_OutputStream(), new StringBuilder("Af").append(posicion).append("|").append(size()).append("|").append(total_no_abonados).append("|1|").append(-1).toString());
+			account.get_Login_respuesta().enviar_paquete(account.get_Login_respuesta().get_OutputStream(), get_Paquete_Fila_Espera(posicion, account.es_Cuenta_Abonada()));
 			condicion.await(5000, TimeUnit.MILLISECONDS);
 			condicion.signal();
 		} 
@@ -90,22 +90,17 @@ public class Fila
 		return cuenta;
 	}
 
-	public int size() 
+	public int get_size_fila() 
 	{
 		bloqueo.lock();
 		int contador = fila.size() - 1;
 		bloqueo.unlock();
 		return contador;
 	}
-
-	public int get_Total_Abonados()
+	
+	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
 	{
-		return total_abonados;
-	}
-
-	public int get_Total_No_Abonados() 
-	{
-		return total_no_abonados;
+		return new StringBuilder("Af").append(posicion).append("|").append(get_size_fila()).append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(-1).toString();
 	}
 	
 	public void agregar_nuevas_posiciones()
@@ -114,7 +109,7 @@ public class Fila
 		for(NodoFila cuenta_esperando : fila) 
 		{
 			cuenta_esperando.set_Posicion(cuenta_esperando.get_Posicion() - 1);
-			cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(cuenta_esperando.get_Cuenta().get_Login_respuesta().get_OutputStream(), new StringBuilder("Af").append(cuenta_esperando.get_Posicion()).append("|").append(size()).append("|").append(total_no_abonados).append("|1|").append(-1).toString());
+			cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(cuenta_esperando.get_Cuenta().get_Login_respuesta().get_OutputStream(), get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
 			try 
 			{
 				condicion.await(1500, TimeUnit.MILLISECONDS);

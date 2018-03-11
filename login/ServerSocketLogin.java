@@ -14,7 +14,7 @@ public class ServerSocketLogin extends Thread implements Runnable
 	protected ServerSocket server_socket;
 	protected Socket cliente;
 	protected Thread thread;
-	private final static List<LoginRespuesta> clientes = new ArrayList<LoginRespuesta>();
+	private final List<LoginRespuesta> clientes = new ArrayList<LoginRespuesta>();
 	
 	public ServerSocketLogin(int _puerto)
 	{
