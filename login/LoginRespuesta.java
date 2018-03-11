@@ -53,8 +53,8 @@ public class LoginRespuesta implements Runnable
 
 	public void run()
 	{
-		final StringBuilder paquete = new StringBuilder();
 		final char charCur[] = new char[1];
+		final StringBuilder paquete = new StringBuilder();
 
 		hash_key = generar_Key();
 		enviar_paquete(outputStream, paquete.append("HC").append(hash_key).toString());
@@ -240,14 +240,14 @@ public class LoginRespuesta implements Runnable
 			try 
 			{
 				paquete = new String(paquete.getBytes("UTF8"));
+				_outputStream.print(paquete + (char)0);
+				_outputStream.flush();
+				System.out.println("Enviado >> " + paquete);
 			} 
 			catch (Exception e) 
 			{
 				System.out.println(">> Error al convertir el paquete: " + paquete);
 			}
-			_outputStream.print(paquete + (char)0);
-			_outputStream.flush();
-			System.out.println("Enviado >> " + paquete);
 		}
 	}
 
