@@ -1,6 +1,8 @@
 package login.fila;
 
 import login.Enum.EstadosLogin;
+import main.Estados;
+import main.Main;
 import objetos.Cuentas;
 
 public class ServerFila implements Runnable
@@ -19,7 +21,7 @@ public class ServerFila implements Runnable
 	public void run()
 	{
 		fila = new Fila();
-		while(true)
+		while(Main.get_Estado_emulador() == Estados.ENCENDIDO && !thread.isInterrupted())
 		{
 			cuenta = null;
 			try

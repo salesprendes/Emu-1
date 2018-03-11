@@ -33,7 +33,7 @@ public class ServerSocketLogin extends Thread implements Runnable
 	
 	public void run() 
 	{
-		while(Main.get_Estado_emulador() == Estados.ENCENDIDO)
+		while(Main.get_Estado_emulador() == Estados.ENCENDIDO && !server_socket.isClosed() && !thread.isInterrupted())
 		{
 			try 
 			{
@@ -52,9 +52,9 @@ public class ServerSocketLogin extends Thread implements Runnable
 		{
 			try 
 	        {
-				System.out.println("> ServerSocket login cerrado");
 	            server_socket.close();
 	            thread.interrupt();
+	            System.out.println("> ServerSocket login cerrado");
 	        } 
 	        catch (IOException e)
 	        {
@@ -66,6 +66,14 @@ public class ServerSocketLogin extends Thread implements Runnable
 	public List<LoginRespuesta> get_Clientes() 
 	{
 		return clientes;
+	}
+	
+	public void expulsar_Todos_Clientes()
+	{
+		for(LoginRespuesta jugador : clientes)
+		{
+			jugador.cerrar_Conexion();
+		}
 	}
 	
 	public void eliminar_Cliente(LoginRespuesta _loginRespuesta)
