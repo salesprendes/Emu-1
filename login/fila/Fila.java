@@ -36,11 +36,10 @@ public class Fila
 			}
 			else
 			{
-				
 				total_no_abonados++;
 			}
 			fila.add(new NodoFila(cuenta, posicion));
-			cuenta.get_Login_respuesta().enviar_paquete(cuenta.get_Login_respuesta().get_OutputStream(), get_Paquete_Fila_Espera(posicion, cuenta.es_Cuenta_Abonada()));
+			actualizar_Posiciones();
 			condicion.await(5000, TimeUnit.MILLISECONDS);
 			condicion.signal();
 		} 
@@ -98,6 +97,16 @@ public class Fila
 		}
 		bloqueo.unlock();
 		return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(-1).toString();
+	}
+	
+	private void actualizar_Posiciones()
+	{
+		bloqueo.lock();
+		for(NodoFila cuenta_esperando : fila) 
+		{
+			cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(cuenta_esperando.get_Cuenta().get_Login_respuesta().get_OutputStream(), get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
+		}
+		bloqueo.unlock();
 	}
 	
 	public void agregar_nuevas_posiciones()

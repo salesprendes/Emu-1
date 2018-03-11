@@ -11,7 +11,8 @@ public class Main
 	
 	/** THREADS **/
 	private static ServerSocketLogin servidor_login;
-	private static ServerFila fila_espera;
+	private static ServerFila fila_espera_login;
+	private static ServerFila fila_espera_juego;
 
 	static 
 	{
@@ -35,7 +36,11 @@ public class Main
 		Mundo.cargar_Login();
 		estado_emulador = Estados.ENCENDIDO;
 		servidor_login = new ServerSocketLogin(443);
-		fila_espera = new ServerFila();
+		
+		/** Filas de espera **/
+		fila_espera_login = new ServerFila();
+		fila_espera_juego = new ServerFila();
+		
 		new Thread(new TimerWaiter().tiempo(() -> System.out.println(""), 30000, 30000)).start();
 	}
 
@@ -60,8 +65,13 @@ public class Main
 		return servidor_login;
 	}
 
-	public static ServerFila get_Fila_Espera()
+	public static ServerFila get_Fila_Espera_Login()
 	{
-		return fila_espera;
+		return fila_espera_login;
+	}
+	
+	public static ServerFila get_Fila_Espera_Juego()
+	{
+		return fila_espera_juego;
 	}
 }

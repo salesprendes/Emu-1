@@ -25,7 +25,7 @@ public class LoginRespuesta implements Runnable
 	protected Cuentas cuenta;
 	protected String hash_key, cuenta_paquete;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
-	private Fila fila = Main.get_Fila_Espera().get_Fila();
+	private Fila fila = Main.get_Fila_Espera_Login().get_Fila();
 
 	public LoginRespuesta(final Socket _socket)
 	{
@@ -247,6 +247,7 @@ public class LoginRespuesta implements Runnable
 			catch (Exception e) 
 			{
 				System.out.println(">> Error al convertir el paquete: " + paquete);
+				return;
 			}
 		}
 	}
