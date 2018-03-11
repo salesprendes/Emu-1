@@ -3,11 +3,14 @@ package database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import objetos.Cuentas;
 
 public class Cuentas_DB extends DatabaseManager
 {
+	final static SimpleDateFormat formato_fecha = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"); 
 	
 	public static Cuentas get_Cuenta(final String nombre_usuario)
 	{
@@ -15,10 +18,10 @@ public class Cuentas_DB extends DatabaseManager
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
 		{
 			rs.next();
-			cuenta = new Cuentas(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getLong(5), rs.getBoolean(6));
+			cuenta = new Cuentas(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), formato_fecha.parse(rs.getString(5)).getTime(), rs.getBoolean(6));
 			cerrar_ResultSet(rs);
 		}
-		catch (final SQLException e){}
+		catch (final SQLException | ParseException e){} 
 		return cuenta;
 	}
 	
