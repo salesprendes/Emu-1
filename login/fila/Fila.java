@@ -100,7 +100,12 @@ public class Fila
 	
 	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
 	{
-		return new StringBuilder("Af").append(posicion).append("|").append(get_size_fila()).append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(-1).toString();
+		StringBuilder paquete = new StringBuilder("Af").append(posicion + 50);
+		if(esta_abonado)
+		{
+			paquete.append("|").append(get_size_fila());
+		}
+		return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(-1).toString();
 	}
 	
 	public void agregar_nuevas_posiciones()
