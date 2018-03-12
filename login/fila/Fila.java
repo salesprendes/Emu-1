@@ -14,6 +14,7 @@ public class Fila
 	private final Lock bloqueo = new ReentrantLock();
 	private final Condition condicion = bloqueo.newCondition();
 	private int total_abonados = 0, total_no_abonados = 0;
+	private NodoFila nodo;
 	
 	public Fila()
 	{
@@ -26,10 +27,9 @@ public class Fila
 	public void agregar_Cuenta(Cuentas cuenta)
 	{
 		bloqueo.lock();
-		int posicion = 0;
 		try
 		{
-			posicion = fila.size() + 1;
+			int posicion = fila.size() + 1;
 			if(cuenta.es_Cuenta_Abonada())
 			{
 				total_abonados++;
@@ -38,15 +38,16 @@ public class Fila
 			{
 				total_no_abonados++;
 			}
-			fila.add(new NodoFila(cuenta, posicion));
+			nodo = new NodoFila(cuenta, posicion);
+			fila.add(nodo);
 			actualizar_Posiciones();
 			condicion.await(5000, TimeUnit.MILLISECONDS);
 			condicion.signal();
 		} 
 		catch (InterruptedException e) 
 		{
-			System.out.println("Error fila interrumpida: " + e.getMessage());
-			e.printStackTrace();
+			cuenta.get_Login_respuesta().cerrar_Conexion();
+			fila.remove(nodo);
 		}
 		finally 
 		{
@@ -73,7 +74,6 @@ public class Fila
 			{
 				total_no_abonados--;
 			}
-			condicion.await(3000, TimeUnit.MILLISECONDS);
 		} 
 		catch (InterruptedException e) 
 		{
@@ -104,7 +104,7 @@ public class Fila
 		bloqueo.lock();
 		for(NodoFila cuenta_esperando : fila) 
 		{
-			cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(cuenta_esperando.get_Cuenta().get_Login_respuesta().get_OutputStream(), get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
+			cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
 		}
 		bloqueo.unlock();
 	}
@@ -117,13 +117,12 @@ public class Fila
 			try
 			{
 				cuenta_esperando.set_Posicion(cuenta_esperando.get_Posicion() - 1);
-				cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(cuenta_esperando.get_Cuenta().get_Login_respuesta().get_OutputStream(), get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
+				cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
 				condicion.await(3000, TimeUnit.MILLISECONDS);
 			}
 			catch (InterruptedException e) 
 			{
-				System.out.println("Error fila interrumpida: " + e.getMessage());
-				e.printStackTrace();
+				cuenta_esperando.get_Cuenta().get_Login_respuesta().cerrar_Conexion();
 			} 
 		}
 		bloqueo.unlock();

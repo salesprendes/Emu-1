@@ -56,7 +56,7 @@ public class LoginRespuesta implements Runnable
 		final StringBuilder paquete = new StringBuilder();
 
 		hash_key = new GenerarKey();
-		enviar_paquete(outputStream, paquete.append("HC").append(hash_key.get_Hash_key()).toString());
+		enviar_paquete(paquete.append("HC").append(hash_key.get_Hash_key()).toString());
 		paquete.setLength(0);
 		try
 		{
@@ -95,7 +95,7 @@ public class LoginRespuesta implements Runnable
 				}
 				else
 				{
-					enviar_paquete(outputStream, "AlEv");
+					enviar_paquete("AlEv");
 					cerrar_Conexion();
 					System.out.println("> version incorrecta de la ip: " + socket.getInetAddress().getHostAddress());
 					return;
@@ -103,7 +103,7 @@ public class LoginRespuesta implements Runnable
 			break;
 
 			case NOMBRE_CUENTA:
-				if(paquete.length() >= 4)
+				if(paquete.length() >= 2)
 				{
 					if(Cuentas_DB.get_Existe_Cuenta(paquete.toLowerCase()))
 					{
@@ -114,21 +114,21 @@ public class LoginRespuesta implements Runnable
 						}
 						else
 						{
-							enviar_paquete(outputStream, "AlEb");
+							enviar_paquete("AlEb");
 							cerrar_Conexion();
 							return;
 						}
 					}
 					else
 					{
-						enviar_paquete(outputStream, "AlEp");
+						enviar_paquete("AlEp");
 						cerrar_Conexion();
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete(outputStream, "AlEa");
+					enviar_paquete("AlEa");
 					cerrar_Conexion();
 					return;
 				}
@@ -149,21 +149,21 @@ public class LoginRespuesta implements Runnable
 						}
 						else
 						{
-							enviar_paquete(outputStream, "AlEc");
+							enviar_paquete("AlEc");
 							cerrar_Conexion();
 							return;
 						}
 					}
 					else
 					{
-						enviar_paquete(outputStream, "AlEf");
+						enviar_paquete("AlEf");
 						cerrar_Conexion();
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete(outputStream, "AlEa");
+					enviar_paquete("AlEa");
 					cerrar_Conexion();
 					System.out.println("Formato incorrecto del hash");
 					return;
@@ -173,8 +173,8 @@ public class LoginRespuesta implements Runnable
 			case FILA_ESPERA:
 				if(!cuenta.get_Fila_Espera())
 				{
-					fila.agregar_Cuenta(cuenta);
 					cuenta.set_Fila_Espera(true);
+					fila.agregar_Cuenta(cuenta);
 				}
 			break;
 
@@ -182,7 +182,7 @@ public class LoginRespuesta implements Runnable
 				switch(paquete.charAt(1))
 				{
 					case 'x':
-						enviar_paquete(outputStream, "AxK31536000000|601,80");
+						enviar_paquete("AxK31536000000|601,80");
 					break;
 					
 					case 'X'://Seleccion del servidor
@@ -190,7 +190,7 @@ public class LoginRespuesta implements Runnable
 					break;
 					
 					default:
-						enviar_paquete(outputStream, "AlEn");
+						enviar_paquete("AlEn");
 						cerrar_Conexion();
 					break;
 				}
@@ -202,11 +202,11 @@ public class LoginRespuesta implements Runnable
 	{
 		try
 		{
-			Main.server_Socket_Login().get_Clientes().remove(this);
 			if (socket != null && !socket.isClosed())
 			{
 				socket.close();
 			}
+			Main.server_Socket_Login().get_Clientes().remove(this);
 			if(cuenta != null)
 			{
 				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
@@ -215,8 +215,8 @@ public class LoginRespuesta implements Runnable
 			outputStream.close();
 			thread.interrupt();
 			hash_key = null;
-			cuenta = null;
 			estado_login = EstadosLogin.VERSION;
+			cuenta = null;
 		}
 		catch (final IOException e)
 		{
@@ -224,16 +224,16 @@ public class LoginRespuesta implements Runnable
 			e.printStackTrace();
 		}
 	}
-
-	public void enviar_paquete(PrintWriter _outputStream, String paquete)
+	
+	public void enviar_paquete(String paquete)
 	{
-		if (_outputStream != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
+		if (outputStream != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
 		{
 			try 
 			{
 				paquete = new String(paquete.getBytes("UTF8"));
-				_outputStream.print(paquete + (char)0);
-				_outputStream.flush();
+				outputStream.print(paquete + (char)0);
+				outputStream.flush();
 				System.out.println("Enviado >> " + paquete);
 			} 
 			catch (Exception e) 

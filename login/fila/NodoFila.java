@@ -45,4 +45,9 @@ public class NodoFila implements Comparable<NodoFila>
 		}
 		return 0;
 	}
+	
+	public boolean equals(Cuentas _cuenta) 
+	{
+		return cuenta == _cuenta;
+	}
 }

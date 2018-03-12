@@ -3,6 +3,7 @@ package main;
 import database.DatabaseManager;
 import login.ServerSocketLogin;
 import login.fila.ServerFila;
+import objetos.Cuentas;
 
 public class Main 
 {
@@ -14,13 +15,9 @@ public class Main
 	private static ServerFila fila_espera_login;
 	private static ServerFila fila_espera_juego;
 
-	static 
-	{
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
-	}
-
 	public static void main(String[] args)
 	{
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
 		System.out.print("> Conectando a la base de datos: ");
 		if(DatabaseManager.ejecutar_Conexion())
 		{
@@ -41,7 +38,17 @@ public class Main
 		fila_espera_login = new ServerFila();
 		fila_espera_juego = new ServerFila();
 		
-		new Thread(new TimerWaiter().tiempo(() -> System.out.println(""), 30000, 30000)).start();
+		new Thread(new TimerWaiter().tiempo(() -> 
+		{
+			for(Cuentas cuenta : Mundo.get_Mundo().get_Cuentas().values())
+			{
+				System.out.println("expulsando al jugador: " + cuenta.get_Apodo());
+				cuenta.get_Login_respuesta().enviar_paquete("M01|");
+				cuenta.get_Login_respuesta().enviar_paquete("ATE");
+				cuenta.get_Login_respuesta().cerrar_Conexion();
+			}
+		}
+		, 500, 1200000)).start();
 	}
 
 	public static Estados get_Estado_emulador() 
