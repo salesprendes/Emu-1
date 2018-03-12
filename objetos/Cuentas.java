@@ -4,10 +4,10 @@ import login.LoginRespuesta;
 
 public class Cuentas 
 {
-	protected int id;
-	private String usuario, password, apodo;
-	private long tiempo_abono;
-	private LoginRespuesta login_respuesta = null;
+	final private int id;
+	protected String usuario, password, apodo;
+	protected long tiempo_abono;
+	protected LoginRespuesta login_respuesta = null;
 	protected boolean cuenta_baneada = false, esta_fila_espera = false;
 	
 	public Cuentas(int _id, String _usuario, String _password, String _apodo, long _tiempo_abono, boolean _baneado)

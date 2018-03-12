@@ -1,9 +1,9 @@
 package objetos;
 
-public class Servidores 
+final public class Servidores 
 {
-	private int id;
-	private byte comunidad;
+	final private int id;
+	final private byte comunidad;
 	private String nombre, ip, puerto, ip_database, usuario_database, password_database;
 	
 	public Servidores(int _id, String _nombre, byte _comunidad, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
@@ -58,16 +58,6 @@ public class Servidores
 	public String get_Password_database() 
 	{
 		return password_database;
-	}
-	
-	public void set_Id(int _id) 
-	{
-		id = _id;
-	}
-	
-	public void set_Comunidad(byte _comunidad) 
-	{
-		comunidad = _comunidad;
 	}
 	
 	public void set_Nombre(String _nombre)

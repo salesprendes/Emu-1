@@ -28,14 +28,14 @@ final public class GenerarKey
         return hash_key;
     }
 	
-	public String desencriptar_Password(final String encoded) 
+	public String desencriptar_Password(final String password) 
 	{
-		StringBuilder sb = new StringBuilder(encoded.length() / 2);
-		for (int _loc5_ = 0; _loc5_ < encoded.length(); _loc5_ += 2)
+		StringBuilder password_convertida = new StringBuilder(password.length() / 2);
+		for (int _loc5_ = 0; _loc5_ < password_convertida.length(); _loc5_ += 2)
 		{
 			int k = hash_key.charAt(_loc5_ / 2) % 64;
-			int d = Base64.convertir_Char_Int(encoded.charAt(_loc5_));
-			int r = Base64.convertir_Char_Int(encoded.charAt(_loc5_ + 1));
+			int d = Base64.convertir_Char_Int(password_convertida.charAt(_loc5_));
+			int r = Base64.convertir_Char_Int(password_convertida.charAt(_loc5_ + 1));
 			d -= k;
 			r -= k;
 			
@@ -44,8 +44,8 @@ final public class GenerarKey
 			while (r < 0) { r += 64; }
 
 			int v = d * 16 + r;
-			sb.append((char) v);
+			password_convertida.append((char) v);
 		}
-		return sb.toString();
+		return password_convertida.toString();
 	}
 }
