@@ -5,13 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Random;
 
 import database.Cuentas_DB;
 import login.Enum.EstadosLogin;
 import login.fila.Fila;
 import main.Estados;
-import main.Formulas;
 import main.Main;
 import main.Mundo;
 import objetos.Cuentas;
@@ -23,7 +21,8 @@ public class LoginRespuesta implements Runnable
 	protected BufferedReader inputStreamReader;
 	protected PrintWriter outputStream;
 	protected Cuentas cuenta;
-	protected String hash_key, cuenta_paquete;
+	protected GenerarKey hash_key;
+	private String cuenta_paquete;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
 	private Fila fila = Main.get_Fila_Espera_Login().get_Fila();
 
@@ -56,8 +55,8 @@ public class LoginRespuesta implements Runnable
 		final char charCur[] = new char[1];
 		final StringBuilder paquete = new StringBuilder();
 
-		hash_key = generar_Key();
-		enviar_paquete(outputStream, paquete.append("HC").append(hash_key).toString());
+		hash_key = new GenerarKey();
+		enviar_paquete(outputStream, paquete.append("HC").append(hash_key.get_Hash_key()).toString());
 		paquete.setLength(0);
 		try
 		{
@@ -104,29 +103,32 @@ public class LoginRespuesta implements Runnable
 			break;
 
 			case NOMBRE_CUENTA:
-				if(paquete.length() >= 6)
+				if(paquete.length() >= 4)
 				{
-					enviar_paquete(outputStream, "AlEa");
-					cerrar_Conexion();
-					return;
-				}
-				else if(Cuentas_DB.get_Existe_Cuenta(paquete.toLowerCase()))
-				{
-					if(!Cuentas_DB.get_Cuenta_Baneada(paquete.toLowerCase()))
+					if(Cuentas_DB.get_Existe_Cuenta(paquete.toLowerCase()))
 					{
-						cuenta_paquete = paquete.toLowerCase();
-						estado_login = EstadosLogin.PASSWORD_CUENTA;
+						if(!Cuentas_DB.get_Cuenta_Baneada(paquete.toLowerCase()))
+						{
+							cuenta_paquete = paquete.toLowerCase();
+							estado_login = EstadosLogin.PASSWORD_CUENTA;
+						}
+						else
+						{
+							enviar_paquete(outputStream, "AlEb");
+							cerrar_Conexion();
+							return;
+						}
 					}
 					else
 					{
-						enviar_paquete(outputStream, "AlEb");
+						enviar_paquete(outputStream, "AlEp");
 						cerrar_Conexion();
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete(outputStream, "AlEp");
+					enviar_paquete(outputStream, "AlEa");
 					cerrar_Conexion();
 					return;
 				}
@@ -135,7 +137,7 @@ public class LoginRespuesta implements Runnable
 			case PASSWORD_CUENTA:
 				if (paquete.substring(0, 2).equalsIgnoreCase("#1"))
 				{
-					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Cuentas_DB.get_Obtener_Cuenta_Campo_String("password", cuenta_paquete))))
+					if(Cuentas_DB.get_Obtener_Cuenta_Campo_String("password", cuenta_paquete).equals(hash_key.desencriptar_Password(paquete.substring(2))))
 					{
 						cuenta = Cuentas_DB.get_Cuenta(cuenta_paquete);
 						
@@ -163,6 +165,7 @@ public class LoginRespuesta implements Runnable
 				{
 					enviar_paquete(outputStream, "AlEa");
 					cerrar_Conexion();
+					System.out.println("Formato incorrecto del hash");
 					return;
 				}
 			break;
@@ -195,17 +198,6 @@ public class LoginRespuesta implements Runnable
 		}
 	}
 
-	private String generar_Key()
-	{
-		Random random = new Random();
-		String alphabet = "abcdefghijklmnopqrstuvwxyz";
-		StringBuilder hashKey = new StringBuilder();
-
-		for (int i = 0; i < 32; i++)
-			hashKey.append(alphabet.charAt(random.nextInt(alphabet.length())));
-		return hashKey.toString();
-	}
-
 	public synchronized void cerrar_Conexion()
 	{
 		try
@@ -222,7 +214,7 @@ public class LoginRespuesta implements Runnable
 			inputStreamReader.close();
 			outputStream.close();
 			thread.interrupt();
-			hash_key = "";
+			hash_key = null;
 			cuenta = null;
 			estado_login = EstadosLogin.VERSION;
 		}
@@ -235,7 +227,7 @@ public class LoginRespuesta implements Runnable
 
 	public void enviar_paquete(PrintWriter _outputStream, String paquete)
 	{
-		if (_outputStream != null && !paquete.isEmpty() && !paquete.equals(""+(char)0x00))
+		if (_outputStream != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
 		{
 			try 
 			{
@@ -246,7 +238,7 @@ public class LoginRespuesta implements Runnable
 			} 
 			catch (Exception e) 
 			{
-				System.out.println(">> Error al convertir el paquete: " + paquete);
+				System.out.println("> Error al convertir el paquete: " + paquete);
 				return;
 			}
 		}
