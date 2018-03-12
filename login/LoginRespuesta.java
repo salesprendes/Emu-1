@@ -34,7 +34,6 @@ final public class LoginRespuesta implements Runnable
 			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
 			outputStream = new PrintWriter(socket.getOutputStream());
 			thread = new Thread(this);
-			thread.setDaemon(true);
 			thread.start();
 		} 
 		catch (final IOException e) 

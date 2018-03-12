@@ -3,7 +3,7 @@ package main;
 import database.DatabaseManager;
 import login.ServerSocketLogin;
 import login.fila.ServerFila;
-import objetos.Cuentas;
+import main.Consola.Consola;
 
 public class Main 
 {
@@ -13,7 +13,7 @@ public class Main
 	/** THREADS **/
 	private static ServerSocketLogin servidor_login;
 	private static ServerFila fila_espera_login;
-	private static ServerFila fila_espera_juego;
+	private static Consola comandos_consola;
 
 	public static void main(String[] args)
 	{
@@ -36,19 +36,9 @@ public class Main
 		
 		/** Filas de espera **/
 		fila_espera_login = new ServerFila();
-		fila_espera_juego = new ServerFila();
 		
-		new Thread(new TimerWaiter().tiempo(() -> 
-		{
-			for(Cuentas cuenta : Mundo.get_Mundo().get_Cuentas().values())
-			{
-				System.out.println("expulsando al jugador: " + cuenta.get_Apodo());
-				cuenta.get_Login_respuesta().enviar_paquete("M01|");
-				cuenta.get_Login_respuesta().enviar_paquete("ATE");
-				cuenta.get_Login_respuesta().cerrar_Conexion();
-			}
-		}
-		, 0, 1200000)).start();
+		comandos_consola = new Consola();
+		comandos_consola.start();
 	}
 
 	public static Estados get_Estado_emulador() 
@@ -63,6 +53,8 @@ public class Main
 		{
 			estado_emulador = Estados.APAGADO;
 			servidor_login.detener_Server_Socket();
+			fila_espera_login.detener_Fila();
+			comandos_consola.interrupt();
 		}
 		System.out.println("> El emulador esta cerrado.");
 	}
@@ -77,8 +69,8 @@ public class Main
 		return fila_espera_login;
 	}
 	
-	public static ServerFila get_Fila_Espera_Juego()
+	public static Consola get_Comandos_consola() 
 	{
-		return fila_espera_juego;
+		return comandos_consola;
 	}
 }

@@ -37,6 +37,15 @@ public class ServerFila implements Runnable
 		}
 	}
 	
+	public void detener_Fila() 
+	{
+		if(thread.isAlive())
+		{
+			thread.interrupt();
+			System.out.println("> ServerFila cerrada");
+		}
+	}
+	
 	public Fila get_Fila()
 	{
 		return fila;
