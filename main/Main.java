@@ -48,7 +48,7 @@ public class Main
 				cuenta.get_Login_respuesta().cerrar_Conexion();
 			}
 		}
-		, 500, 1200000)).start();
+		, 0, 1200000)).start();
 	}
 
 	public static Estados get_Estado_emulador() 

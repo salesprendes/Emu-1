@@ -14,7 +14,7 @@ import main.Main;
 import main.Mundo;
 import objetos.Cuentas;
 
-public class LoginRespuesta implements Runnable 
+final public class LoginRespuesta implements Runnable 
 {
 	protected Socket socket;
 	protected Thread thread;

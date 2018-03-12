@@ -9,7 +9,7 @@ import java.util.List;
 import main.Estados;
 import main.Main;
 
-public class ServerSocketLogin extends Thread implements Runnable
+final public class ServerSocketLogin extends Thread implements Runnable
 {
 	protected ServerSocket server_socket;
 	protected Socket cliente;

@@ -2,7 +2,7 @@ package login.fila;
 
 import objetos.Cuentas;
 
-public class NodoFila implements Comparable<NodoFila>
+final public class NodoFila implements Comparable<NodoFila>
 {
 	private Cuentas cuenta;
 	private int posicion;

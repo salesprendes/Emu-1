@@ -31,7 +31,7 @@ public class ServerFila implements Runnable
 			finally
 			{
 				
-				fila.agregar_nuevas_posiciones();
+				fila.actualizar_Nuevas_Posiciones();
 				cuenta.get_Login_respuesta().set_Estado_login(EstadosLogin.LISTA_SERVIDORES);
 			}
 		}

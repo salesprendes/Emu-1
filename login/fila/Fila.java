@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import objetos.Cuentas;
 
-public class Fila
+final public class Fila
 {
 	private PriorityQueue<NodoFila> fila;
 	private final Lock bloqueo = new ReentrantLock();
@@ -46,8 +46,8 @@ public class Fila
 		} 
 		catch (InterruptedException e) 
 		{
-			cuenta.get_Login_respuesta().cerrar_Conexion();
 			fila.remove(nodo);
+			cuenta.get_Login_respuesta().cerrar_Conexion();
 		}
 		finally 
 		{
@@ -74,7 +74,8 @@ public class Fila
 			{
 				total_no_abonados--;
 			}
-		} 
+			condicion.await(3000, TimeUnit.MILLISECONDS);
+		}
 		catch (InterruptedException e) 
 		{
 			System.out.println("Error fila interrumpida: " + e.getMessage());
@@ -102,29 +103,29 @@ public class Fila
 	private void actualizar_Posiciones()
 	{
 		bloqueo.lock();
-		for(NodoFila cuenta_esperando : fila) 
+		fila.forEach(f -> 
 		{
-			cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
-		}
+			f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+		});
 		bloqueo.unlock();
 	}
 	
-	public void agregar_nuevas_posiciones()
+	public void actualizar_Nuevas_Posiciones()
 	{
 		bloqueo.lock();
-		for(NodoFila cuenta_esperando : fila) 
+		fila.forEach(f -> 
 		{
 			try
 			{
-				cuenta_esperando.set_Posicion(cuenta_esperando.get_Posicion() - 1);
-				cuenta_esperando.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(cuenta_esperando.get_Posicion(), cuenta_esperando.get_Cuenta().es_Cuenta_Abonada()));
+				f.set_Posicion(f.get_Posicion() - 1);
+				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
 				condicion.await(3000, TimeUnit.MILLISECONDS);
 			}
 			catch (InterruptedException e) 
 			{
-				cuenta_esperando.get_Cuenta().get_Login_respuesta().cerrar_Conexion();
-			} 
-		}
+				f.get_Cuenta().get_Login_respuesta().cerrar_Conexion();
+			}
+		});
 		bloqueo.unlock();
 	}
 }
