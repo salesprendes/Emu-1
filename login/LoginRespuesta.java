@@ -28,10 +28,10 @@ public class LoginRespuesta implements Runnable
 
 	public LoginRespuesta(final Socket _socket)
 	{
-		socket = _socket;
 		try 
 		{
-			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			socket = _socket;
+			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
 			outputStream = new PrintWriter(socket.getOutputStream());
 			thread = new Thread(this);
 			thread.setDaemon(true);
