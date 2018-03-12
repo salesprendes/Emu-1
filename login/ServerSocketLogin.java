@@ -13,7 +13,6 @@ final public class ServerSocketLogin extends Thread implements Runnable
 {
 	protected ServerSocket server_socket;
 	protected Socket cliente;
-	protected Thread thread;
 	private final List<LoginRespuesta> clientes = new ArrayList<LoginRespuesta>();
 	
 	public ServerSocketLogin(int _puerto)
@@ -21,9 +20,8 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		try
 		{
 			server_socket = new ServerSocket(_puerto);
-			thread = new Thread(this);
-			thread.setDaemon(true);
-			thread.start();
+			setName("ServerSocket");
+			start();
 		} 
 		catch (IOException e)
 		{
@@ -33,7 +31,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 	
 	public void run() 
 	{
-		while(Main.get_Estado_emulador() == Estados.ENCENDIDO && !server_socket.isClosed() && !thread.isInterrupted())
+		while(Main.estado_emulador == Estados.ENCENDIDO && !server_socket.isClosed() && !isInterrupted())
 		{
 			try 
 			{
@@ -53,7 +51,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 			try 
 	        {
 	            server_socket.close();
-	            thread.interrupt();
+	            interrupt();
 	            System.out.println("> ServerSocket login cerrado");
 	        } 
 	        catch (IOException e)

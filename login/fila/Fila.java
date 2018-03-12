@@ -65,7 +65,8 @@ final public class Fila
 			{
 				condicion.await();
 			}
-			cuenta = fila.remove().get_Cuenta();
+			nodo = fila.remove();
+			cuenta = nodo.get_Cuenta();
 			if(cuenta.es_Cuenta_Abonada())
 			{
 				total_abonados--;
@@ -78,8 +79,8 @@ final public class Fila
 		}
 		catch (InterruptedException e) 
 		{
-			System.out.println("Error fila interrumpida: " + e.getMessage());
-			e.printStackTrace();
+			fila.remove(nodo);
+			cuenta.get_Login_respuesta().cerrar_Conexion();
 		} 
 		finally 
 		{

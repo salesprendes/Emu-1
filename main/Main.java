@@ -7,13 +7,13 @@ import main.Consola.Consola;
 
 public class Main 
 {
-	/** Estado login **/
-	private static Estados estado_emulador = Estados.APAGADO;
+	public static boolean debug = false;
+	public static Estados estado_emulador = Estados.APAGADO;
 	
 	/** THREADS **/
-	private static ServerSocketLogin servidor_login;
-	private static ServerFila fila_espera_login;
-	private static Consola comandos_consola;
+	public static ServerSocketLogin servidor_login;
+	public static ServerFila fila_espera_login;
+	public static Consola comandos_consola;
 
 	public static void main(String[] args)
 	{
@@ -32,18 +32,11 @@ public class Main
 		estado_emulador = Estados.CARGANDO;
 		Mundo.cargar_Login();
 		estado_emulador = Estados.ENCENDIDO;
+		
+		/** Threads **/
 		servidor_login = new ServerSocketLogin(443);
-		
-		/** Filas de espera **/
 		fila_espera_login = new ServerFila();
-		
 		comandos_consola = new Consola();
-		comandos_consola.start();
-	}
-
-	public static Estados get_Estado_emulador() 
-	{
-		return estado_emulador;
 	}
 
 	public static void cerrar_Emulador()
@@ -57,20 +50,5 @@ public class Main
 			comandos_consola.interrupt();
 		}
 		System.out.println("> El emulador esta cerrado.");
-	}
-
-	public static ServerSocketLogin server_Socket_Login()
-	{
-		return servidor_login;
-	}
-
-	public static ServerFila get_Fila_Espera_Login()
-	{
-		return fila_espera_login;
-	}
-	
-	public static Consola get_Comandos_consola() 
-	{
-		return comandos_consola;
 	}
 }

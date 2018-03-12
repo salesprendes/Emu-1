@@ -14,17 +14,16 @@ import main.Main;
 import main.Mundo;
 import objetos.Cuentas;
 
-final public class LoginRespuesta implements Runnable 
+final public class LoginRespuesta extends Thread implements Runnable 
 {
 	protected Socket socket;
-	protected Thread thread;
 	protected BufferedReader inputStreamReader;
 	protected PrintWriter outputStream;
 	protected Cuentas cuenta;
 	protected GenerarKey hash_key;
 	private String cuenta_paquete;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
-	private Fila fila = Main.get_Fila_Espera_Login().get_Fila();
+	private Fila fila = Main.fila_espera_login.get_Fila();
 
 	public LoginRespuesta(final Socket _socket)
 	{
@@ -33,8 +32,8 @@ final public class LoginRespuesta implements Runnable
 			socket = _socket;
 			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
 			outputStream = new PrintWriter(socket.getOutputStream());
-			thread = new Thread(this);
-			thread.start();
+			setName("Cliente");
+			start();
 		} 
 		catch (final IOException e) 
 		{
@@ -59,7 +58,7 @@ final public class LoginRespuesta implements Runnable
 		paquete.setLength(0);
 		try
 		{
-			while (inputStreamReader.read(charCur, 0, 1) != -1 && Main.get_Estado_emulador() == Estados.ENCENDIDO && !thread.isInterrupted() && socket.isConnected())
+			while (inputStreamReader.read(charCur, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted() && socket.isConnected())
 			{
 				if (charCur[0] != 0 && charCur[0] != '\n' && charCur[0] != '\r') 
 				{
@@ -205,14 +204,14 @@ final public class LoginRespuesta implements Runnable
 			{
 				socket.close();
 			}
-			Main.server_Socket_Login().get_Clientes().remove(this);
+			Main.servidor_login.get_Clientes().remove(this);
 			if(cuenta != null)
 			{
 				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
 			}
 			inputStreamReader.close();
 			outputStream.close();
-			thread.interrupt();
+			interrupt();
 			hash_key = null;
 			estado_login = EstadosLogin.VERSION;
 			cuenta = null;

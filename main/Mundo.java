@@ -1,7 +1,8 @@
 package main;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import database.Servidores_DB;
 import objetos.Cuentas;
@@ -10,8 +11,8 @@ import objetos.Servidores;
 public class Mundo
 {
 	private final static Mundo mundo = new Mundo();//crea una nueva instancia
-	private final Map<Integer, Cuentas> cuentas = new HashMap<Integer, Cuentas>();
-	private final Map<Integer, Servidores> servidores = new HashMap<Integer, Servidores>();
+	private final ConcurrentMap<Integer, Cuentas> cuentas = new ConcurrentHashMap<Integer, Cuentas>();
+	private final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	
 	public static void cargar_Login()
 	{

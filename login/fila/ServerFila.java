@@ -5,23 +5,21 @@ import main.Estados;
 import main.Main;
 import objetos.Cuentas;
 
-public class ServerFila implements Runnable
+public class ServerFila extends Thread implements Runnable
 {
 	private Fila fila;
-	private Thread thread;
 	Cuentas cuenta;
 
 	public ServerFila() 
 	{
-		thread = new Thread(this);
-		thread.setDaemon(true);
-		thread.start();
+		setName("Fila-Login");
+		start();
 	}
 	
 	public void run()
 	{
 		fila = new Fila();
-		while(Main.get_Estado_emulador() == Estados.ENCENDIDO && !thread.isInterrupted())
+		while(Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted())
 		{
 			cuenta = null;
 			try
@@ -39,9 +37,9 @@ public class ServerFila implements Runnable
 	
 	public void detener_Fila() 
 	{
-		if(thread.isAlive())
+		if(isAlive())
 		{
-			thread.interrupt();
+			interrupt();
 			System.out.println("> ServerFila cerrada");
 		}
 	}
