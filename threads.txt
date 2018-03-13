@@ -3,6 +3,9 @@ Fila-Login es Daemon: false esta activo: true
 Signal Dispatcher es Daemon: true esta activo: true
 ServerSocket es Daemon: false esta activo: true
 Consola-Comandos es Daemon: false esta activo: true
+pool-1-thread-1 es Daemon: false esta activo: true
+pool-2-thread-1 es Daemon: false esta activo: true
+pool-4-thread-1 es Daemon: false esta activo: true
 Attach Listener es Daemon: true esta activo: true
 Reference Handler es Daemon: true esta activo: true
 DestroyJavaVM es Daemon: false esta activo: true

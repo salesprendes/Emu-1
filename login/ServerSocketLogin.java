@@ -2,7 +2,6 @@ package login;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +11,14 @@ import main.Main;
 final public class ServerSocketLogin extends Thread implements Runnable
 {
 	protected ServerSocket server_socket;
-	protected Socket cliente;
 	private final List<LoginRespuesta> clientes = new ArrayList<LoginRespuesta>();
 	
 	public ServerSocketLogin(int _puerto)
 	{
 		try
 		{
-			server_socket = new ServerSocket(_puerto);
 			setName("ServerSocket");
+			server_socket = new ServerSocket(_puerto);
 			start();
 		} 
 		catch (IOException e)
@@ -31,7 +29,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 	
 	public void run() 
 	{
-		while(Main.estado_emulador == Estados.ENCENDIDO && !server_socket.isClosed() && !isInterrupted())
+		while(Main.estado_emulador == Estados.ENCENDIDO && !server_socket.isClosed())
 		{
 			try 
 			{
@@ -51,7 +49,6 @@ final public class ServerSocketLogin extends Thread implements Runnable
 			try 
 	        {
 	            server_socket.close();
-	            interrupt();
 	            System.out.println("> ServerSocket login cerrado");
 	        } 
 	        catch (IOException e)

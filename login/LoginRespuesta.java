@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import database.Cuentas_DB;
 import login.Enum.EstadosLogin;
@@ -14,7 +16,7 @@ import main.Main;
 import main.Mundo;
 import objetos.Cuentas;
 
-final public class LoginRespuesta extends Thread implements Runnable 
+final public class LoginRespuesta implements Runnable
 {
 	protected Socket socket;
 	protected BufferedReader inputStreamReader;
@@ -22,6 +24,7 @@ final public class LoginRespuesta extends Thread implements Runnable
 	protected Cuentas cuenta;
 	protected GenerarKey hash_key;
 	private String cuenta_paquete;
+	private ExecutorService ejecutor;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
 	private Fila fila = Main.fila_espera_login.get_Fila();
 
@@ -32,8 +35,8 @@ final public class LoginRespuesta extends Thread implements Runnable
 			socket = _socket;
 			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
 			outputStream = new PrintWriter(socket.getOutputStream());
-			setName("Cliente");
-			start();
+			ejecutor = Executors.newCachedThreadPool();
+			ejecutor.submit(this);
 		} 
 		catch (final IOException e) 
 		{
@@ -58,7 +61,7 @@ final public class LoginRespuesta extends Thread implements Runnable
 		paquete.setLength(0);
 		try
 		{
-			while (inputStreamReader.read(charCur, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted() && socket.isConnected())
+			while (inputStreamReader.read(charCur, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && socket.isConnected())
 			{
 				if (charCur[0] != 0 && charCur[0] != '\n' && charCur[0] != '\r') 
 				{
@@ -214,7 +217,7 @@ final public class LoginRespuesta extends Thread implements Runnable
 			}
 			inputStreamReader.close();
 			outputStream.close();
-			interrupt();
+			ejecutor.shutdown();
 			hash_key = null;
 			estado_login = EstadosLogin.VERSION;
 			cuenta = null;
