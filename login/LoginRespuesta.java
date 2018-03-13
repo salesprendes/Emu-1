@@ -61,7 +61,7 @@ final public class LoginRespuesta implements Runnable
 		paquete.setLength(0);
 		try
 		{
-			while (inputStreamReader.read(charCur, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && socket.isConnected())
+			while (inputStreamReader.read(charCur, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
 			{
 				if (charCur[0] != 0 && charCur[0] != '\n' && charCur[0] != '\r') 
 				{

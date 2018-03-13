@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 final public class Consola extends Thread implements Runnable
 {
-	private static Scanner sc = new Scanner(System.in);
-	
 	public Consola()
 	{
 		setName("Consola-Comandos");
@@ -17,11 +15,13 @@ final public class Consola extends Thread implements Runnable
 	
 	public void run()
 	{
+		Scanner sc = new Scanner(System.in);
 		while(!isInterrupted())
 		{
 			System.out.print(">> ");
 			String command = sc.nextLine();
 			Comandos.ejecutar(command);
 		}
+		sc.close();
 	}
 }
