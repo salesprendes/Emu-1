@@ -1,0 +1,15 @@
+Cliente						Servidor
+[nueva conexion] ------>	[conexion con puerto]
+				 <------	HC{key}
+			//=== [Inicia login] ===//
+DofusVersión	------>     [Verifica versión]
+				<------     Error version [Solamente si es necesario]
+Credenciales	------>     [Verifica cuenta/password]
+				<------     Login Error [solamente si esta conectado/baneado/password erronea]
+Fila espera		<------		Tiempo de espera + posicion
+Af				------>		Pide renovar el paquete la fila de espera
+				<------     Apodo + Tiempo abono
+				<------     Comunidad
+				<------     Lista Servidores
+				<------     GM Nivel
+				<------     Pregunta Secreta
