@@ -66,8 +66,11 @@ final public class LoginRespuesta extends Thread implements Runnable
 				}
 				else if (!paquete.toString().isEmpty())
 				{
-					System.out.println("> Recibido: " + paquete);
 					controlador_Paquetes(paquete.toString());
+					if(Main.modo_debug)
+					{
+						System.out.println("> Recibido: " + paquete);
+					}
 					paquete.setLength(0);
 				}
 			}
@@ -232,7 +235,10 @@ final public class LoginRespuesta extends Thread implements Runnable
 				paquete = new String(paquete.getBytes("UTF8"));
 				outputStream.print(paquete + (char)0);
 				outputStream.flush();
-				System.out.println("Enviado >> " + paquete);
+				if(Main.modo_debug)
+				{
+					System.out.println("Enviado >> " + paquete);
+				}
 			} 
 			catch (Exception e) 
 			{

@@ -1,0 +1,9 @@
+Finalizer es Daemon: true esta activo: true
+Fila-Login es Daemon: false esta activo: true
+Signal Dispatcher es Daemon: true esta activo: true
+ServerSocket es Daemon: false esta activo: true
+Consola-Comandos es Daemon: false esta activo: true
+Attach Listener es Daemon: true esta activo: true
+Reference Handler es Daemon: true esta activo: true
+DestroyJavaVM es Daemon: false esta activo: true
+Abandoned connection cleanup thread es Daemon: true esta activo: true

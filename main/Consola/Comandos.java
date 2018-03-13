@@ -49,7 +49,7 @@ public class Comandos
 	 
 	 protected static void ver_Threads_Activos()
 	 {
-		 Thread.getAllStackTraces().keySet().forEach((t) ->
+		 Thread.getAllStackTraces().keySet().forEach(t ->
 		 {
 			 System.out.println(t.getName() + " es Daemon: " + t.isDaemon() + " esta activo: " + t.isAlive());
 		 });
@@ -60,6 +60,7 @@ public class Comandos
 		 System.out.println("threads: ver los threads activos");
 		 System.out.println("memoria: ver el estado de la memoria del heap");
 		 System.out.println("limpiar: invoca el garbage para limpiar la memoria");
+		 System.out.println("debug: permite activar/desactivar para ver los mensajes debug");
 		 System.out.println("? - ver los comandos"); 
 	 }
 	 
@@ -75,12 +76,12 @@ public class Comandos
 			switch(args[1].toLowerCase())
 			{
 				case "on":
-					Main.debug = true;
+					Main.modo_debug = true;
 					System.out.println("Modo debug activado");
 				break;
 				
 				case "off":
-					Main.debug = false;
+					Main.modo_debug = false;
 					System.out.println("Modo debug desactivado");
 				break;
 			}
