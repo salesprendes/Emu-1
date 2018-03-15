@@ -89,7 +89,7 @@ final public class Fila
 		return cuenta;
 	}
 
-	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
+	public String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
 	{
 		bloqueo.lock();
 		StringBuilder paquete = new StringBuilder("Af").append(posicion);

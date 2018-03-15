@@ -1,4 +1,7 @@
-package main.Consola;
+package main.consola;
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 
 import main.Main;
 
@@ -21,6 +24,10 @@ public class Comandos
 		 	
 		 	case "threads":
 		 		ver_Threads_Activos();
+		 	break;
+		 	
+		 	case "cpu":
+		 		System.out.println(ver_Uso_Cpu() * 100 + "%");
 		 	break;
 		 	
 		 	case "limpiar":
@@ -68,6 +75,26 @@ public class Comandos
 		 System.out.println("limpiar/clear: limpia la consola");
 		 System.out.println("debug: (on, off) permite activar/desactivar para ver los mensajes debug");
 		 System.out.println("? - ver los comandos"); 
+	 }
+	 
+	 protected static Float ver_Uso_Cpu()
+	 {
+		 final ThreadMXBean TMB = ManagementFactory.getThreadMXBean();
+		 long time = System.nanoTime(), lastNanoTime = 0, lastCpuTime = 0, cpuTime = 0;
+		 final float timeDiff = time - lastNanoTime;
+
+		 for(long id : TMB.getAllThreadIds())
+		 {
+			 cpuTime += TMB.getThreadCpuTime(id);
+		 }
+
+		 float cpuDiff = cpuTime - lastCpuTime;
+		 if(cpuDiff < 0)
+			 cpuDiff = 0;
+
+		 lastNanoTime = time;
+		 lastCpuTime = cpuTime;
+		 return cpuDiff / timeDiff / Runtime.getRuntime().availableProcessors();
 	 }
 	 
 	 protected static void limpiar_Consola()

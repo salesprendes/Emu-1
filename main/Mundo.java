@@ -8,10 +8,10 @@ import database.Servidores_DB;
 import objetos.Cuentas;
 import objetos.Servidores;
 
-public class Mundo
+final public class Mundo
 {
 	private final static Mundo mundo = new Mundo();//crea una nueva instancia
-	private final ConcurrentMap<Integer, Cuentas> cuentas = new ConcurrentHashMap<Integer, Cuentas>();
+	private final ConcurrentHashMap<Integer, Cuentas> cuentas = new ConcurrentHashMap<Integer, Cuentas>();
 	private final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	
 	public static void cargar_Login()

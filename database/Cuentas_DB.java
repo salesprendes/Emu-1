@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import objetos.Cuentas;
+import objetos.Servidores;
 
 public class Cuentas_DB extends DatabaseManager
 {
@@ -18,7 +19,7 @@ public class Cuentas_DB extends DatabaseManager
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
 		{
 			rs.next();
-			cuenta = new Cuentas(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), formato_fecha.parse(rs.getString(5)).getTime(), rs.getBoolean(6));
+			cuenta = new Cuentas(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), formato_fecha.parse(rs.getString(5)).getTime(), rs.getByte(6), rs.getBoolean(7));
 			cerrar_ResultSet(rs);
 		}
 		catch (final SQLException | ParseException e){} 
@@ -36,6 +37,19 @@ public class Cuentas_DB extends DatabaseManager
 		}
 		catch (final SQLException e){}
 		return null;
+	}
+	
+	public static int get_Contar_Personajes_Servidor(Cuentas cuenta, Servidores servidor)
+	{
+		int total_personajes_servidor = 0;
+		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT COUNT(id) FROM personajes WHERE servidor_id = " + servidor.get_Id() + " AND usuario = '" + cuenta.get_Usuario() + "';"))
+		{
+			rs.next();
+			total_personajes_servidor = rs.getInt(1);
+			cerrar_ResultSet(rs);
+		}
+		catch (final SQLException e){}
+		return total_personajes_servidor;
 	}
 	
 	public static boolean get_Existe_Cuenta(final String nombre_usuario)

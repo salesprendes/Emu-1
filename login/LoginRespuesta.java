@@ -5,35 +5,37 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import database.Cuentas_DB;
+import login.Enum.ErroresLogin;
 import login.Enum.EstadosLogin;
 import login.fila.Fila;
 import main.Estados;
+import main.Formulas;
 import main.Main;
 import main.Mundo;
 import objetos.Cuentas;
 
 final public class LoginRespuesta implements Runnable
 {
-	protected Socket socket;
+	private Socket socket;
 	protected BufferedReader inputStreamReader;
 	protected PrintWriter outputStream;
 	protected Cuentas cuenta;
-	protected GenerarKey hash_key;
-	private String cuenta_paquete;
+	private String hash_key, cuenta_paquete;
 	private ExecutorService ejecutor;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
 	private Fila fila = Main.fila_espera_login.get_Fila();
-
+	
 	public LoginRespuesta(final Socket _socket)
 	{
 		try 
 		{
 			socket = _socket;
-			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
+			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			outputStream = new PrintWriter(socket.getOutputStream());
 			ejecutor = Executors.newCachedThreadPool();
 			ejecutor.submit(this);
@@ -56,8 +58,8 @@ final public class LoginRespuesta implements Runnable
 		final char charCur[] = new char[1];
 		final StringBuilder paquete = new StringBuilder();
 
-		hash_key = new GenerarKey();
-		enviar_paquete(paquete.append("HC").append(hash_key.get_Hash_key()).toString());
+		hash_key = generar_Key();
+		enviar_paquete(paquete.append("HC").append(hash_key).toString());
 		paquete.setLength(0);
 		try
 		{
@@ -69,11 +71,11 @@ final public class LoginRespuesta implements Runnable
 				}
 				else if (!paquete.toString().isEmpty())
 				{
-					controlador_Paquetes(paquete.toString());
 					if(Main.modo_debug)
 					{
 						System.out.println("> Recibido: " + paquete);
 					}
+					controlador_Paquetes(paquete.toString());
 					paquete.setLength(0);
 				}
 			}
@@ -96,10 +98,12 @@ final public class LoginRespuesta implements Runnable
 				if (paquete.equalsIgnoreCase("1.29.1"))
 				{
 					estado_login = EstadosLogin.NOMBRE_CUENTA;
+					System.out.println();
 				}
 				else
 				{
-					enviar_paquete("AlEv");
+					enviar_paquete(ErroresLogin.VERSION_INCORRECTA.toString());
+					enviar_paquete("ATE");
 					cerrar_Conexion();
 					System.out.println("> version incorrecta de la ip: " + socket.getInetAddress().getHostAddress());
 					return;
@@ -118,66 +122,72 @@ final public class LoginRespuesta implements Runnable
 						}
 						else
 						{
-							enviar_paquete("AlEb");
+							enviar_paquete(ErroresLogin.CUENTA_BANEADA.toString());
 							cerrar_Conexion();
 							return;
 						}
 					}
 					else
 					{
-						enviar_paquete("AlEp");
+						enviar_paquete(ErroresLogin.CUENTA_NO_VALIDA.toString());
 						cerrar_Conexion();
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete("AlEa");
+					enviar_paquete(ErroresLogin.CUENTA_CONECTADA.toString());
 					cerrar_Conexion();
 					return;
 				}
 			break;
 
 			case PASSWORD_CUENTA:
-				if (paquete.substring(0, 2).equalsIgnoreCase("#1"))
+				if(paquete.substring(0, 2).equalsIgnoreCase("#1"))
 				{
-					if(Cuentas_DB.get_Obtener_Cuenta_Campo_String("password", cuenta_paquete).equals(hash_key.desencriptar_Password(paquete.substring(2))))
+					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Cuentas_DB.get_Obtener_Cuenta_Campo_String("password", cuenta_paquete))))
 					{
 						cuenta = Cuentas_DB.get_Cuenta(cuenta_paquete);
 						
-						if(Mundo.get_Mundo().get_Cuentas().get(cuenta.get_Id()) == null)
+						/** puntero que extrae la dirección de memoria del hashmap **/
+						Cuentas _cuenta = Mundo.get_Mundo().get_Cuentas().get(cuenta.get_Id());
+
+						if(_cuenta == null)//Si el puntero es nulo no esta conectado
 						{
+							
 							Mundo.get_Mundo().agregar_Cuenta(cuenta);
 							cuenta.set_Login_respuesta(this);
 							estado_login = EstadosLogin.FILA_ESPERA;
 						}
 						else
 						{
-							enviar_paquete("AlEc");
+							_cuenta.get_Login_respuesta().enviar_paquete("ATE");
+							enviar_paquete(ErroresLogin.CUENTA_YA_CONECTADA.toString());
 							cerrar_Conexion();
+							_cuenta.get_Login_respuesta().cerrar_Conexion();
 							return;
 						}
 					}
 					else
 					{
-						enviar_paquete("AlEf");
+						enviar_paquete(ErroresLogin.CUENTA_PASSWORD_INCORRECTA.toString());
 						cerrar_Conexion();
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete("AlEa");
+					enviar_paquete(ErroresLogin.CUENTA_CONECTADA.toString());
 					cerrar_Conexion();
-					System.out.println("Formato incorrecto del hash");
+					System.out.println("paquete incorrecto password");
 					return;
 				}
 			break;
 
 			case FILA_ESPERA:
-				if(!cuenta.get_Fila_Espera())
+				if(!cuenta.get_Fila_espera())
 				{
-					cuenta.set_Fila_Espera(true);
+					cuenta.set_Fila_espera(true);
 					fila.agregar_Cuenta(cuenta);
 				}
 			break;
@@ -186,7 +196,12 @@ final public class LoginRespuesta implements Runnable
 				switch(paquete.charAt(1))
 				{
 					case 'x':
-						enviar_paquete("AxK31536000000|601,80");
+						enviar_paquete("AxK" + cuenta.get_Fecha_abono());
+						
+						Mundo.get_Mundo().get_Servidores().values().forEach(S ->
+						{
+							//paquete_salida.append(S.get_Id()).append(';').append(0).append(";110;1");
+						});
 					break;
 					
 					case 'X'://Seleccion del servidor
@@ -194,7 +209,7 @@ final public class LoginRespuesta implements Runnable
 					break;
 					
 					default:
-						enviar_paquete("AlEn");
+						enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 						cerrar_Conexion();
 					break;
 				}
@@ -250,10 +265,15 @@ final public class LoginRespuesta implements Runnable
 			}
 		}
 	}
-
-	public BufferedReader get_InputStreamReader()
+	
+	private String generar_Key()
 	{
-		return inputStreamReader;
+		Random random = new Random();
+		String alphabet = "abcdefghijklmnopqrstuvwxyz";
+		StringBuilder hashKey = new StringBuilder();
+		for (int i = 0; i < 32; i++)
+			hashKey.append(alphabet.charAt(random.nextInt(alphabet.length())));
+		return hashKey.toString();
 	}
 
 	public PrintWriter get_OutputStream()

@@ -3,9 +3,9 @@ package main;
 import database.DatabaseManager;
 import login.ServerSocketLogin;
 import login.fila.ServerFila;
-import main.Consola.Consola;
+import main.consola.Consola;
 
-public class Main 
+final public class Main 
 {
 	public static boolean modo_debug = true;
 	public static Estados estado_emulador = Estados.APAGADO;
@@ -32,7 +32,7 @@ public class Main
 		estado_emulador = Estados.CARGANDO;
 		Mundo.cargar_Login();
 		estado_emulador = Estados.ENCENDIDO;
-		
+
 		/** Threads **/
 		servidor_login = new ServerSocketLogin(443);
 		fila_espera_login = new ServerFila();

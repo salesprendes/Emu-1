@@ -2,21 +2,23 @@ package objetos;
 
 import login.LoginRespuesta;
 
-public class Cuentas 
+final public class Cuentas 
 {
 	final private int id;
 	protected String usuario, password, apodo;
 	protected long tiempo_abono;
 	protected LoginRespuesta login_respuesta = null;
-	protected boolean cuenta_baneada = false, esta_fila_espera = false;
+	private boolean cuenta_baneada = false, fila_espera;
+	private byte comunidad;
 	
-	public Cuentas(int _id, String _usuario, String _password, String _apodo, long _tiempo_abono, boolean _baneado)
+	public Cuentas(int _id, String _usuario, String _password, String _apodo, long _tiempo_abono, final byte _comunidad, boolean _baneado)
 	{
 		id = _id;
 		usuario = _usuario;
 		password = _password;
 		apodo = _apodo;
 		tiempo_abono = _tiempo_abono;
+		comunidad = _comunidad;
 		cuenta_baneada = _baneado;
 	}
 	
@@ -89,14 +91,19 @@ public class Cuentas
 	{
 		return tiempo_abono >= System.currentTimeMillis();
 	}
-	
-	public boolean get_Fila_Espera()
+
+	public byte get_Comunidad() 
 	{
-		return esta_fila_espera;
+		return comunidad;
 	}
-	
-	public void set_Fila_Espera(boolean _esta_fila_espera) 
+
+	public boolean get_Fila_espera() 
 	{
-		esta_fila_espera = _esta_fila_espera;
+		return fila_espera;
+	}
+
+	public void set_Fila_espera(boolean _fila_espera) 
+	{
+		fila_espera = _fila_espera;
 	}
 }
