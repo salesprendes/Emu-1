@@ -1,10 +1,14 @@
 package objetos;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 final public class Servidores 
 {
 	final private int id;
 	final private byte comunidad, estado;
 	final private String nombre, ip, puerto, ip_database, usuario_database, password_database;
+	private final static ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	
 	public Servidores(int _id, String _nombre, byte _comunidad, byte _estado, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
 	{
@@ -17,6 +21,7 @@ final public class Servidores
 		ip_database = _ip_database;
 		usuario_database = _usuario_database;
 		password_database = _password_database;
+		servidores.put(id, this);
 	}
 	
 	public int get_Id() 
@@ -63,4 +68,14 @@ final public class Servidores
 	{
 		return estado;
 	}
+	
+	public static String get_Obtener_Servidores()
+	{
+        final StringBuilder sb = new StringBuilder("AH");
+        servidores.values().stream().filter(server -> server != null).forEach(servidor ->
+        {
+        	sb.append(sb.length() > 2 ? "|" : "").append(servidor.get_Id()).append(";").append(servidor.get_Estado()).append(";110;1");
+        });
+        return sb.toString();
+    }
 }

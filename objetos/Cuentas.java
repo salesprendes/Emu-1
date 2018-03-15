@@ -44,6 +44,10 @@ final public class Cuentas
 	
 	public long get_Fecha_abono()
 	{
+		if((tiempo_abono - System.currentTimeMillis()) <= System.currentTimeMillis())
+		{
+			return 0;
+		}
 		return tiempo_abono - System.currentTimeMillis();
 	}
 	
@@ -105,5 +109,15 @@ final public class Cuentas
 	public void set_Fila_espera(boolean _fila_espera) 
 	{
 		fila_espera = _fila_espera;
+	}
+	
+	@Override
+	public int hashCode() 
+	{
+		int resultado = id;
+		resultado = 31 * resultado + (usuario != null ? usuario.hashCode() : 0);
+		resultado = 31 * resultado + (password != null ? password.hashCode() : 0);
+		resultado = 31 * resultado + (apodo != null ? apodo.hashCode() : 0);
+		return resultado;
 	}
 }

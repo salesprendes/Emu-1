@@ -11,12 +11,11 @@ public class Formulas
 		
 		for (int i = 0; i < password.length(); i += 2)
 		{
-			int current = password.charAt(i);
-			int k = key.charAt(i % key.length());
-			int encode_c1 = current / 16 + k;
-			int encode_c2 = current % 16 + k;
+			int encode_c1 = password.charAt(i) / 16 + key.charAt(i % key.length());
+			int encode_c2 = password.charAt(i) % 16 + key.charAt(i % key.length());
 
-			password_encriptada.append(HASH[(encode_c1 % HASH.length)]).append(HASH[(encode_c2 % HASH.length)]);
+			password_encriptada.append(HASH[(encode_c1 % HASH.length)]);
+			password_encriptada.append(HASH[(encode_c2 % HASH.length)]);
 		}
 		return password_encriptada.toString();
 	}

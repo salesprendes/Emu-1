@@ -7,7 +7,7 @@ import main.consola.Consola;
 
 final public class Main 
 {
-	public static boolean modo_debug = true;
+	public static boolean modo_debug = false;
 	public static Estados estado_emulador = Estados.APAGADO;
 	
 	/** THREADS **/

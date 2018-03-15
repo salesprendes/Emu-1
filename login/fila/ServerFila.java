@@ -3,8 +3,8 @@ package login.fila;
 import login.Enum.EstadosLogin;
 import main.Estados;
 import main.Main;
-import main.Mundo;
 import objetos.Cuentas;
+import objetos.Servidores;
 
 final public class ServerFila extends Thread implements Runnable
 {
@@ -39,18 +39,12 @@ final public class ServerFila extends Thread implements Runnable
 	
 	private String paquete_salida_fila()
 	{
-		final StringBuilder paquete_salida = new StringBuilder("Ad").append(cuenta.get_Apodo()).append((char)0);
-		paquete_salida.append("Ac").append(cuenta.get_Comunidad()).append((char)0);;
-		paquete_salida.append("AH");
-		Mundo.get_Mundo().get_Servidores().values().forEach(S ->
-		{
-			paquete_salida.append(S.get_Id()).append(';').append(S.get_Estado()).append(";110;1");
-			paquete_salida.append('|');
-		});
-		paquete_salida.append((char)0);
-		paquete_salida.append("AlK").append(1).append((char)0);
-		paquete_salida.append("AQ").append("Ninguna").append((char)0);;
-		return paquete_salida.toString();
+		final StringBuilder paquete = new StringBuilder("Ad").append(cuenta.get_Apodo()).append((char)0);
+		paquete.append("Ac").append(cuenta.get_Comunidad()).append((char)0);
+		paquete.append(Servidores.get_Obtener_Servidores()).append((char)0);
+		paquete.append("AlK").append(1).append((char)0);
+		paquete.append("AQ").append("Ninguna").append((char)0);;
+		return paquete.toString();
 	}
 	
 	public void detener_Fila() 

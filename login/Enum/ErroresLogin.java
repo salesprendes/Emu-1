@@ -10,7 +10,8 @@ public enum ErroresLogin
 	CUENTA_KICKEADA('k'),
 	CONEXION_NO_TERMINADA('n'),
 	CUENTA_NO_VALIDA('p'),
-	VERSION_INCORRECTA('v');
+	VERSION_INCORRECTA('v'),
+	SERVIDOR_EN_MANTENIMIENTO('m');
 	
 	final private char tipo_error;
 

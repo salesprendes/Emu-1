@@ -264,6 +264,7 @@ final public class LoginRespuesta implements Runnable
 	{
 		Random random = new Random();
 		String alphabet = "abcdefghijklmnopqrstuvwxyz";
+		
 		StringBuilder hashKey = new StringBuilder();
 		for (int i = 0; i < 32; i++)
 			hashKey.append(alphabet.charAt(random.nextInt(alphabet.length())));
