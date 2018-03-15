@@ -3,21 +3,20 @@ package objetos;
 final public class Servidores 
 {
 	final private int id;
-	final private byte comunidad;
-	private String nombre, ip, puerto, ip_database, usuario_database, password_database;
+	final private byte comunidad, estado;
+	final private String nombre, ip, puerto, ip_database, usuario_database, password_database;
 	
-	public Servidores(int _id, String _nombre, byte _comunidad, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
+	public Servidores(int _id, String _nombre, byte _comunidad, byte _estado, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
 	{
 		id = _id;
 		nombre = _nombre;
 		comunidad = _comunidad;
+		estado = _estado;
 		ip = _ip;
 		puerto = _puerto;
 		ip_database = _ip_database;
 		usuario_database = _usuario_database;
 		password_database = _password_database;
-		if (password_database == null)
-			password_database = "";
 	}
 	
 	public int get_Id() 
@@ -59,34 +58,9 @@ final public class Servidores
 	{
 		return password_database;
 	}
-	
-	public void set_Nombre(String _nombre)
-	{
-		nombre = _nombre;
-	}
 
-	public void set_Ip(String _ip)
+	public byte get_Estado() 
 	{
-		ip = _ip;
-	}
-
-	public void set_Puerto(String _puerto)
-	{
-		puerto = _puerto;
-	}
-
-	public void set_Ip_database(String _ip_database) 
-	{
-		ip_database = _ip_database;
-	}
-
-	public void set_Usuario_database(String _usuario_database) 
-	{
-		usuario_database = _usuario_database;
-	}
-
-	public void set_Password_database(String _password_database) 
-	{
-		password_database = _password_database;
+		return estado;
 	}
 }

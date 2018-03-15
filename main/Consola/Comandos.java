@@ -47,17 +47,17 @@ public class Comandos
 	 
 	 protected static void ver_Datos_Memoria(String[] args)
 	 {
+		 if(args.length > 1 && args[1].toLowerCase().equals("limpiar"))
+		 {
+			 Runtime.getRuntime().gc();
+		 }
+		 
 		 int mb = 1024*1024;
 		 Runtime runtime = Runtime.getRuntime();
 		 System.out.println("Memoria utilizada: " + (runtime.totalMemory() - runtime.freeMemory()) / mb + " mb");
 		 System.out.println("Memoria libre: " + runtime.freeMemory() / mb + " mb");
 		 System.out.println("Memoria total: " + runtime.totalMemory() / mb + " mb");
 		 System.out.println("Memoria máxima: " + runtime.maxMemory() / mb + " mb");
-		 
-		 if(args.length > 1 && args[1].toLowerCase().equals("limpiar"))
-		 {
-			 Runtime.getRuntime().gc();
-		 }
 	 }
 	 
 	 protected static void ver_Threads_Activos()

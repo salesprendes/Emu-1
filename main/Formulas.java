@@ -16,8 +16,7 @@ public class Formulas
 			int encode_c1 = current / 16 + k;
 			int encode_c2 = current % 16 + k;
 
-			password_encriptada.append(HASH[(encode_c1 % HASH.length)]);
-			password_encriptada.append(HASH[(encode_c2 % HASH.length)]);
+			password_encriptada.append(HASH[(encode_c1 % HASH.length)]).append(HASH[(encode_c2 % HASH.length)]);
 		}
 		return password_encriptada.toString();
 	}

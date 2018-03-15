@@ -98,7 +98,6 @@ final public class LoginRespuesta implements Runnable
 				if (paquete.equalsIgnoreCase("1.29.1"))
 				{
 					estado_login = EstadosLogin.NOMBRE_CUENTA;
-					System.out.println();
 				}
 				else
 				{
@@ -197,11 +196,6 @@ final public class LoginRespuesta implements Runnable
 				{
 					case 'x':
 						enviar_paquete("AxK" + cuenta.get_Fecha_abono());
-						
-						Mundo.get_Mundo().get_Servidores().values().forEach(S ->
-						{
-							//paquete_salida.append(S.get_Id()).append(';').append(0).append(";110;1");
-						});
 					break;
 					
 					case 'X'://Seleccion del servidor

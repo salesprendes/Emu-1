@@ -44,7 +44,7 @@ final public class Cuentas
 	
 	public long get_Fecha_abono()
 	{
-		return tiempo_abono;
+		return tiempo_abono - System.currentTimeMillis();
 	}
 	
 	public void set_Usuario(String _usuario)
@@ -89,7 +89,7 @@ final public class Cuentas
 	
 	public boolean es_Cuenta_Abonada()
 	{
-		return tiempo_abono >= System.currentTimeMillis();
+		return (tiempo_abono - System.currentTimeMillis()) <= System.currentTimeMillis();
 	}
 
 	public byte get_Comunidad() 

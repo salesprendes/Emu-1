@@ -14,7 +14,7 @@ public class Servidores_DB extends DatabaseManager
 		{
 			while(rs.next())
 			{
-				Mundo.get_Mundo().agregar_Servidor(new Servidores(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+				Mundo.get_Mundo().agregar_Servidor(new Servidores(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getByte(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9)));
 			}
 			cerrar_ResultSet(rs);
 		}
