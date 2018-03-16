@@ -1,6 +1,6 @@
 package main;
 
-import database.DatabaseManager;
+import database.ConexionPool;
 import login.ServerSocketLogin;
 import login.fila.ServerFila;
 import main.consola.Consola;
@@ -14,25 +14,31 @@ final public class Main
 	public static ServerSocketLogin servidor_login;
 	public static ServerFila fila_espera_login;
 	public static Consola comandos_consola;
+	private static ConexionPool database = new ConexionPool();
+    
 
 	public static void main(String[] args)
 	{
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
+		
 		System.out.print("> Conectando a la base de datos: ");
-		if(DatabaseManager.ejecutar_Conexion())
+		database.cargar_Configuracion();
+		
+		if(database.comprobar_conexion(database.get_Data_Source()))
 		{
+			database.inicializar_Database();
 			System.out.println("correcta");
 		}
 		else
 		{
-			System.out.println("incorrecta");
-			System.exit(1);
-			return;
+			System.out.println("correcta");
+			System.exit(0);
 		}
+		
 		estado_emulador = Estados.CARGANDO;
 		Mundo.cargar_Login();
 		estado_emulador = Estados.ENCENDIDO;
-
+		
 		/** Threads **/
 		servidor_login = new ServerSocketLogin(443);
 		fila_espera_login = new ServerFila();
@@ -50,5 +56,10 @@ final public class Main
 			comandos_consola.interrupt();
 		}
 		System.out.println("> El emulador esta cerrado.");
+	}
+	
+	public static ConexionPool get_Database()
+	{
+		return database;
 	}
 }

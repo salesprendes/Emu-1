@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import database.Cuentas_DB;
 import login.Enum.ErroresLogin;
 import login.Enum.EstadosLogin;
 import login.fila.Fila;
@@ -112,9 +111,9 @@ final public class LoginRespuesta implements Runnable
 			case NOMBRE_CUENTA:
 				if(paquete.length() >= 2)
 				{
-					if(Cuentas_DB.get_Existe_Cuenta(paquete.toLowerCase()))
+					if(Main.get_Database().get_Cuentas().get_Existe_Cuenta(paquete.toLowerCase()))
 					{
-						if(!Cuentas_DB.get_Cuenta_Baneada(paquete.toLowerCase()))
+						if(!Main.get_Database().get_Cuentas().get_Cuenta_Baneada(paquete.toLowerCase()))
 						{
 							cuenta_paquete = paquete.toLowerCase();
 							estado_login = EstadosLogin.PASSWORD_CUENTA;
@@ -144,9 +143,9 @@ final public class LoginRespuesta implements Runnable
 			case PASSWORD_CUENTA:
 				if(paquete.substring(0, 2).equalsIgnoreCase("#1"))
 				{
-					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Cuentas_DB.get_Obtener_Cuenta_Campo_String("password", cuenta_paquete))))
+					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Main.get_Database().get_Cuentas().get_Obtener_Cuenta_Campo_String("password", cuenta_paquete))))
 					{
-						cuenta = Cuentas_DB.get_Cuenta(cuenta_paquete);
+						cuenta = Main.get_Database().get_Cuentas().get_Cuenta(cuenta_paquete);
 						
 						/** puntero que extrae la dirección de memoria del hashmap **/
 						Cuentas _cuenta = Mundo.get_Mundo().get_Cuentas().get(cuenta.get_Id());

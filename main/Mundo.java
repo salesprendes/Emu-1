@@ -3,7 +3,6 @@ package main;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import database.Servidores_DB;
 import objetos.Cuentas;
 
 final public class Mundo
@@ -14,7 +13,7 @@ final public class Mundo
 	public static void cargar_Login()
 	{
 		System.out.print("> Cargando servidores: ");
-		Servidores_DB.cargar_Todos_Servidores();
+		Main.get_Database().get_Servidores().cargar_Todos_Servidores();
 		System.out.println("ok");
 	}
 	

@@ -3,11 +3,18 @@ package database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import objetos.Servidores;
 
 public class Servidores_DB extends DatabaseManager
 {
-	public static void cargar_Todos_Servidores()
+	public Servidores_DB(HikariDataSource source) 
+	{
+        super(source);
+    }
+	
+	public void cargar_Todos_Servidores()
 	{
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT * FROM servidores;"))
 		{

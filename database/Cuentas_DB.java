@@ -6,14 +6,21 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import objetos.Cuentas;
 import objetos.Servidores;
 
 public class Cuentas_DB extends DatabaseManager
 {
+	public Cuentas_DB(HikariDataSource source) 
+	{
+		super(source);
+	}
+	
 	final static SimpleDateFormat formato_fecha = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"); 
 	
-	public static Cuentas get_Cuenta(final String nombre_usuario)
+	public Cuentas get_Cuenta(final String nombre_usuario)
 	{
 		Cuentas cuenta = null;
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
@@ -26,7 +33,7 @@ public class Cuentas_DB extends DatabaseManager
 		return cuenta;
 	}
 	
-	public static String get_Obtener_Cuenta_Campo_String(final String campo, final String nombre_usuario)
+	public String get_Obtener_Cuenta_Campo_String(final String campo, final String nombre_usuario)
 	{
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT " + campo + " FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
 		{
@@ -39,7 +46,7 @@ public class Cuentas_DB extends DatabaseManager
 		return null;
 	}
 	
-	public static int get_Contar_Personajes_Servidor(Cuentas cuenta, Servidores servidor)
+	public int get_Contar_Personajes_Servidor(Cuentas cuenta, Servidores servidor)
 	{
 		int total_personajes_servidor = 0;
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT COUNT(id) FROM personajes WHERE servidor_id = " + servidor.get_Id() + " AND usuario = '" + cuenta.get_Usuario() + "';"))
@@ -52,7 +59,7 @@ public class Cuentas_DB extends DatabaseManager
 		return total_personajes_servidor;
 	}
 	
-	public static boolean get_Existe_Cuenta(final String nombre_usuario)
+	public boolean get_Existe_Cuenta(final String nombre_usuario)
 	{
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT usuario FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
 		{
@@ -64,7 +71,7 @@ public class Cuentas_DB extends DatabaseManager
 		return false;
 	}
 	
-	public static boolean get_Cuenta_Baneada(final String nombre_usuario)
+	public boolean get_Cuenta_Baneada(final String nombre_usuario)
 	{
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT baneado FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
 		{
@@ -77,9 +84,9 @@ public class Cuentas_DB extends DatabaseManager
 		return false;
 	}
 	
-	public static boolean eliminar_Cuenta_Id(final int id)
+	public boolean eliminar_Cuenta_Id(final int id)
 	{
-		try (final PreparedStatement p = database_conexion.prepareStatement("DELETE FROM cuentas WHERE id = " + id + ";"))
+		try (final PreparedStatement p = database_conexion.getConnection().prepareStatement("DELETE FROM cuentas WHERE id = " + id + ";"))
 		{
 			p.executeUpdate();
 			cerrar_PreparedStatement(p);
