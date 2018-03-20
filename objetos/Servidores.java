@@ -8,7 +8,7 @@ final public class Servidores
 	final private int id;
 	final private byte comunidad, estado;
 	final private String nombre, ip, puerto, ip_database, usuario_database, password_database;
-	private final static ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
+	private static final  ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	
 	public Servidores(int _id, String _nombre, byte _comunidad, byte _estado, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
 	{

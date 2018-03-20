@@ -201,6 +201,10 @@ final public class LoginRespuesta implements Runnable
 						
 					break;
 					
+					case 'F':
+						enviar_paquete("AF" + Main.get_Database().get_Cuentas().get_Personaje_Servidores(paquete.substring(2)));
+					break;
+					
 					default:
 						enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 						cerrar_Conexion();

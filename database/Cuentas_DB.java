@@ -1,6 +1,5 @@
 package database;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -26,7 +25,7 @@ public class Cuentas_DB extends DatabaseManager
 		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';"))
 		{
 			rs.next();
-			cuenta = new Cuentas(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), formato_fecha.parse(rs.getString(5)).getTime(), rs.getByte(6), rs.getBoolean(7));
+			cuenta = new Cuentas(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getByte(5), formato_fecha.parse(rs.getString(6)).getTime(), rs.getByte(7), rs.getBoolean(8));
 			cerrar_ResultSet(rs);
 		}
 		catch (final SQLException | ParseException e){} 
@@ -84,15 +83,18 @@ public class Cuentas_DB extends DatabaseManager
 		return false;
 	}
 	
-	public boolean eliminar_Cuenta_Id(final int id)
+	public String get_Personaje_Servidores(final String nombre)
 	{
-		try (final PreparedStatement p = database_conexion.getConnection().prepareStatement("DELETE FROM cuentas WHERE id = " + id + ";"))
+		StringBuilder paquete = new StringBuilder();
+		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT servidor_id, c.id from dofus_global.cuentas c JOIN dofus_servidor.personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;"))
 		{
-			p.executeUpdate();
-			cerrar_PreparedStatement(p);
-			return true;
+			while(rs.next())
+			{
+				paquete.append(rs.getString(1)).append(",").append(rs.getString(2)).append(";");
+			}
+			cerrar_ResultSet(rs);
 		}
 		catch (final SQLException e){}
-		return false;
+		return paquete.toString();
 	}
 }

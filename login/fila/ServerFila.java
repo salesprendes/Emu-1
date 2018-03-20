@@ -42,7 +42,7 @@ final public class ServerFila extends Thread implements Runnable
 		final StringBuilder paquete = new StringBuilder("Ad").append(cuenta.get_Apodo()).append((char)0);
 		paquete.append("Ac").append(cuenta.get_Comunidad()).append((char)0);
 		paquete.append(Servidores.get_Obtener_Servidores()).append((char)0);
-		paquete.append("AlK").append(1).append((char)0);
+		paquete.append("AlK").append(cuenta.get_Rango_cuenta() > 0 ? 1 : 0).append((char)0);
 		paquete.append("AQ").append("Ninguna").append((char)0);;
 		return paquete.toString();
 	}
