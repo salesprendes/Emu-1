@@ -27,6 +27,34 @@ INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', 3, '2018-03-09 19:43:16',
 INSERT INTO `cuentas` VALUES (4, 'vip', '1', '1', 3, '2018-03-31 20:02:24', 2, 0);
 
 -- ----------------------------
+-- Table structure for personajes
+-- ----------------------------
+DROP TABLE IF EXISTS `personajes`;
+CREATE TABLE `personajes`  (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(25) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `color_1` int(11) NOT NULL DEFAULT -1,
+  `color_2` int(11) NOT NULL DEFAULT -1,
+  `color_3` int(11) NOT NULL DEFAULT -1,
+  `raza_id` tinyint(2) NOT NULL COMMENT 'raza vinculado a raza',
+  `cuenta_id` int(4) NOT NULL COMMENT 'cuenta referencia a cuentas',
+  `servidor_id` int(4) NOT NULL,
+  PRIMARY KEY (`id`, `nombre`) USING BTREE,
+  INDEX `Referencia_cuenta`(`cuenta_id`) USING BTREE,
+  INDEX `Referencia_raza`(`raza_id`) USING BTREE,
+  INDEX `Referencia_servidor`(`servidor_id`) USING BTREE,
+  CONSTRAINT `Referencia_cuenta` FOREIGN KEY (`cuenta_id`) REFERENCES `cuentas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Referencia_raza` FOREIGN KEY (`raza_id`) REFERENCES `razas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Referencia_servidor` FOREIGN KEY (`servidor_id`) REFERENCES `servidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of personajes
+-- ----------------------------
+INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', -1, -1, -1, 1, 1, 601);
+INSERT INTO `personajes` VALUES (2, 'test', -1, -1, -1, 1, 1, 602);
+
+-- ----------------------------
 -- Table structure for razas
 -- ----------------------------
 DROP TABLE IF EXISTS `razas`;

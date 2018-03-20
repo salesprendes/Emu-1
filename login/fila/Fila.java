@@ -55,6 +55,21 @@ final public class Fila
 		}
 	}
 	
+	public void set_eliminar_Cuenta(Cuentas cuenta)
+	{
+		bloqueo.lock();
+		fila.forEach(f -> 
+		{
+			if(f.get_Cuenta().equals(cuenta))
+			{
+				fila.remove(f);
+				System.out.println(f.get_Cuenta().get_Usuario() + " eliminado papa");
+			}
+		});
+		actualizar_Nuevas_Posiciones();
+		bloqueo.unlock();
+	}
+	
 	public Cuentas eliminar_Cuenta()
 	{
 		bloqueo.lock();
@@ -114,18 +129,10 @@ final public class Fila
 	public void actualizar_Nuevas_Posiciones()
 	{
 		bloqueo.lock();
-		fila.forEach(f -> 
+		fila.forEach(f ->
 		{
-			try
-			{
-				f.set_Posicion(f.get_Posicion() - 1);
-				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
-				condicion.await(3000, TimeUnit.MILLISECONDS);
-			}
-			catch (InterruptedException e) 
-			{
-				f.get_Cuenta().get_Login_respuesta().cerrar_Conexion();
-			}
+			f.set_Posicion(f.get_Posicion() - 1);
+			f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
 		});
 		bloqueo.unlock();
 	}

@@ -86,7 +86,7 @@ public class Cuentas_DB extends DatabaseManager
 	public String get_Personaje_Servidores(final String nombre)
 	{
 		StringBuilder paquete = new StringBuilder();
-		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT servidor_id, c.id from dofus_global.cuentas c JOIN dofus_servidor.personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;"))
+		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT servidor_id, c.id from cuentas c JOIN personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;"))
 		{
 			while(rs.next())
 			{

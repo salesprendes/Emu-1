@@ -213,7 +213,7 @@ final public class LoginRespuesta implements Runnable
 		}
 	}
 
-	public synchronized void cerrar_Conexion()
+	public void cerrar_Conexion()
 	{
 		try
 		{
@@ -225,6 +225,10 @@ final public class LoginRespuesta implements Runnable
 			if(cuenta != null)
 			{
 				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
+				if(cuenta.get_Fila_espera())
+				{
+					fila.set_eliminar_Cuenta(cuenta);
+				}
 			}
 			inputStreamReader.close();
 			outputStream.close();
@@ -242,7 +246,7 @@ final public class LoginRespuesta implements Runnable
 	
 	public void enviar_paquete(String paquete)
 	{
-		if (outputStream != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
+		if (outputStream != null && socket != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
 		{
 			try 
 			{

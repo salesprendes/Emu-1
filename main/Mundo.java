@@ -7,7 +7,7 @@ import objetos.Cuentas;
 
 final public class Mundo
 {
-	private final static Mundo mundo = new Mundo();//crea una nueva instancia
+	private final static Mundo mundo = new Mundo();
 	private final ConcurrentHashMap<Integer, Cuentas> cuentas = new ConcurrentHashMap<Integer, Cuentas>();
 	
 	public static void cargar_Login()
