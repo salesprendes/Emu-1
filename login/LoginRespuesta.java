@@ -21,9 +21,9 @@ import objetos.Cuentas;
 final public class LoginRespuesta implements Runnable
 {
 	private Socket socket;
-	protected BufferedReader inputStreamReader;
-	protected PrintWriter outputStream;
-	protected Cuentas cuenta;
+	private BufferedReader inputStreamReader;
+	private PrintWriter outputStream;
+	private Cuentas cuenta;
 	private String hash_key, cuenta_paquete;
 	private ExecutorService ejecutor;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
@@ -45,7 +45,7 @@ final public class LoginRespuesta implements Runnable
 		}
 		finally
 		{
-			if(cuenta != null)//si la cuenta no esta nula
+			if(cuenta != null)
 			{
 				cuenta.set_Login_respuesta(null);
 			}
@@ -152,7 +152,6 @@ final public class LoginRespuesta implements Runnable
 
 						if(_cuenta == null)//Si el puntero es nulo no esta conectado
 						{
-							
 							Mundo.get_Mundo().agregar_Cuenta(cuenta);
 							cuenta.set_Login_respuesta(this);
 							estado_login = EstadosLogin.FILA_ESPERA;
@@ -229,10 +228,10 @@ final public class LoginRespuesta implements Runnable
 			}
 			inputStreamReader.close();
 			outputStream.close();
-			ejecutor.shutdown();
 			hash_key = null;
 			estado_login = EstadosLogin.VERSION;
 			cuenta = null;
+			ejecutor.shutdown();
 		}
 		catch (final IOException e)
 		{

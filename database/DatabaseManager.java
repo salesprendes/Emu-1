@@ -1,6 +1,5 @@
 package database;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,11 +27,5 @@ public class DatabaseManager
 	{
 		rs.getStatement().close();
 		rs.close();
-	}
-
-	public static void cerrar_PreparedStatement(PreparedStatement p) throws SQLException
-	{
-		p.clearParameters();
-		p.close();
 	}
 }

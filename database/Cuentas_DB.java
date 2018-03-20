@@ -95,6 +95,6 @@ public class Cuentas_DB extends DatabaseManager
 			cerrar_ResultSet(rs);
 		}
 		catch (final SQLException e){}
-		return paquete.toString();
+		return paquete.toString().isEmpty() ? "null" : paquete.toString();
 	}
 }

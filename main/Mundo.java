@@ -8,7 +8,6 @@ import objetos.Cuentas;
 final public class Mundo
 {
 	private final static Mundo mundo = new Mundo();//crea una nueva instancia
-	public static final String caracteres_prohibidos[] = {"&", "é", "\"", "'", "(", "-", "è", "_", "ç", "à", ")", "=", "~", "#", "{", "[", "|", "`", "^", "@", "]", "}", "°", "+", "^", "$", "ù", "*", ",", ";", ":", "!", "<", ">", "¨", "£", "%", "µ", "?", ".", "/", "§", "\n"};
 	private final ConcurrentHashMap<Integer, Cuentas> cuentas = new ConcurrentHashMap<Integer, Cuentas>();
 	
 	public static void cargar_Login()

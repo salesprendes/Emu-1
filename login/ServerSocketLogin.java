@@ -27,7 +27,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		}
     }
 	
-	public void run() 
+	public void run()
 	{
 		while(Main.estado_emulador == Estados.ENCENDIDO && !server_socket.isClosed() && !isInterrupted())
 		{
@@ -78,5 +78,6 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		int id = clientes.indexOf(_loginRespuesta);
 		clientes.get(id).cerrar_Conexion();
 		clientes.remove(id);
+		System.gc();
 	}
 }
