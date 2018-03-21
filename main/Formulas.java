@@ -25,11 +25,11 @@ public class Formulas
 	public static String generar_Key()
 	{
 		Random random = new Random();
-		String alphabet = "abcdefghijklmnopqrstuvwxyz";
+		String alfabeto = "abcdefghijklmnopqrstuvwxyz";
 		
 		StringBuilder hashKey = new StringBuilder();
 		for (int i = 0; i < 32; i++)
-			hashKey.append(alphabet.charAt(random.nextInt(alphabet.length())));
+			hashKey.append(alfabeto.charAt(random.nextInt(alfabeto.length())));
 		return hashKey.toString();
 	}
 }

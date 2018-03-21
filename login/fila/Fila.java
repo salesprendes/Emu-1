@@ -60,7 +60,7 @@ final public class Fila
 		bloqueo.lock();
 		fila.forEach(f -> 
 		{
-			if(f.get_Cuenta().equals(cuenta))
+			if(f.get_Cuenta() == cuenta)
 			{
 				fila.remove(f);
 			}

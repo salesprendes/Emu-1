@@ -71,11 +71,12 @@ final public class Servidores
 	
 	public static String get_Obtener_Servidores()
 	{
-        final StringBuilder sb = new StringBuilder("AH");
-        servidores.values().stream().filter(server -> server != null).forEach(servidor ->
+        final StringBuilder paquete_servidores = new StringBuilder("AH");
+        servidores.values().forEach(servidor ->
         {
-        	sb.append(sb.length() > 2 ? "|" : "").append(servidor.get_Id()).append(";").append(servidor.get_Estado()).append(";110;1");
+        	paquete_servidores.append(paquete_servidores.length() > 2 ? "|" : "");
+        	paquete_servidores.append(servidor.get_Id()).append(";").append(servidor.get_Estado()).append(";110;1");
         });
-        return sb.toString();
+        return paquete_servidores.toString();
     }
 }

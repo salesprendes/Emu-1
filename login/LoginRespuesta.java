@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,14 +47,20 @@ final public class LoginRespuesta implements Runnable
 		{
 			if(cuenta != null)
 			{
+				Main.servidor_login.get_Clientes().remove(this);
 				cuenta.set_Login_respuesta(null);
+				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
+				if(cuenta.get_Fila_espera())
+				{
+					fila.set_eliminar_Cuenta(cuenta);
+				}
 			}
 		}
 	}
 
 	public void run()
 	{
-		final char charCur[] = new char[1];
+		final char[] buffer = new char[1];
 		final StringBuilder paquete = new StringBuilder();
 
 		hash_key = Formulas.generar_Key();
@@ -61,11 +68,11 @@ final public class LoginRespuesta implements Runnable
 		paquete.setLength(0);
 		try
 		{
-			while (inputStreamReader.read(charCur, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
+			while (inputStreamReader.read(buffer, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
 			{
-				if (charCur[0] != 0 && charCur[0] != '\n' && charCur[0] != '\r') 
+				if (buffer[0] != (char)0 && buffer[0] != '\n' && buffer[0] != '\r')
 				{
-					paquete.append(charCur[0]);
+					paquete.append(buffer[0]);
 				}
 				else if (!paquete.toString().isEmpty())
 				{
@@ -84,10 +91,7 @@ final public class LoginRespuesta implements Runnable
 		}
 		finally
 		{
-			if(cuenta != null)
-			{
-				cerrar_Conexion();
-			}
+			cerrar_Conexion();
 		}
 	}
 
@@ -183,19 +187,16 @@ final public class LoginRespuesta implements Runnable
 			break;
 
 			case FILA_ESPERA:
-				if(!cuenta.get_Fila_espera())
+				if(cuenta.get_Apodo().isEmpty() && !cuenta.esta_Creando_apodo() && !cuenta.get_Fila_espera())
 				{
-					if(cuenta.get_Apodo().isEmpty())
-					{
-						enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
-						cuenta.set_Creando_apodo(true);
-						estado_login = EstadosLogin.CREACION_APODO;
-					}
-					else
-					{
-						cuenta.set_Fila_espera(true);
-						fila.agregar_Cuenta(cuenta);
-					}
+					enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
+					cuenta.set_Creando_apodo(true);
+					estado_login = EstadosLogin.CREACION_APODO;
+				}
+				else if(!cuenta.get_Fila_espera())
+				{
+					cuenta.set_Fila_espera(true);
+					fila.agregar_Cuenta(cuenta);
 				}
 			break;
 
@@ -288,11 +289,11 @@ final public class LoginRespuesta implements Runnable
 	
 	public void enviar_paquete(String paquete)
 	{
-		if (outputStream != null && socket != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
+		if (outputStream != null && !socket.isClosed() && !paquete.isEmpty() && !paquete.equals("" + (char)0))
 		{
 			try 
 			{
-				paquete = new String(paquete.getBytes("UTF8"));
+				paquete = new String(paquete.getBytes("UTF-8"));
 				outputStream.print(paquete + (char)0);
 				outputStream.flush();
 				if(Main.modo_debug)
@@ -300,9 +301,9 @@ final public class LoginRespuesta implements Runnable
 					System.out.println("Enviado >> " + paquete);
 				}
 			} 
-			catch (Exception e) 
+			catch (final UnsupportedEncodingException e) 
 			{
-				System.out.println("> Error al convertir el paquete: " + paquete);
+				System.out.println("> Error al convertir el paquete a UTF-8: " + paquete);
 				return;
 			}
 		}
