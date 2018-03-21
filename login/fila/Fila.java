@@ -36,7 +36,7 @@ final public class Fila
 				nodo = new NodoFila(cuenta, posicion);
 				fila.add(nodo);
 				actualizar_Posiciones();
-				fila.wait(3000);
+				fila.wait(5000);
 				fila.notify();
 			}
 			catch (InterruptedException e) 
@@ -83,7 +83,7 @@ final public class Fila
 				{
 					total_no_abonados--;
 				}
-				fila.wait(3000);
+				fila.wait(5000);
 			}
 			catch (InterruptedException e) 
 			{
