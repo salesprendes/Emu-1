@@ -38,7 +38,7 @@ final public class LoginRespuesta implements Runnable
 			outputStream = new PrintWriter(socket.getOutputStream());
 			ejecutor = Executors.newCachedThreadPool();
 			ejecutor.submit(this);
-		} 
+		}
 		catch (final IOException e) 
 		{
 			cerrar_Conexion();
@@ -85,7 +85,10 @@ final public class LoginRespuesta implements Runnable
 		}
 		finally
 		{
-			cerrar_Conexion();
+			if(cuenta != null)
+			{
+				cerrar_Conexion();
+			}
 		}
 	}
 
@@ -101,7 +104,6 @@ final public class LoginRespuesta implements Runnable
 				else
 				{
 					enviar_paquete(ErroresLogin.VERSION_INCORRECTA.toString());
-					enviar_paquete("ATE");
 					cerrar_Conexion();
 					System.out.println("> version incorrecta de la ip: " + socket.getInetAddress().getHostAddress());
 					return;
@@ -184,8 +186,17 @@ final public class LoginRespuesta implements Runnable
 			case FILA_ESPERA:
 				if(!cuenta.get_Fila_espera())
 				{
-					cuenta.set_Fila_espera(true);
-					fila.agregar_Cuenta(cuenta);
+					if(cuenta.get_Apodo().isEmpty())
+					{
+						enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
+						cuenta.set_Creando_apodo(true);
+						estado_login = EstadosLogin.CREACION_APODO;
+					}
+					else
+					{
+						cuenta.set_Fila_espera(true);
+						fila.agregar_Cuenta(cuenta);
+					}
 				}
 			break;
 
@@ -208,6 +219,38 @@ final public class LoginRespuesta implements Runnable
 						enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 						cerrar_Conexion();
 					break;
+				}
+			break;
+			
+			case CREACION_APODO:
+				if(cuenta.get_Apodo().isEmpty() && cuenta.esta_Creando_apodo())
+				{
+					if(!paquete.toLowerCase().equals(cuenta.get_Usuario().toLowerCase()))
+					{
+						if(paquete.matches("[A-Za-z0-9.@.-]+") && !Main.get_Database().get_Cuentas().get_Apodo_Existe(paquete))
+						{
+							cuenta.set_Apodo(paquete);
+							cuenta.set_Creando_apodo(false);
+							cuenta.set_Fila_espera(true);
+							fila.agregar_Cuenta(cuenta);
+							estado_login = EstadosLogin.FILA_ESPERA;
+						}
+						else
+						{
+							enviar_paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
+							return;
+						}
+					}
+					else
+					{
+						enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
+						return;
+					}
+				}
+				else
+				{
+					enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
+					cerrar_Conexion();
 				}
 			break;
 		}
@@ -246,7 +289,7 @@ final public class LoginRespuesta implements Runnable
 	
 	public void enviar_paquete(String paquete)
 	{
-		if (outputStream != null && socket != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
+		if (outputStream != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
 		{
 			try 
 			{

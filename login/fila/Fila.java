@@ -63,7 +63,6 @@ final public class Fila
 			if(f.get_Cuenta().equals(cuenta))
 			{
 				fila.remove(f);
-				System.out.println(f.get_Cuenta().get_Usuario() + " eliminado papa");
 			}
 		});
 		actualizar_Nuevas_Posiciones();

@@ -83,6 +83,18 @@ public class Cuentas_DB extends DatabaseManager
 		return false;
 	}
 	
+	public boolean get_Apodo_Existe(final String apodo)
+	{
+		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT * FROM cuentas WHERE apodo = '" + apodo + "';"))
+		{
+			boolean existe = rs.next();
+			cerrar_ResultSet(rs);
+			return existe;
+		}
+		catch (final SQLException e){}
+		return false;
+	}
+	
 	public String get_Personaje_Servidores(final String nombre)
 	{
 		StringBuilder paquete = new StringBuilder();

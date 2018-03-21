@@ -5,10 +5,11 @@ import login.LoginRespuesta;
 final public class Cuentas 
 {
 	final private int id;
-	private final String usuario, password, apodo;
+	private final String usuario, password;
+	private String apodo;
 	private long tiempo_abono;
 	private LoginRespuesta login_respuesta = null;
-	private boolean cuenta_baneada = false, fila_espera;
+	private boolean cuenta_baneada = false, fila_espera = false, creando_apodo = false;
 	private final byte comunidad, rango_cuenta;
 	
 	public Cuentas(int _id, String _usuario, String _password, String _apodo, byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
@@ -36,11 +37,6 @@ final public class Cuentas
 	public String get_Password()
 	{
 		return password;
-	}
-	
-	public String get_Apodo()
-	{
-		return apodo;
 	}
 	
 	public long get_Fecha_abono()
@@ -81,6 +77,16 @@ final public class Cuentas
 		return login_respuesta;
 	}
 
+	public String get_Apodo() 
+	{
+		return apodo;
+	}
+
+	public void set_Apodo(String _apodo) 
+	{
+		apodo = _apodo;
+	}
+
 	public void set_Tiempo_Abono(long _tiempo_abono)
 	{
 		tiempo_abono = _tiempo_abono;
@@ -104,5 +110,15 @@ final public class Cuentas
 	public void set_Fila_espera(boolean _fila_espera) 
 	{
 		fila_espera = _fila_espera;
+	}
+
+	public boolean esta_Creando_apodo()
+	{
+		return creando_apodo;
+	}
+
+	public void set_Creando_apodo(boolean _creando_apodo) 
+	{
+		creando_apodo = _creando_apodo;
 	}
 }
