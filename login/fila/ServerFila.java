@@ -14,21 +14,18 @@ final public class ServerFila extends Thread implements Runnable
 	public ServerFila() 
 	{
 		setName("Fila-Login");
+		fila = new Fila();
 		start();
 	}
 	
 	public void run()
 	{
-		fila = new Fila();
 		while(Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted())
 		{
-			cuenta = null;
-			try
+			synchronized(fila)
 			{
+				cuenta = null;
 				cuenta = fila.eliminar_Cuenta();
-			}
-			finally
-			{
 				cuenta.get_Login_respuesta().enviar_paquete(paquete_salida_fila());
 				cuenta.get_Login_respuesta().set_Estado_login(EstadosLogin.LISTA_SERVIDORES);
 				cuenta.set_Fila_espera(false);
