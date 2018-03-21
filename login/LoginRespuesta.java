@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,7 +56,7 @@ final public class LoginRespuesta implements Runnable
 		final char charCur[] = new char[1];
 		final StringBuilder paquete = new StringBuilder();
 
-		hash_key = generar_Key();
+		hash_key = Formulas.generar_Key();
 		enviar_paquete(paquete.append("HC").append(hash_key).toString());
 		paquete.setLength(0);
 		try
@@ -232,8 +231,8 @@ final public class LoginRespuesta implements Runnable
 							cuenta.set_Apodo(paquete);
 							cuenta.set_Creando_apodo(false);
 							cuenta.set_Fila_espera(true);
-							fila.agregar_Cuenta(cuenta);
 							estado_login = EstadosLogin.FILA_ESPERA;
+							fila.agregar_Cuenta(cuenta);
 						}
 						else
 						{
@@ -276,20 +275,20 @@ final public class LoginRespuesta implements Runnable
 			inputStreamReader.close();
 			outputStream.close();
 			hash_key = null;
-			estado_login = EstadosLogin.VERSION;
+			estado_login = null;
 			cuenta = null;
 			ejecutor.shutdown();
 		}
 		catch (final IOException e)
 		{
 			System.out.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa:" + e.getCause());
-			e.printStackTrace();
+			return;
 		}
 	}
 	
 	public void enviar_paquete(String paquete)
 	{
-		if (outputStream != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
+		if (outputStream != null && socket != null && !paquete.isEmpty() && !paquete.equals(""+(char)0))
 		{
 			try 
 			{
@@ -307,22 +306,6 @@ final public class LoginRespuesta implements Runnable
 				return;
 			}
 		}
-	}
-	
-	private String generar_Key()
-	{
-		Random random = new Random();
-		String alphabet = "abcdefghijklmnopqrstuvwxyz";
-		
-		StringBuilder hashKey = new StringBuilder();
-		for (int i = 0; i < 32; i++)
-			hashKey.append(alphabet.charAt(random.nextInt(alphabet.length())));
-		return hashKey.toString();
-	}
-
-	public PrintWriter get_OutputStream()
-	{
-		return outputStream;
 	}
 	
 	public void set_Estado_login(EstadosLogin _estado_login)

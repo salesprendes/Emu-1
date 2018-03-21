@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Random;
+
 public class Formulas 
 {
 	static char[] HASH = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
@@ -18,5 +20,16 @@ public class Formulas
 			password_encriptada.append(HASH[(encode_c2 % HASH.length)]);
 		}
 		return password_encriptada.toString();
+	}
+	
+	public static String generar_Key()
+	{
+		Random random = new Random();
+		String alphabet = "abcdefghijklmnopqrstuvwxyz";
+		
+		StringBuilder hashKey = new StringBuilder();
+		for (int i = 0; i < 32; i++)
+			hashKey.append(alphabet.charAt(random.nextInt(alphabet.length())));
+		return hashKey.toString();
 	}
 }
