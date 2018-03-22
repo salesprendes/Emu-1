@@ -2,6 +2,7 @@ package main;
 
 import database.ConexionPool;
 import login.ServerSocketLogin;
+import login.comunicador.ServerSocketComunicador;
 import login.fila.ServerFila;
 import main.consola.Consola;
 
@@ -12,6 +13,7 @@ final public class Main
 	
 	/** THREADS **/
 	public static ServerSocketLogin servidor_login;
+	public static ServerSocketComunicador servidor_comunicador;
 	public static ServerFila fila_espera_login;
 	public static Consola comandos_consola;
 	private static ConexionPool database = new ConexionPool();
@@ -31,7 +33,7 @@ final public class Main
 		}
 		else
 		{
-			System.out.println("correcta");
+			System.out.println("incorrecta");
 			System.exit(0);
 		}
 		
@@ -41,6 +43,7 @@ final public class Main
 		
 		/** Threads **/
 		servidor_login = new ServerSocketLogin(443);
+		servidor_comunicador = new ServerSocketComunicador(489);
 		fila_espera_login = new ServerFila();
 		comandos_consola = new Consola();
 	}
@@ -51,6 +54,7 @@ final public class Main
 		if (estado_emulador == Estados.ENCENDIDO)
 		{
 			estado_emulador = Estados.APAGADO;
+			servidor_comunicador.detener_Server_Socket();
 			servidor_login.detener_Server_Socket();
 			fila_espera_login.detener_Fila();
 			comandos_consola.interrupt();

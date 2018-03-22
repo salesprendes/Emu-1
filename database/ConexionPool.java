@@ -21,7 +21,7 @@ public class ConexionPool
 	{
 		HikariConfig config = new HikariConfig();
 		config.setJdbcUrl("jdbc:mysql://127.0.0.1/dofus_global?user=root&password=&useSSL=false");
-		config.setMaximumPoolSize(16);
+		config.setMaximumPoolSize(10);
 		config.setPoolName("Pool-Hikari");
 		dataSource = new HikariDataSource(config);
 	}
