@@ -37,10 +37,16 @@ final public class Fila
 				fila.add(nodo);
 				actualizar_Posiciones();
 				fila.wait(5000);
-				fila.notify();
+
+				if(fila.isEmpty())
+					fila.notify();
 			}
-			catch (InterruptedException e) 
+			catch (InterruptedException e)
 			{
+				/** 
+				 * si la cuenta es deconectada y esta en tiempo de espera
+				 * entrara en InterruptedException y lo desconectara
+				 */
 				fila.remove(nodo);
 				cuenta.get_Login_respuesta().cerrar_Conexion();
 			}

@@ -17,7 +17,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 	{
 		try
 		{
-			setName("ServerSocket");
+			setName("ServerSocket-Login");
 			server_socket = new ServerSocket(_puerto);
 			start();
 			System.out.println("> Login del servidor iniciado en el puerto: " + 443);

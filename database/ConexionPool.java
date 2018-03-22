@@ -20,9 +20,16 @@ public class ConexionPool
 	public void cargar_Configuracion() 
 	{
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl("jdbc:mysql://127.0.0.1/dofus_global?user=root&password=&useSSL=false");
+		config.setJdbcUrl("jdbc:mysql://127.0.0.1/dofus_global");
+		config.setUsername("root");
 		config.setMaximumPoolSize(10);
+		config.setMinimumIdle(2);
 		config.setPoolName("Pool-Hikari");
+		config.addDataSourceProperty("useSSL", false);
+		config.addDataSourceProperty("cachePrepStmts", true);
+		config.addDataSourceProperty("prepStmtCacheSize", 256);
+		config.addDataSourceProperty("prepStmtCacheSqlLimit", 1024);
+		config.addDataSourceProperty("useServerPrepStmts", true);
 		dataSource = new HikariDataSource(config);
 	}
 	

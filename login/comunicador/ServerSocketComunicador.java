@@ -14,6 +14,7 @@ final public class ServerSocketComunicador extends Thread implements Runnable
 	{
 		try
 		{
+			setName("ServerSocket-Comunicador");
 			server_socket = new ServerSocket(puerto);
 			new Thread(this);
 			start();
