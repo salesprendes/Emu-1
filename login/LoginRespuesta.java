@@ -282,7 +282,7 @@ final public class LoginRespuesta implements Runnable
 		}
 		catch (final IOException e)
 		{
-			System.out.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa:" + e.getCause());
+			System.out.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
 			return;
 		}
 	}

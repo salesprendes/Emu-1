@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import main.Estados;
 import main.Main;
+import main.Mundo;
 import objetos.Servidores;
 
 final public class ComunicadorRespuesta implements Runnable
@@ -33,7 +34,7 @@ final public class ComunicadorRespuesta implements Runnable
 		}
 		catch (final IOException e)
 		{
-			
+			cerrar_Conexion_Comunicador();
 		}
 	}
 
@@ -61,7 +62,14 @@ final public class ComunicadorRespuesta implements Runnable
 				}
 			}
 		}
-		catch (IOException e){}
+		catch (final IOException e)
+		{
+			cerrar_Conexion_Comunicador();
+		}
+		finally 
+		{
+			cerrar_Conexion_Comunicador();
+		}
 	}
 	
 	private void controlador_Paquetes(final String paquete)
@@ -89,6 +97,34 @@ final public class ComunicadorRespuesta implements Runnable
 					}
 				}
 			break;
+		}
+	}
+	
+	private void cerrar_Conexion_Comunicador()
+	{
+		try 
+		{
+			if (socket != null && !socket.isClosed())
+			{
+				socket.close();
+			}
+			inputStreamReader.close();
+			outputStream.close();
+			if (servidor_juego != null)
+			{
+				servidor_juego.set_Estado((byte) 0);
+				Mundo.get_Mundo().get_Cuentas().values().forEach(cuenta ->
+				{
+					//TODO: refresca los servidores
+				});
+				servidor_juego.set_Comunicador_game(null);
+			}
+			ejecutor.shutdown();
+		}
+		catch (IOException e)
+		{
+			System.out.println("Error comunicador: " + e.getCause());
+			return;
 		}
 	}
 }
