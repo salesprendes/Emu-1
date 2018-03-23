@@ -24,6 +24,7 @@ final public class Main
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
 		
 		System.out.print("> Conectando a la base de datos: ");
+		Configuracion.cargar_Configuracion();
 		database.cargar_Configuracion();
 		
 		if(database.comprobar_conexion(database.get_Data_Source()))
@@ -46,6 +47,7 @@ final public class Main
 		servidor_comunicador = new ServerSocketComunicador(489);
 		fila_espera_login = new ServerFila();
 		comandos_consola = new Consola();
+		System.gc();
 	}
 
 	public static void cerrar_Emulador()

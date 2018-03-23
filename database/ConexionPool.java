@@ -5,6 +5,8 @@ import java.sql.Connection;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import main.Configuracion;
+
 public class ConexionPool 
 {
 	private HikariDataSource dataSource;
@@ -20,8 +22,9 @@ public class ConexionPool
 	public void cargar_Configuracion() 
 	{
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl("jdbc:mysql://127.0.0.1/dofus_global");
-		config.setUsername("root");
+		config.setJdbcUrl("jdbc:mysql://" + Configuracion.DATABASE_IP_LOGIN + "/" + Configuracion.DATABASE_NOMBRE_LOGIN);
+		config.setUsername(Configuracion.DATABASE_USUARIO_LOGIN);
+		config.setPassword(Configuracion.DATABASE_PASSWORD_LOGIN);
 		config.setMaximumPoolSize(10);
 		config.setMinimumIdle(2);
 		config.setPoolName("Pool-Hikari");

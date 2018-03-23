@@ -17,6 +17,7 @@ import main.Formulas;
 import main.Main;
 import main.Mundo;
 import objetos.Cuentas;
+import objetos.Servidores;
 
 final public class LoginRespuesta implements Runnable
 {
@@ -50,10 +51,6 @@ final public class LoginRespuesta implements Runnable
 				Main.servidor_login.get_Clientes().remove(this);
 				cuenta.set_Login_respuesta(null);
 				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
-				if(cuenta.get_Fila_espera())
-				{
-					fila.set_eliminar_Cuenta(cuenta);
-				}
 			}
 		}
 	}
@@ -232,8 +229,8 @@ final public class LoginRespuesta implements Runnable
 							cuenta.set_Apodo(paquete);
 							cuenta.set_Creando_apodo(false);
 							cuenta.set_Fila_espera(true);
-							estado_login = EstadosLogin.FILA_ESPERA;
 							fila.agregar_Cuenta(cuenta);
+							estado_login = EstadosLogin.FILA_ESPERA;
 						}
 						else
 						{
@@ -268,10 +265,6 @@ final public class LoginRespuesta implements Runnable
 			if(cuenta != null)
 			{
 				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
-				if(cuenta.get_Fila_espera())
-				{
-					fila.set_eliminar_Cuenta(cuenta);
-				}
 			}
 			inputStreamReader.close();
 			outputStream.close();
@@ -312,5 +305,10 @@ final public class LoginRespuesta implements Runnable
 	public void set_Estado_login(EstadosLogin _estado_login)
 	{
 		estado_login = _estado_login;
+	}
+	
+	public void refrescar_servidores()
+	{
+		enviar_paquete(Servidores.get_Obtener_Servidores());
 	}
 }

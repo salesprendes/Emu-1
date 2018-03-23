@@ -97,6 +97,26 @@ final public class ComunicadorRespuesta implements Runnable
 					}
 				}
 			break;
+			
+			case 'E'://E|estado_letra
+				if(servidor_juego != null)
+				{
+					switch (paquete.charAt(2))
+					{
+						case 'A'://abierto
+							servidor_juego.set_Estado((byte) 1);
+						break;
+	
+						case 'G'://guardando
+							servidor_juego.set_Estado((byte) 2);
+						break;
+	
+						case 'C'://cerrado
+							servidor_juego.set_Estado((byte) 0);
+						break;
+					}
+				}
+			break;
 		}
 	}
 	
@@ -115,7 +135,7 @@ final public class ComunicadorRespuesta implements Runnable
 				servidor_juego.set_Estado((byte) 0);
 				Mundo.get_Mundo().get_Cuentas().values().forEach(cuenta ->
 				{
-					//TODO: refresca los servidores
+					cuenta.get_Login_respuesta().refrescar_servidores();
 				});
 				servidor_juego.set_Comunicador_game(null);
 			}

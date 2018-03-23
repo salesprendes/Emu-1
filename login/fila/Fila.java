@@ -9,66 +9,45 @@ final public class Fila
 	private PriorityQueue<NodoFila> fila;
 	private int total_abonados = 0, total_no_abonados = 0;
 	private NodoFila nodo;
-	
+
 	public Fila()
 	{
 		if(fila == null) 
 		{
-			fila = new PriorityQueue<NodoFila>();
+			fila = new PriorityQueue<NodoFila>(50);
 		}
 	}
-	
+
 	public void agregar_Cuenta(Cuentas cuenta)
 	{
 		synchronized(fila)
 		{
-			try
+			int posicion = fila.size() + 1;
+			if(cuenta.es_Cuenta_Abonada())
 			{
-				int posicion = fila.size() + 1;
-				if(cuenta.es_Cuenta_Abonada())
-				{
-					total_abonados++;
-				}
-				else
-				{
-					total_no_abonados++;
-				}
-				nodo = new NodoFila(cuenta, posicion);
-				fila.add(nodo);
-				actualizar_Posiciones();
-				fila.wait(5000);
-
-				if(fila.isEmpty())
-					fila.notify();
+				total_abonados++;
 			}
-			catch (InterruptedException e)
+			else
 			{
-				/** 
-				 * si la cuenta es deconectada y esta en tiempo de espera
-				 * entrara en InterruptedException y lo desconectara
-				 */
-				fila.remove(nodo);
-				cuenta.get_Login_respuesta().cerrar_Conexion();
+				total_no_abonados++;
 			}
+			if(fila.isEmpty())
+				fila.notify();
+			fila.add(new NodoFila(cuenta, posicion));
+			actualizar_Posiciones();
 		}
 	}
-	
-	public void set_eliminar_Cuenta(Cuentas cuenta)
+
+	public void set_eliminar_Cuenta(NodoFila nodo_cuenta)
 	{
 		synchronized(fila)
 		{
-			fila.forEach(f -> 
-			{
-				if(f.get_Cuenta() == cuenta)
-				{
-					fila.remove(f);
-				}
-			});
+			fila.remove(nodo_cuenta);
 			actualizar_Nuevas_Posiciones();
 		}
 	}
-	
-	public Cuentas eliminar_Cuenta()
+
+	public NodoFila seleccion_Eliminar_Cuenta()
 	{
 		Cuentas cuenta = null;
 		synchronized(fila)
@@ -79,7 +58,7 @@ final public class Fila
 				{
 					fila.wait();
 				}
-				nodo = fila.remove();
+				nodo = fila.peek();
 				cuenta = nodo.get_Cuenta();
 				if(cuenta.es_Cuenta_Abonada())
 				{
@@ -89,51 +68,42 @@ final public class Fila
 				{
 					total_no_abonados--;
 				}
-				fila.wait(5000);
 			}
-			catch (InterruptedException e) 
-			{
-				fila.remove(nodo);
-				cuenta.get_Login_respuesta().cerrar_Conexion();
-			}
+			catch (InterruptedException e){}
 		}
-		return cuenta;
+		return nodo;
 	}
 
-	public String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
+	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
 	{
 		final StringBuilder paquete = new StringBuilder("Af");
 		paquete.append(posicion);
-		synchronized(fila)
+		if(esta_abonado)
 		{
-			if(esta_abonado)
-			{
-				paquete.append("|").append(fila.size());
-			}
+			paquete.append("|").append(fila.size());
 		}
 		return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(-1).toString();
 	}
-	
+
 	private void actualizar_Posiciones()
 	{
-		synchronized(fila)
+		fila.forEach(f -> 
 		{
-			fila.forEach(f -> 
-			{
-				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
-			});
-		}
+			f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+		});
 	}
-	
+
 	public void actualizar_Nuevas_Posiciones()
 	{
-		synchronized(fila)
+		fila.forEach(f ->
 		{
-			fila.forEach(f ->
-			{
-				f.set_Posicion(f.get_Posicion() - 1);
-				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
-			});
-		}
+			f.set_Posicion(f.get_Posicion() - 1);
+			f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+		});
+	}
+	
+	public PriorityQueue<NodoFila> get_Fila()
+	{
+		return fila;
 	}
 }
