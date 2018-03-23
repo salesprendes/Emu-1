@@ -17,6 +17,7 @@ final public class ServerSocketComunicador extends Thread implements Runnable
 			setName("ServerSocket-Comunicador");
 			server_socket = new ServerSocket(puerto);
 			new Thread(this);
+			setDaemon(true);
 			start();
 			System.out.println("> Intercambio del servidor iniciado en el puerto: " + 489);
 		}

@@ -74,7 +74,7 @@ public class Comandos
 		 System.out.println("memoria: permite ver el estado de la memoria del heap Parametro: limpia (invoca el garbage)");
 		 System.out.println("limpiar/clear: limpia la consola");
 		 System.out.println("debug: (on, off) permite activar/desactivar para ver los mensajes debug");
-		 System.out.println("? - ver los comandos"); 
+		 System.out.println("?: permite ver los comandos"); 
 	 }
 	 
 	 protected static Float ver_Uso_Cpu()

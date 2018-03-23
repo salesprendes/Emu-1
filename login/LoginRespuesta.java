@@ -78,7 +78,7 @@ final public class LoginRespuesta implements Runnable
 				{
 					if(Main.modo_debug)
 					{
-						System.out.println("> Recibido: " + paquete);
+						System.out.println("> Recibido-login: " + paquete);
 					}
 					controlador_Paquetes(paquete.toString());
 					paquete.setLength(0);

@@ -3,12 +3,16 @@ package objetos;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import login.comunicador.ComunicadorRespuesta;
+
 final public class Servidores 
 {
 	final private int id;
-	final private byte comunidad, estado;
+	final private byte comunidad;
+	private byte estado;
 	final private String nombre, ip, puerto, ip_database, usuario_database, password_database;
-	private static final  ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
+	private static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
+	private ComunicadorRespuesta comunicador_game = null;
 	
 	public Servidores(int _id, String _nombre, byte _comunidad, byte _estado, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
 	{
@@ -63,15 +67,10 @@ final public class Servidores
 	{
 		return password_database;
 	}
-
-	public byte get_Estado() 
-	{
-		return estado;
-	}
 	
 	public static String get_Obtener_Servidores()
 	{
-        final StringBuilder paquete_servidores = new StringBuilder("AH");
+        final StringBuilder paquete_servidores = new StringBuilder(servidores.size() * 10).append("AH");
         servidores.values().forEach(servidor ->
         {
         	paquete_servidores.append(paquete_servidores.length() > 2 ? "|" : "");
@@ -79,4 +78,29 @@ final public class Servidores
         });
         return paquete_servidores.toString();
     }
+	
+	public static ConcurrentMap<Integer, Servidores> get_Servidores()
+	{
+		return servidores;
+	}
+
+	public ComunicadorRespuesta get_Comunicador_game()
+	{
+		return comunicador_game;
+	}
+
+	public byte get_Estado() 
+	{
+		return estado;
+	}
+
+	public void set_Estado(byte _estado) 
+	{
+		estado = _estado;
+	}
+
+	public void set_Comunicador_game(ComunicadorRespuesta _comunicador_game)
+	{
+		comunicador_game = _comunicador_game;
+	}
 }
