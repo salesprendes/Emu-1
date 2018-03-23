@@ -29,7 +29,7 @@ final public class Main
 		
 		if(database.comprobar_conexion(database.get_Data_Source()))
 		{
-			database.inicializar_Database();
+			database.iniciar_Database();
 			System.out.println("correcta");
 		}
 		else
@@ -39,7 +39,7 @@ final public class Main
 		}
 		
 		estado_emulador = Estados.CARGANDO;
-		Mundo.cargar_Login();
+		cargar_Login();
 		estado_emulador = Estados.ENCENDIDO;
 		
 		/** Threads **/
@@ -47,9 +47,15 @@ final public class Main
 		servidor_comunicador = new ServerSocketComunicador(489);
 		fila_espera_login = new ServerFila();
 		comandos_consola = new Consola();
-		System.gc();
 	}
-
+	
+	public static void cargar_Login()
+	{
+		System.out.print("> Cargando servidores: ");
+		database.get_Servidores().cargar_Todos_Servidores();
+		System.out.println("ok");
+	}
+	
 	public static void cerrar_Emulador()
 	{
 		System.out.println("> El servidor se esta cerrando");

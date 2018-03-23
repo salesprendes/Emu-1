@@ -4,6 +4,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
 import main.Main;
+import objetos.Cuentas;
 
 public class Comandos 
 {
@@ -13,7 +14,6 @@ public class Comandos
 		 
 		 switch(comando_args[0].toLowerCase().trim())
 		 {
-
 		 	case "?":
 		 		lista_Comandos();
 			break;
@@ -38,6 +38,10 @@ public class Comandos
 		 	case "debug":
 		 		opcion_Debug(comando_args);
 		 	break;
+		 	
+		 	case "cuentas":
+		 		ver_Cuentas_Cargadas();
+			break;
 			
 			default:
 				System.out.println("Comando no encontrado");
@@ -58,6 +62,14 @@ public class Comandos
 		 System.out.println("Memoria libre: " + runtime.freeMemory() / mb + " mb");
 		 System.out.println("Memoria total: " + runtime.totalMemory() / mb + " mb");
 		 System.out.println("Memoria máxima: " + runtime.maxMemory() / mb + " mb");
+	 }
+	 
+	 protected static void ver_Cuentas_Cargadas()
+	 {
+		 Cuentas.get_Cuentas_Cargadas().values().forEach(c ->
+		 {
+			 System.out.println(c.get_Usuario() + " su estado es: " + c.get_Login_respuesta().get_Estado_login());
+		 });
 	 }
 	 
 	 protected static void ver_Threads_Activos()

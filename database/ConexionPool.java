@@ -13,7 +13,7 @@ public class ConexionPool
 	private Cuentas_DB cuentas;
 	private Servidores_DB servidores;
 	
-	public void inicializar_Database() 
+	public void iniciar_Database() 
 	{
 		cuentas = new Cuentas_DB(dataSource);
 		servidores = new Servidores_DB(dataSource);

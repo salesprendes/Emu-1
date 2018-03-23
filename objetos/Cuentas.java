@@ -1,5 +1,8 @@
 package objetos;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import login.LoginRespuesta;
 
 final public class Cuentas 
@@ -11,6 +14,7 @@ final public class Cuentas
 	private LoginRespuesta login_respuesta = null;
 	private boolean cuenta_baneada = false, fila_espera = false, creando_apodo = false;
 	private final byte comunidad, rango_cuenta;
+	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_cargadas = new ConcurrentHashMap<Integer, Cuentas>();
 	
 	public Cuentas(int _id, String _usuario, String _password, String _apodo, byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
 	{
@@ -120,5 +124,26 @@ final public class Cuentas
 	public void set_Creando_apodo(boolean _creando_apodo) 
 	{
 		creando_apodo = _creando_apodo;
+	}
+	
+	public static Map<Integer, Cuentas> get_Cuentas_Cargadas()
+	{
+		return cuentas_cargadas;
+	}
+	
+	public static void agregar_Cuenta_Cargada(final Cuentas _cuenta)
+	{
+		if (!cuentas_cargadas.containsKey(_cuenta.get_Id()))
+		{
+			cuentas_cargadas.put(_cuenta.get_Id(), _cuenta);
+		}
+	}
+	
+	public static void eliminar_Cuenta_Cargada(final int id_cuenta)
+	{
+		if (cuentas_cargadas.containsKey(id_cuenta))
+		{
+			cuentas_cargadas.remove(id_cuenta);
+		}
 	}
 }

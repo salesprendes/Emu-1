@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 import main.Estados;
 import main.Main;
-import main.Mundo;
+import objetos.Cuentas;
 import objetos.Servidores;
 
 final public class ComunicadorRespuesta implements Runnable
@@ -133,7 +133,7 @@ final public class ComunicadorRespuesta implements Runnable
 			if (servidor_juego != null)
 			{
 				servidor_juego.set_Estado((byte) 0);
-				Mundo.get_Mundo().get_Cuentas().values().forEach(cuenta ->
+				Cuentas.get_Cuentas_Cargadas().values().forEach(cuenta ->
 				{
 					cuenta.get_Login_respuesta().refrescar_servidores();
 				});

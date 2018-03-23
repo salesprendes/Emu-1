@@ -15,7 +15,6 @@ import login.fila.Fila;
 import main.Estados;
 import main.Formulas;
 import main.Main;
-import main.Mundo;
 import objetos.Cuentas;
 import objetos.Servidores;
 
@@ -50,7 +49,7 @@ final public class LoginRespuesta implements Runnable
 			{
 				Main.servidor_login.get_Clientes().remove(this);
 				cuenta.set_Login_respuesta(null);
-				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
+				Cuentas.get_Cuentas_Cargadas().remove(cuenta.get_Id());
 			}
 		}
 	}
@@ -150,11 +149,11 @@ final public class LoginRespuesta implements Runnable
 						cuenta = Main.get_Database().get_Cuentas().get_Cuenta(cuenta_paquete);
 						
 						/** puntero que extrae la dirección de memoria del hashmap **/
-						Cuentas _cuenta = Mundo.get_Mundo().get_Cuentas().get(cuenta.get_Id());
+						Cuentas _cuenta = Cuentas.get_Cuentas_Cargadas().get(cuenta.get_Id());
 
 						if(_cuenta == null)//Si el puntero es nulo no esta conectado
 						{
-							Mundo.get_Mundo().agregar_Cuenta(cuenta);
+							Cuentas.agregar_Cuenta_Cargada(cuenta);
 							cuenta.set_Login_respuesta(this);
 							estado_login = EstadosLogin.FILA_ESPERA;
 						}
@@ -264,7 +263,7 @@ final public class LoginRespuesta implements Runnable
 			Main.servidor_login.get_Clientes().remove(this);
 			if(cuenta != null)
 			{
-				Mundo.get_Mundo().get_Cuentas().remove(cuenta.get_Id());
+				Cuentas.eliminar_Cuenta_Cargada(cuenta.get_Id());
 			}
 			inputStreamReader.close();
 			outputStream.close();
@@ -300,6 +299,11 @@ final public class LoginRespuesta implements Runnable
 				return;
 			}
 		}
+	}
+	
+	public EstadosLogin get_Estado_login()
+	{
+		return estado_login;
 	}
 	
 	public void set_Estado_login(EstadosLogin _estado_login)
