@@ -128,7 +128,7 @@ public class DatabaseManager
 		}
 	}
 	
-	protected class Ejecucion_Query 
+	protected class Ejecucion_Query
 	{
 		private final Connection conexion;
 		private final ResultSet rs;

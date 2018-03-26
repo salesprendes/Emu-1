@@ -114,7 +114,7 @@ final public class LoginRespuesta implements Runnable
 				{
 					if(Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("usuario", "usuario", paquete.toLowerCase()))
 					{
-						if(!Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("baneado", "usuario", paquete.toLowerCase()))
+						if(!Main.get_Database().get_Cuentas().get_Comprobar_Campo_Cuenta_Booleano("baneado", "usuario", paquete.toLowerCase()))
 						{
 							cuenta_paquete = paquete.toLowerCase();
 							estado_login = EstadosLogin.PASSWORD_CUENTA;

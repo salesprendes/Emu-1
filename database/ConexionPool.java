@@ -5,6 +5,8 @@ import java.sql.Connection;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import database.objetos.Cuentas_DB;
+import database.objetos.Servidores_DB;
 import main.Configuracion;
 
 public class ConexionPool 

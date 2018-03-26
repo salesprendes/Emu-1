@@ -1,10 +1,11 @@
-package database;
+package database.objetos;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+import database.DatabaseManager;
 import objetos.Cuentas;
 import objetos.Servidores;
 
@@ -38,8 +39,11 @@ public class Cuentas_DB extends DatabaseManager
 		{
 			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
-			query.get_Rs().next();
-			String valor = query.get_Rs().getString(1);
+			String valor = null;
+			if(query.get_Rs().next())
+			{
+				valor = query.get_Rs().getString(1);
+			}
 			cerrar(query);
 			return valor;
 		}
@@ -54,8 +58,10 @@ public class Cuentas_DB extends DatabaseManager
 		{
 			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT COUNT(id) FROM personajes WHERE servidor_id = " + servidor.get_Id() + " AND usuario = '" + cuenta.get_Usuario() + "';");
 			
-			query.get_Rs().next();
-			total_personajes_servidor = query.get_Rs().getInt(1);
+			if(query.get_Rs().next())
+			{
+				total_personajes_servidor = query.get_Rs().getInt(1);
+			}
 			cerrar(query);
 		}
 		catch (final SQLException e){}
@@ -76,13 +82,28 @@ public class Cuentas_DB extends DatabaseManager
 		return false;
 	}
 	
+	public boolean get_Comprobar_Campo_Cuenta_Booleano(final String campo, final String campo_condicion, final String nombre_condicion)
+	{
+		try
+		{
+			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE " + campo_condicion + " = '" + nombre_condicion + "';");
+			
+			query.get_Rs().next();
+			boolean comprobacion = query.get_Rs().getBoolean(1);
+			cerrar(query);
+			return comprobacion;
+		}
+		catch (final SQLException e){}
+		return false;
+	}
+	
 	public String get_Paquete_Buscar_Servidores(final String nombre)
 	{
 		StringBuilder paquete = new StringBuilder();
 		try
 		{
 			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT servidor_id, c.id from cuentas c JOIN personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;");
-			
+
 			while(query.get_Rs().next())
 			{
 				paquete.append(query.get_Rs().getString(1)).append(",").append(query.get_Rs().getString(2)).append(";");
