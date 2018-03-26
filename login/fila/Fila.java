@@ -7,14 +7,14 @@ import objetos.Cuentas;
 final public class Fila
 {
 	private PriorityQueue<NodoFila> fila;
-	private int total_abonados = 0, total_no_abonados = 0;
-	private NodoFila nodo;
+	private int total_abonados = 0, total_no_abonados = 0, servidor_id;
 
-	public Fila()
+	public Fila(int _servidor_id, byte _maximos_logins)
 	{
 		if(fila == null) 
 		{
-			fila = new PriorityQueue<NodoFila>(50);
+			fila = new PriorityQueue<NodoFila>(_maximos_logins);
+			servidor_id = _servidor_id;
 		}
 	}
 
@@ -23,6 +23,9 @@ final public class Fila
 		synchronized(fila)
 		{
 			int posicion = fila.size() + 1;
+			if(fila.isEmpty())
+				fila.notify();
+			fila.add(new NodoFila(cuenta, posicion));
 			if(cuenta.es_Cuenta_Abonada())
 			{
 				total_abonados++;
@@ -31,9 +34,6 @@ final public class Fila
 			{
 				total_no_abonados++;
 			}
-			if(fila.isEmpty())
-				fila.notify();
-			fila.add(new NodoFila(cuenta, posicion));
 			actualizar_Posiciones();
 		}
 	}
@@ -43,11 +43,11 @@ final public class Fila
 		synchronized(fila)
 		{
 			fila.remove(nodo_cuenta);
-			actualizar_Nuevas_Posiciones();
+			actualizar_A_Nuevas_Posiciones();
 		}
 	}
 
-	public NodoFila seleccion_Eliminar_Cuenta()
+	public Cuentas eliminar_Cuenta_Fila_Espera()
 	{
 		Cuentas cuenta = null;
 		synchronized(fila)
@@ -57,9 +57,9 @@ final public class Fila
 				if(fila.isEmpty())
 				{
 					fila.wait();
+					
 				}
-				nodo = fila.peek();
-				cuenta = nodo.get_Cuenta();
+				cuenta = fila.remove().get_Cuenta();
 				if(cuenta.es_Cuenta_Abonada())
 				{
 					total_abonados--;
@@ -71,39 +71,44 @@ final public class Fila
 			}
 			catch (InterruptedException e){}
 		}
-		return nodo;
+		return cuenta;
 	}
 
 	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
 	{
 		final StringBuilder paquete = new StringBuilder("Af");
-		paquete.append(posicion);
-		if(esta_abonado)
+		synchronized(fila)
 		{
-			paquete.append("|").append(fila.size());
+			paquete.append(posicion);
+			if(esta_abonado)
+			{
+				paquete.append("|").append(fila.size());
+			}
 		}
-		return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(-1).toString();
+		return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(servidor_id).toString();
 	}
 
 	private void actualizar_Posiciones()
 	{
-		fila.forEach(f -> 
+		synchronized(fila)
 		{
-			f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
-		});
+			fila.forEach(f -> 
+			{
+				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+			});
+		}
 	}
 
-	public void actualizar_Nuevas_Posiciones()
+	public void actualizar_A_Nuevas_Posiciones()
 	{
-		fila.forEach(f ->
+		synchronized(fila)
 		{
-			f.set_Posicion(f.get_Posicion() - 1);
-			f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
-		});
+			fila.forEach(f ->
+			{
+				f.set_Posicion(f.get_Posicion() - 1);
+				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+			});
+		}
 	}
 	
-	public PriorityQueue<NodoFila> get_Fila()
-	{
-		return fila;
-	}
 }

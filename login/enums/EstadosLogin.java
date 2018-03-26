@@ -1,4 +1,4 @@
-package login.Enum;
+package login.enums;
 
 public enum EstadosLogin 
 {

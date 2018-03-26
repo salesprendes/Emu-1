@@ -1,6 +1,5 @@
 package database;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -16,13 +15,18 @@ public class Servidores_DB extends DatabaseManager
 	
 	public void cargar_Todos_Servidores()
 	{
-		try (final ResultSet rs = conexion_Y_Ejecucion("SELECT * FROM servidores;"))
+		try
 		{
-			while(rs.next())
+			Ejecucion_Query query = super.ejecutar_Query_Select("SELECT * FROM servidores;");
+			
+			if(query.get_Rs().next())
 			{
-				new Servidores(rs.getInt(1), rs.getString(2), rs.getByte(3), rs.getByte(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9));
+				while(query.get_Rs().next())
+				{
+					new Servidores(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getByte(3), query.get_Rs().getByte(4), query.get_Rs().getString(5), query.get_Rs().getString(6), query.get_Rs().getString(7), query.get_Rs().getString(8), query.get_Rs().getString(9));
+				}
 			}
-			cerrar_ResultSet(rs);
+			cerrar(query);
 		}
 		catch (final SQLException e){}
 	}

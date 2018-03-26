@@ -21,7 +21,7 @@ public class Configuracion
 	public static String DATABASE_PASSWORD_LOGIN = "";
 	public static String DATABASE_NOMBRE_LOGIN = "dofus_global";
 	
-	public static void cargar_Configuracion()
+	public static boolean cargar_Configuracion()
 	{
 		try 
 		{
@@ -47,13 +47,14 @@ public class Configuracion
 			{
 				crear_Archivo_Configuracion();
 			}
+			return true;
 		}
 		catch (final IOException e) 
 		{
 			System.out.println("Error en la configuracion: " + e.getMessage());
-			System.exit(1);
-			return;
 		}
+		System.exit(1);
+		return false;
 	}
 	
 	private static void crear_Archivo_Configuracion() throws IOException

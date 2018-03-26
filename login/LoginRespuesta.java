@@ -9,8 +9,8 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import login.Enum.ErroresLogin;
-import login.Enum.EstadosLogin;
+import login.enums.ErroresLogin;
+import login.enums.EstadosLogin;
 import login.fila.Fila;
 import main.Estados;
 import main.Formulas;
@@ -112,9 +112,9 @@ final public class LoginRespuesta implements Runnable
 			case NOMBRE_CUENTA:
 				if(paquete.length() >= 2)
 				{
-					if(Main.get_Database().get_Cuentas().get_Existe_Cuenta(paquete.toLowerCase()))
+					if(Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("usuario", "usuario", paquete.toLowerCase()))
 					{
-						if(!Main.get_Database().get_Cuentas().get_Cuenta_Baneada(paquete.toLowerCase()))
+						if(!Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("baneado", "usuario", paquete.toLowerCase()))
 						{
 							cuenta_paquete = paquete.toLowerCase();
 							estado_login = EstadosLogin.PASSWORD_CUENTA;
@@ -146,16 +146,19 @@ final public class LoginRespuesta implements Runnable
 				{
 					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Main.get_Database().get_Cuentas().get_Obtener_Cuenta_Campo_String("password", cuenta_paquete))))
 					{
-						cuenta = Main.get_Database().get_Cuentas().get_Cuenta(cuenta_paquete);
+						cuenta = Main.get_Database().get_Cuentas().cargar_Cuenta(cuenta_paquete);
 						
 						/** puntero que extrae la dirección de memoria del hashmap **/
 						Cuentas _cuenta = Cuentas.get_Cuentas_Cargadas().get(cuenta.get_Id());
 
+						
 						if(_cuenta == null)//Si el puntero es nulo no esta conectado
 						{
+							
 							Cuentas.agregar_Cuenta_Cargada(cuenta);
 							cuenta.set_Login_respuesta(this);
 							estado_login = EstadosLogin.FILA_ESPERA;
+							
 						}
 						else
 						{
@@ -208,7 +211,7 @@ final public class LoginRespuesta implements Runnable
 					break;
 					
 					case 'F':
-						enviar_paquete("AF" + Main.get_Database().get_Cuentas().get_Personaje_Servidores(paquete.substring(2)));
+						enviar_paquete("AF" + Main.get_Database().get_Cuentas().get_Paquete_Buscar_Servidores(paquete.substring(2)));
 					break;
 					
 					default:
@@ -223,7 +226,7 @@ final public class LoginRespuesta implements Runnable
 				{
 					if(!paquete.toLowerCase().equals(cuenta.get_Usuario().toLowerCase()))
 					{
-						if(paquete.matches("[A-Za-z0-9.@.-]+") && !Main.get_Database().get_Cuentas().get_Apodo_Existe(paquete))
+						if(paquete.matches("[A-Za-z0-9.@.-]+") && !Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("apodo", "apodo", paquete))
 						{
 							cuenta.set_Apodo(paquete);
 							cuenta.set_Creando_apodo(false);

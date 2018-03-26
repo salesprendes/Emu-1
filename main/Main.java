@@ -3,8 +3,9 @@ package main;
 import database.ConexionPool;
 import login.ServerSocketLogin;
 import login.comunicador.ServerSocketComunicador;
-import login.fila.ServerFila;
+import login.fila.ServerFilaLogin;
 import main.consola.Consola;
+import objetos.Servidores;
 
 final public class Main 
 {
@@ -14,7 +15,7 @@ final public class Main
 	/** THREADS **/
 	public static ServerSocketLogin servidor_login;
 	public static ServerSocketComunicador servidor_comunicador;
-	public static ServerFila fila_espera_login;
+	public static ServerFilaLogin fila_espera_login;
 	public static Consola comandos_consola;
 	private static ConexionPool database = new ConexionPool();
     
@@ -22,11 +23,14 @@ final public class Main
 	public static void main(String[] args)
 	{
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
+		System.out.print("> Cargando la configuración: ");
+		if(Configuracion.cargar_Configuracion())
+			System.out.println("correcta");
+		else
+			System.out.println("incorrecta");
 		
 		System.out.print("> Conectando a la base de datos: ");
-		Configuracion.cargar_Configuracion();
 		database.cargar_Configuracion();
-		
 		if(database.comprobar_conexion(database.get_Data_Source()))
 		{
 			database.iniciar_Database();
@@ -45,7 +49,7 @@ final public class Main
 		/** Threads **/
 		servidor_login = new ServerSocketLogin(443);
 		servidor_comunicador = new ServerSocketComunicador(489);
-		fila_espera_login = new ServerFila();
+		fila_espera_login = new ServerFilaLogin();
 		comandos_consola = new Consola();
 	}
 	
@@ -53,7 +57,7 @@ final public class Main
 	{
 		System.out.print("> Cargando servidores: ");
 		database.get_Servidores().cargar_Todos_Servidores();
-		System.out.println("ok");
+		System.out.println(Servidores.get_Servidores().size() + " servidores cargados");
 	}
 	
 	public static void cerrar_Emulador()
