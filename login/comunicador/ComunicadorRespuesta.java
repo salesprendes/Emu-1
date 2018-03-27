@@ -135,7 +135,7 @@ final public class ComunicadorRespuesta implements Runnable
 				servidor_juego.set_Estado((byte) 0);
 				Cuentas.get_Cuentas_Cargadas().values().forEach(cuenta ->
 				{
-					cuenta.get_Login_respuesta().refrescar_servidores();
+					cuenta.get_Login_respuesta().enviar_paquete(Servidores.get_Obtener_Servidores());
 				});
 				servidor_juego.set_Comunicador_game(null);
 			}

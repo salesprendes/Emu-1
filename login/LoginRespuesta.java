@@ -16,7 +16,6 @@ import main.Estados;
 import main.Formulas;
 import main.Main;
 import objetos.Cuentas;
-import objetos.Servidores;
 
 final public class LoginRespuesta implements Runnable
 {
@@ -104,8 +103,39 @@ final public class LoginRespuesta implements Runnable
 				{
 					enviar_paquete(ErroresLogin.VERSION_INCORRECTA.toString());
 					cerrar_Conexion();
-					System.out.println("> version incorrecta de la ip: " + socket.getInetAddress().getHostAddress());
 					return;
+				}
+			break;
+			
+			case CREACION_APODO:
+				if(cuenta.get_Apodo().isEmpty() && cuenta.esta_Creando_apodo())
+				{
+					if(!paquete.toLowerCase().equals(cuenta.get_Usuario().toLowerCase()))
+					{
+						if(paquete.matches("[A-Za-z0-9.@.-]+") && !Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("apodo", "apodo", paquete))
+						{
+							cuenta.set_Apodo(paquete);
+							cuenta.set_Creando_apodo(false);
+							cuenta.set_Fila_espera(true);
+							fila.agregar_Cuenta(cuenta);
+							estado_login = EstadosLogin.FILA_ESPERA;
+						}
+						else
+						{
+							enviar_paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
+							return;
+						}
+					}
+					else
+					{
+						enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
+						return;
+					}
+				}
+				else
+				{
+					enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
+					cerrar_Conexion();
 				}
 			break;
 
@@ -151,14 +181,12 @@ final public class LoginRespuesta implements Runnable
 						/** puntero que extrae la dirección de memoria del hashmap **/
 						Cuentas _cuenta = Cuentas.get_Cuentas_Cargadas().get(cuenta.get_Id());
 
-						
 						if(_cuenta == null)//Si el puntero es nulo no esta conectado
 						{
 							
 							Cuentas.agregar_Cuenta_Cargada(cuenta);
 							cuenta.set_Login_respuesta(this);
 							estado_login = EstadosLogin.FILA_ESPERA;
-							
 						}
 						else
 						{
@@ -220,38 +248,6 @@ final public class LoginRespuesta implements Runnable
 					break;
 				}
 			break;
-			
-			case CREACION_APODO:
-				if(cuenta.get_Apodo().isEmpty() && cuenta.esta_Creando_apodo())
-				{
-					if(!paquete.toLowerCase().equals(cuenta.get_Usuario().toLowerCase()))
-					{
-						if(paquete.matches("[A-Za-z0-9.@.-]+") && !Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("apodo", "apodo", paquete))
-						{
-							cuenta.set_Apodo(paquete);
-							cuenta.set_Creando_apodo(false);
-							cuenta.set_Fila_espera(true);
-							fila.agregar_Cuenta(cuenta);
-							estado_login = EstadosLogin.FILA_ESPERA;
-						}
-						else
-						{
-							enviar_paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
-							return;
-						}
-					}
-					else
-					{
-						enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
-						return;
-					}
-				}
-				else
-				{
-					enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
-					cerrar_Conexion();
-				}
-			break;
 		}
 	}
 
@@ -259,6 +255,14 @@ final public class LoginRespuesta implements Runnable
 	{
 		try
 		{
+			if(inputStreamReader != null)
+			{
+				inputStreamReader.close();
+			}
+			if(outputStream != null)
+			{
+				outputStream.close();
+			}
 			if (socket != null && !socket.isClosed())
 			{
 				socket.close();
@@ -268,8 +272,6 @@ final public class LoginRespuesta implements Runnable
 			{
 				Cuentas.eliminar_Cuenta_Cargada(cuenta.get_Id());
 			}
-			inputStreamReader.close();
-			outputStream.close();
 			hash_key = null;
 			estado_login = null;
 			cuenta = null;
@@ -312,10 +314,5 @@ final public class LoginRespuesta implements Runnable
 	public void set_Estado_login(EstadosLogin _estado_login)
 	{
 		estado_login = _estado_login;
-	}
-	
-	public void refrescar_servidores()
-	{
-		enviar_paquete(Servidores.get_Obtener_Servidores());
 	}
 }

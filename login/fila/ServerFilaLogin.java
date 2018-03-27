@@ -9,27 +9,36 @@ import objetos.Servidores;
 final public class ServerFilaLogin extends Thread implements Runnable
 {
 	private Fila fila;
-	private Cuentas cuenta = null;
+	private NodoFila nodo_fila = null;
 
 	public ServerFilaLogin() 
 	{
 		setName("Fila-Login");
-		fila = new Fila(-1, (byte) 100);
+		fila = new Fila(-1);
 		start();
 	}
 
 	public void run()
 	{
-		while(Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted())
+		synchronized(fila)
 		{
-			cuenta = fila.eliminar_Cuenta_Fila_Espera();
-			if(cuenta != null)
+			try
 			{
-				cuenta.get_Login_respuesta().enviar_paquete(paquete_salida_fila(cuenta));
-				cuenta.get_Login_respuesta().set_Estado_login(EstadosLogin.LISTA_SERVIDORES);
-				cuenta.set_Fila_espera(false);
+				while(Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted())
+				{
+					nodo_fila = fila.eliminar_Cuenta_Fila_Espera();
+					fila.wait(10000);
+					if(nodo_fila.get_Cuenta() != null)
+					{
+						fila.get_Fila().remove(nodo_fila);
+						nodo_fila.get_Cuenta().get_Login_respuesta().enviar_paquete(paquete_salida_fila(nodo_fila.get_Cuenta()));
+						nodo_fila.get_Cuenta().get_Login_respuesta().set_Estado_login(EstadosLogin.LISTA_SERVIDORES);
+						nodo_fila.get_Cuenta().set_Fila_espera(false);
+					}
+					fila.actualizar_A_Nuevas_Posiciones();
+				}
 			}
-			fila.actualizar_A_Nuevas_Posiciones();
+			catch (InterruptedException e) {}
 		}
 	}
 

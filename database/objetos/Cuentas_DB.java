@@ -102,7 +102,7 @@ public class Cuentas_DB extends DatabaseManager
 		StringBuilder paquete = new StringBuilder();
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT servidor_id, c.id from cuentas c JOIN personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;");
+			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT servidor_id, count(p.id) from cuentas c JOIN personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;");
 
 			while(query.get_Rs().next())
 			{

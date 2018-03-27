@@ -2,6 +2,7 @@ package login.fila;
 
 import java.util.PriorityQueue;
 
+import main.Configuracion;
 import objetos.Cuentas;
 
 final public class Fila
@@ -9,11 +10,11 @@ final public class Fila
 	private PriorityQueue<NodoFila> fila;
 	private int total_abonados = 0, total_no_abonados = 0, servidor_id;
 
-	public Fila(int _servidor_id, byte _maximos_logins)
+	public Fila(int _servidor_id)
 	{
 		if(fila == null) 
 		{
-			fila = new PriorityQueue<NodoFila>(_maximos_logins);
+			fila = new PriorityQueue<NodoFila>();
 			servidor_id = _servidor_id;
 		}
 	}
@@ -22,19 +23,28 @@ final public class Fila
 	{
 		synchronized(fila)
 		{
-			int posicion = fila.size() + 1;
-			if(fila.isEmpty())
-				fila.notify();
-			fila.add(new NodoFila(cuenta, posicion));
-			if(cuenta.es_Cuenta_Abonada())
+			if(Configuracion.MAXIMOS_LOGINS_FILA_ESPERA >= fila.size())
 			{
-				total_abonados++;
+				int posicion = fila.size() + 1;
+				fila.add(new NodoFila(cuenta, posicion));
+				if(cuenta.es_Cuenta_Abonada())
+				{
+					total_abonados++;
+				}
+				else
+				{
+					total_no_abonados++;
+				}
+				actualizar_Posiciones();
+				if(fila.size() < 2)
+					fila.notify();
 			}
 			else
 			{
-				total_no_abonados++;
+				cuenta.get_Login_respuesta().enviar_paquete("M116");
+				cuenta.get_Login_respuesta().enviar_paquete("ATE");
+				cuenta.get_Login_respuesta().cerrar_Conexion();
 			}
-			actualizar_Posiciones();
 		}
 	}
 
@@ -47,9 +57,9 @@ final public class Fila
 		}
 	}
 
-	public Cuentas eliminar_Cuenta_Fila_Espera()
+	public NodoFila eliminar_Cuenta_Fila_Espera()
 	{
-		Cuentas cuenta = null;
+		NodoFila nodo_cuenta = null;
 		synchronized(fila)
 		{
 			try
@@ -57,10 +67,9 @@ final public class Fila
 				if(fila.isEmpty())
 				{
 					fila.wait();
-					
 				}
-				cuenta = fila.remove().get_Cuenta();
-				if(cuenta.es_Cuenta_Abonada())
+				nodo_cuenta = fila.peek();
+				if(nodo_cuenta.get_Cuenta().es_Cuenta_Abonada())
 				{
 					total_abonados--;
 				}
@@ -71,21 +80,21 @@ final public class Fila
 			}
 			catch (InterruptedException e){}
 		}
-		return cuenta;
+		return nodo_cuenta;
 	}
 
 	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
 	{
-		final StringBuilder paquete = new StringBuilder("Af");
 		synchronized(fila)
 		{
+			final StringBuilder paquete = new StringBuilder("Af");
 			paquete.append(posicion);
 			if(esta_abonado)
 			{
 				paquete.append("|").append(fila.size());
 			}
+			return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(servidor_id).toString();
 		}
-		return paquete.append("|").append(esta_abonado ? total_no_abonados : total_abonados).append("|").append(esta_abonado ? 1 : 0).append("|").append(servidor_id).toString();
 	}
 
 	private void actualizar_Posiciones()
@@ -111,4 +120,8 @@ final public class Fila
 		}
 	}
 	
+	public PriorityQueue<NodoFila> get_Fila()
+	{
+		return fila;
+	}
 }

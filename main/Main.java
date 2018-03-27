@@ -39,7 +39,7 @@ final public class Main
 		else
 		{
 			System.out.println("incorrecta");
-			System.exit(0);
+			System.exit(1);
 		}
 		
 		estado_emulador = Estados.CARGANDO;

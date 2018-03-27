@@ -14,6 +14,9 @@ public class Configuracion
 	public static int PUERTO_LOGIN = 449;
 	public static int PUERTO_INTERCAMBIO = 489;
 	
+	/** ACCESO LOGIN **/
+	public static int MAXIMOS_LOGINS_FILA_ESPERA = 100;
+	
 	/** ACCESO DATABASE **/
 	public static String DATABASE_IP_LOGIN = "127.0.0.1";
 	public static int DATABASE_PUERTO_LOGIN = 3306;
@@ -40,6 +43,8 @@ public class Configuracion
 				DATABASE_PASSWORD_LOGIN	=	propiedades.getProperty("DATABASE_PASSWORD_LOGIN");
 				DATABASE_NOMBRE_LOGIN	=	propiedades.getProperty("DATABASE_NOMBRE_LOGIN");
 				
+				MAXIMOS_LOGINS_FILA_ESPERA = Integer.valueOf(propiedades.getProperty("MAXIMOS_LOGINS_FILA_ESPERA"));
+				
 				propiedades.clear();
 				propiedades = null;
 			}
@@ -59,7 +64,6 @@ public class Configuracion
 	
 	private static void crear_Archivo_Configuracion() throws IOException
 	{
-		FileOutputStream nuevo_archivo = new FileOutputStream(new File("configuracion.txt"));
 		propiedades = new Properties();
 		
 		propiedades.setProperty("PUERTO_LOGIN", Integer.toString(PUERTO_LOGIN));
@@ -71,8 +75,9 @@ public class Configuracion
 		propiedades.setProperty("DATABASE_PASSWORD_LOGIN", DATABASE_PASSWORD_LOGIN);
 		propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
 		
-		propiedades.store(nuevo_archivo, "Archivo de configuración");
-		nuevo_archivo.close();
+		propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
+		
+		propiedades.store(new FileOutputStream(new File("configuracion.txt")), "Archivo de configuración");
 		propiedades.clear();
 		propiedades = null;
 	}
