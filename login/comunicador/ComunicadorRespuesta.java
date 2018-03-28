@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import login.enums.EstadosLogin;
 import main.Estados;
 import main.Main;
 import objetos.Cuentas;
@@ -117,6 +118,14 @@ final public class ComunicadorRespuesta implements Runnable
 					}
 				}
 			break;
+		}
+		
+		if(Cuentas.get_Cuentas_Cargadas().size() > 0)
+		{
+			Cuentas.get_Cuentas_Cargadas().values().stream().filter(filtro -> filtro.get_Login_respuesta().get_Estado_login() == EstadosLogin.LISTA_SERVIDORES).forEach(cuenta -> 
+			{
+				cuenta.get_Login_respuesta().enviar_paquete(Servidores.get_Obtener_Servidores());
+			});
 		}
 	}
 	

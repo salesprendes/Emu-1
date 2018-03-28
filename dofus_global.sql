@@ -6,10 +6,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `comunidades`;
 CREATE TABLE `comunidades`  (
-  `id` tinyint(2) NOT NULL AUTO_INCREMENT COMMENT '0: Francesa\r\n2: Inglesa\r\n3: Alemana\r\n4: Española\r\n10: Japonesa',
+  `id` tinyint(2) NOT NULL COMMENT '0: Francesa\r\n1: Internacional\r\n2: Inglesa\r\n3: Alemana\r\n4: Española\r\n6: Portuguesa\r\n7: Holandesa\r\n9: Italiana',
   `nombre` varchar(2) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of comunidades

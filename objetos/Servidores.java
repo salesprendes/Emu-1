@@ -73,8 +73,8 @@ final public class Servidores
         final StringBuilder paquete_servidores = new StringBuilder(servidores.size() * 10).append("AH");
         servidores.values().forEach(servidor ->
         {
-        	paquete_servidores.append(paquete_servidores.length() > 2 ? "|" : "");
-        	paquete_servidores.append(servidor.get_Id()).append(";").append(servidor.get_Estado()).append(";110;1");
+        	paquete_servidores.append(paquete_servidores.length() > 2 ? '|' : "");
+        	paquete_servidores.append(servidor.get_Id()).append(';').append(servidor.get_Estado()).append(";110;1");
         });
         return paquete_servidores.toString();
     }
