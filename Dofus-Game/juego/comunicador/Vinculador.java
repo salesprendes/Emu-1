@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import main.Estados;
+import main.Main;
 
 final public class Vinculador extends Thread implements Runnable
 {
