@@ -1,4 +1,4 @@
-﻿SET NAMES utf8mb4;
+SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
@@ -124,16 +124,17 @@ DROP TABLE IF EXISTS `servidores`;
 CREATE TABLE `servidores`  (
   `id` int(4) NOT NULL COMMENT 'Id del servidor',
   `comunidad` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Comunidad del servidor',
-  `estado` tinyint(2) NOT NULL DEFAULT 1 COMMENT 'RECOMENDADO -> 1,\r\nMEDIA -> 2,\r\nELEVADA -> 3\r\nCOMPLETO -> 4\r\nDISPONIBLE_PROXIMAMENTE -> 5',
   `poblacion` tinyint(2) NOT NULL DEFAULT 1 COMMENT 'id de las plazas libres del servidor',
   `vip_necesario` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Solo Acceso vip',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `Referencia_Comunidad`(`comunidad`) USING BTREE,
+  CONSTRAINT `Referencia_Comunidad` FOREIGN KEY (`comunidad`) REFERENCES `comunidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of servidores
 -- ----------------------------
-INSERT INTO `servidores` VALUES (601, 2, 0, 0, 0);
-INSERT INTO `servidores` VALUES (602, 2, 0, 0, 0);
+INSERT INTO `servidores` VALUES (601, 2, 0, 0);
+INSERT INTO `servidores` VALUES (602, 2, 0, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
