@@ -231,7 +231,7 @@ final public class LoginRespuesta implements Runnable
 				switch(paquete.charAt(1))
 				{
 					case 'x':
-						enviar_paquete("AxK" + cuenta.get_Fecha_abono());
+						enviar_paquete("AxK" + cuenta.get_Fecha_abono() + Main.get_Database().get_Cuentas().get_Contar_Personajes_Servidor(cuenta));
 					break;
 					
 					case 'X'://Seleccion del servidor

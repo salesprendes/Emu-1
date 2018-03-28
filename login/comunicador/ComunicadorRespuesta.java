@@ -27,7 +27,7 @@ final public class ComunicadorRespuesta implements Runnable
 		try 
 		{
 			socket = sock;
-			socket.setSendBufferSize(2048);
+			socket.setSendBufferSize(1048);
 			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			outputStream = new PrintWriter(socket.getOutputStream());
 			ejecutor = Executors.newCachedThreadPool();

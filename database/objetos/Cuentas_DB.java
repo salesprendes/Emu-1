@@ -8,7 +8,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import database.DatabaseManager;
 import objetos.Comunidades;
 import objetos.Cuentas;
-import objetos.Servidores;
 
 public class Cuentas_DB extends DatabaseManager
 {
@@ -52,21 +51,21 @@ public class Cuentas_DB extends DatabaseManager
 		return null;
 	}
 	
-	public int get_Contar_Personajes_Servidor(Cuentas cuenta, Servidores servidor)
+	public String get_Contar_Personajes_Servidor(Cuentas cuenta)
 	{
-		int total_personajes_servidor = 0;
+		StringBuilder paquete = new StringBuilder();
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT COUNT(id) FROM personajes WHERE servidor_id = " + servidor.get_Id() + " AND usuario = '" + cuenta.get_Usuario() + "';");
+			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT p.servidor_id, COUNT(p.id) FROM personajes p JOIN cuentas c ON p.cuenta_id = c.id WHERE c.usuario = '" + cuenta.get_Usuario() + "' GROUP BY p.servidor_id;");
 			
-			if(query.get_Rs().next())
+			while(query.get_Rs().next())
 			{
-				total_personajes_servidor = query.get_Rs().getInt(1);
+				paquete.append('|').append(query.get_Rs().getInt(1)).append(',').append(query.get_Rs().getInt(2));
 			}
 			cerrar(query);
 		}
 		catch (final SQLException e){}
-		return total_personajes_servidor;
+		return paquete.toString();
 	}
 	
 	public boolean get_Existe_Campo_Cuenta(final String campo, final String campo_condicion, final String nombre_condicion)

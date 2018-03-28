@@ -48,7 +48,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 		paquete.append("Ac").append(_cuenta.get_Comunidad().get_Id()).append((char)0);
 		paquete.append(Servidores.get_Obtener_Servidores()).append((char)0);
 		paquete.append("AlK").append(_cuenta.get_Rango_cuenta() > 0 ? 1 : 0).append((char)0);
-		paquete.append("AQ").append("Ninguna").append((char)0);
+		paquete.append("AQ").append("Ninguna");
 		return paquete.toString();
 	}
 

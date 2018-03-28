@@ -46,20 +46,12 @@ final public class Cuentas
 	
 	public long get_Fecha_abono()
 	{
-		if(tiempo_abono <= System.currentTimeMillis())
-		{
-			return 0;
-		}
-		return tiempo_abono - System.currentTimeMillis();
+		return tiempo_abono <= System.currentTimeMillis() ? 0 : tiempo_abono - System.currentTimeMillis();
 	}
 	
 	public boolean es_Cuenta_Abonada()
 	{
-		if(tiempo_abono <= System.currentTimeMillis())
-		{
-			return false;
-		}
-		return true;
+		return tiempo_abono >= System.currentTimeMillis();
 	}
 	
 	public byte get_Rango_cuenta() 
