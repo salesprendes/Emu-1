@@ -31,7 +31,7 @@ public class Configuracion
 			if(new File("configuracion.txt").exists())
 			{
 				propiedades = new Properties();
-				propiedades.load(new FileInputStream("configuracion.txt"));
+				propiedades.load(new FileInputStream("conf-login.txt"));
 				
 				//Puertos
 				PUERTO_LOGIN		=	Integer.valueOf(propiedades.getProperty("PUERTO_LOGIN"));
@@ -77,7 +77,7 @@ public class Configuracion
 		
 		propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
 		
-		propiedades.store(new FileOutputStream(new File("configuracion.txt")), "Archivo de configuración");
+		propiedades.store(new FileOutputStream(new File("conf-login.txt")), "Archivo de configuración");
 		propiedades.clear();
 		propiedades = null;
 	}
