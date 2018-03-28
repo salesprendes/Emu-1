@@ -5,22 +5,24 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
+import login.enums.ErroresLogin;
+import main.Configuracion;
 import main.Estados;
 import main.Main;
 
 final public class ServerSocketLogin extends Thread implements Runnable
 {
 	protected ServerSocket server_socket;
-	private final List<LoginRespuesta> clientes = new ArrayList<LoginRespuesta>();
+	private final List<LoginRespuesta> clientes_login = new ArrayList<LoginRespuesta>();
 	
-	public ServerSocketLogin(int _puerto)
+	public ServerSocketLogin()
 	{
 		try
 		{
-			setName("ServerSocket-Login");
-			server_socket = new ServerSocket(_puerto);
+			setName("Server-Login");
+			server_socket = new ServerSocket(Configuracion.PUERTO_LOGIN);
 			start();
-			System.out.println("> Login del servidor iniciado en el puerto: " + 443);
+			System.out.println("> Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
 		} 
 		catch (IOException e)
 		{
@@ -34,7 +36,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		{
 			try 
 			{
-				clientes.add(new LoginRespuesta(server_socket.accept()));
+				clientes_login.add(new LoginRespuesta(server_socket.accept()));
 			} 
 			catch (Exception e)
 			{
@@ -63,23 +65,23 @@ final public class ServerSocketLogin extends Thread implements Runnable
 	
 	public List<LoginRespuesta> get_Clientes() 
 	{
-		return clientes;
+		return clientes_login;
 	}
 	
 	public void expulsar_Todos_Clientes()
 	{
-		for(LoginRespuesta jugador : clientes)
+		for(LoginRespuesta jugador : clientes_login)
 		{
-			jugador.enviar_paquete("");
+			jugador.enviar_paquete(ErroresLogin.SERVIDOR_EN_MANTENIMIENTO.toString());
 			jugador.cerrar_Conexion();
 		}
 	}
 	
 	public void eliminar_Cliente(LoginRespuesta _loginRespuesta)
 	{
-		int id = clientes.indexOf(_loginRespuesta);
-		clientes.get(id).cerrar_Conexion();
-		clientes.remove(id);
+		int id = clientes_login.indexOf(_loginRespuesta);
+		clientes_login.get(id).cerrar_Conexion();
+		clientes_login.remove(id);
 		System.gc();
 	}
 }

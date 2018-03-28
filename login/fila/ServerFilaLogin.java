@@ -13,7 +13,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 
 	public ServerFilaLogin() 
 	{
-		setName("Fila-Login");
+		setName("Server-Fila");
 		fila = new Fila(-1);
 		start();
 	}
@@ -27,7 +27,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 				while(Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted())
 				{
 					nodo_fila = fila.eliminar_Cuenta_Fila_Espera();
-					fila.wait(10000);
+					fila.wait(1100 * fila.get_Fila().size());
 					if(nodo_fila.get_Cuenta() != null)
 					{
 						fila.get_Fila().remove(nodo_fila);
@@ -45,7 +45,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 	private String paquete_salida_fila(Cuentas _cuenta)
 	{
 		final StringBuilder paquete = new StringBuilder("Ad").append(_cuenta.get_Apodo()).append((char)0);
-		paquete.append("Ac").append(_cuenta.get_Comunidad()).append((char)0);
+		paquete.append("Ac").append(_cuenta.get_Comunidad().get_Id()).append((char)0);
 		paquete.append(Servidores.get_Obtener_Servidores()).append((char)0);
 		paquete.append("AlK").append(_cuenta.get_Rango_cuenta() > 0 ? 1 : 0).append((char)0);
 		paquete.append("AQ").append("Ninguna").append((char)0);

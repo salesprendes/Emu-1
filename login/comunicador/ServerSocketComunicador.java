@@ -3,6 +3,7 @@ package login.comunicador;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import main.Configuracion;
 import main.Estados;
 import main.Main;
 
@@ -10,16 +11,16 @@ final public class ServerSocketComunicador extends Thread implements Runnable
 {
 	private ServerSocket server_socket;
 	
-	public ServerSocketComunicador(int puerto)
+	public ServerSocketComunicador()
 	{
 		try
 		{
-			setName("ServerSocket-Comunicador");
-			server_socket = new ServerSocket(puerto);
+			setName("Server-Comunicador");
+			server_socket = new ServerSocket(Configuracion.PUERTO_COMUNICADOR);
 			new Thread(this);
 			setDaemon(true);
 			start();
-			System.out.println("> Intercambio del servidor iniciado en el puerto: " + 489);
+			System.out.println("> Intercambio del servidor iniciado en el puerto: " + Configuracion.PUERTO_COMUNICADOR);
 		}
 		catch (final IOException | RuntimeException e) 
 		{

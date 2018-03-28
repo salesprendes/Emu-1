@@ -7,16 +7,17 @@ import login.LoginRespuesta;
 
 final public class Cuentas 
 {
-	final private int id;
+	private final int id;
 	private final String usuario, password;
 	private String apodo;
 	private long tiempo_abono;
 	private LoginRespuesta login_respuesta = null;
 	private boolean cuenta_baneada = false, fila_espera = false, creando_apodo = false;
-	private final byte comunidad, rango_cuenta;
+	private final byte rango_cuenta;
+	private final Comunidades comunidad;
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_cargadas = new ConcurrentHashMap<Integer, Cuentas>();
 	
-	public Cuentas(int _id, String _usuario, String _password, String _apodo, byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
+	public Cuentas(final int _id, final String _usuario, final String _password, String _apodo, final byte _rango_cuenta, long _tiempo_abono, final Comunidades _comunidad, boolean _baneado)
 	{
 		id = _id;
 		usuario = _usuario;
@@ -66,7 +67,7 @@ final public class Cuentas
 		return rango_cuenta;
 	}
 	
-	public byte get_Comunidad() 
+	public Comunidades get_Comunidad() 
 	{
 		return comunidad;
 	}

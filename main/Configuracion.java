@@ -11,8 +11,8 @@ public class Configuracion
 	private static Properties propiedades;
 	
 	/** Puertos **/
-	public static int PUERTO_LOGIN = 449;
-	public static int PUERTO_INTERCAMBIO = 489;
+	public static int PUERTO_LOGIN = 443;
+	public static int PUERTO_COMUNICADOR = 489;
 	
 	/** ACCESO LOGIN **/
 	public static int MAXIMOS_LOGINS_FILA_ESPERA = 100;
@@ -35,7 +35,7 @@ public class Configuracion
 				
 				//Puertos
 				PUERTO_LOGIN		=	Integer.valueOf(propiedades.getProperty("PUERTO_LOGIN"));
-				PUERTO_INTERCAMBIO	=	Integer.valueOf(propiedades.getProperty("PUERTO_INTERCAMBIO"));
+				PUERTO_COMUNICADOR	=	Integer.valueOf(propiedades.getProperty("PUERTO_COMUNICADOR"));
 				
 				DATABASE_IP_LOGIN		=	propiedades.getProperty("DATABASE_IP_LOGIN");
 				DATABASE_PUERTO_LOGIN	=	Integer.valueOf(propiedades.getProperty("DATABASE_PUERTO_LOGIN"));
@@ -67,7 +67,7 @@ public class Configuracion
 		propiedades = new Properties();
 		
 		propiedades.setProperty("PUERTO_LOGIN", Integer.toString(PUERTO_LOGIN));
-		propiedades.setProperty("PUERTO_INTERCAMBIO", Integer.toString(PUERTO_INTERCAMBIO));
+		propiedades.setProperty("PUERTO_COMUNICADOR", Integer.toString(PUERTO_COMUNICADOR));
 		
 		propiedades.setProperty("DATABASE_IP_LOGIN", DATABASE_IP_LOGIN);
 		propiedades.setProperty("DATABASE_PUERTO_LOGIN", Integer.toString(DATABASE_PUERTO_LOGIN));

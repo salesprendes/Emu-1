@@ -2,29 +2,53 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for comunidades
+-- ----------------------------
+DROP TABLE IF EXISTS `comunidades`;
+CREATE TABLE `comunidades`  (
+  `id` tinyint(2) NOT NULL AUTO_INCREMENT COMMENT '0: Francesa\r\n2: Inglesa\r\n3: Alemana\r\n4: Española\r\n10: Japonesa',
+  `nombre` varchar(2) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of comunidades
+-- ----------------------------
+INSERT INTO `comunidades` VALUES (0, 'fr');
+INSERT INTO `comunidades` VALUES (1, 'en');
+INSERT INTO `comunidades` VALUES (2, 'en');
+INSERT INTO `comunidades` VALUES (3, 'de');
+INSERT INTO `comunidades` VALUES (4, 'es');
+INSERT INTO `comunidades` VALUES (6, 'pt');
+INSERT INTO `comunidades` VALUES (7, 'nl');
+INSERT INTO `comunidades` VALUES (9, 'it');
+
+-- ----------------------------
 -- Table structure for cuentas
 -- ----------------------------
 DROP TABLE IF EXISTS `cuentas`;
 CREATE TABLE `cuentas`  (
   `id` int(4) NOT NULL AUTO_INCREMENT COMMENT 'Id de la cuenta',
   `usuario` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Usuario para hacer login',
-  `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Contraseña para hacer login',
-  `apodo` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Apodo visible para la cuenta',
+  `password` varchar(35) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Contraseña para hacer login',
+  `apodo` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NULL DEFAULT '' COMMENT 'Apodo visible para la cuenta',
   `rango_cuenta` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0: Usuario\r\n1: Mod\r\n2: GM\r\n3: Admin',
   `tiempo_abono` datetime(0) NOT NULL COMMENT 'Abono con fecha y tiempo para la cuenta',
-  `comunidad` tinyint(2) NOT NULL DEFAULT 4 COMMENT '0: Francesa\r\n2: Española',
+  `comunidad` tinyint(2) NULL DEFAULT 4 COMMENT 'id de la comunidad',
   `baneado` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0: No baneado\r\n1: Baneado',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `index_nombre_usuario`(`usuario`) USING BTREE
+  UNIQUE INDEX `index_nombre_usuario`(`usuario`) USING BTREE,
+  INDEX `Relacion_Comunidad`(`comunidad`) USING BTREE,
+  CONSTRAINT `Relacion_Comunidad` FOREIGN KEY (`comunidad`) REFERENCES `comunidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cuentas
 -- ----------------------------
-INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', 3, '2019-03-28 16:23:32', 2, 0);
-INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'as', 3, '2018-03-06 13:32:41', 2, 0);
-INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', 3, '2018-03-09 19:43:16', 2, 0);
-INSERT INTO `cuentas` VALUES (4, 'vip', '1', '1', 3, '2018-03-31 20:02:24', 2, 0);
+INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', 3, '2019-03-28 16:23:32', 4, 0);
+INSERT INTO `cuentas` VALUES (2, 'tes', '1', '', 3, '2019-03-06 13:32:41', 4, 0);
+INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', 3, '2017-03-09 19:43:16', 4, 0);
+INSERT INTO `cuentas` VALUES (4, 'vip', '1', '1', 3, '2019-03-31 20:02:24', 4, 0);
 
 -- ----------------------------
 -- Table structure for personajes
@@ -46,13 +70,14 @@ CREATE TABLE `personajes`  (
   CONSTRAINT `Referencia_cuenta` FOREIGN KEY (`cuenta_id`) REFERENCES `cuentas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Referencia_raza` FOREIGN KEY (`raza_id`) REFERENCES `razas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Referencia_servidor` FOREIGN KEY (`servidor_id`) REFERENCES `servidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of personajes
 -- ----------------------------
 INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', -1, -1, -1, 1, 1, 601);
 INSERT INTO `personajes` VALUES (2, 'test', -1, -1, -1, 1, 1, 602);
+INSERT INTO `personajes` VALUES (3, 'test1', -1, -1, -1, 4, 1, 602);
 
 -- ----------------------------
 -- Table structure for razas

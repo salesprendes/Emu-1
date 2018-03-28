@@ -8,13 +8,13 @@ import login.comunicador.ComunicadorRespuesta;
 final public class Servidores 
 {
 	final private int id;
-	final private byte comunidad;
+	final private Comunidades comunidad;
 	private byte estado;
 	final private String nombre, ip, puerto, ip_database, usuario_database, password_database;
 	private static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	private ComunicadorRespuesta comunicador_game = null;
 	
-	public Servidores(int _id, String _nombre, byte _comunidad, byte _estado, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
+	public Servidores(int _id, String _nombre, Comunidades _comunidad, byte _estado, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
 	{
 		id = _id;
 		nombre = _nombre;
@@ -33,7 +33,7 @@ final public class Servidores
 		return id;
 	}
 	
-	public byte get_Comunidad()
+	public Comunidades get_Comunidad()
 	{
 		return comunidad;
 	}

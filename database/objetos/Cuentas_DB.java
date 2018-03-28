@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
+import objetos.Comunidades;
 import objetos.Cuentas;
 import objetos.Servidores;
 
@@ -26,7 +27,7 @@ public class Cuentas_DB extends DatabaseManager
 			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
 			if(query.get_Rs().next())
-				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(5), formato_fecha.parse(query.get_Rs().getString(6)).getTime(), query.get_Rs().getByte(7), query.get_Rs().getBoolean(8));
+				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(5), formato_fecha.parse(query.get_Rs().getString(6)).getTime(), Comunidades.get_Comunidades().get(query.get_Rs().getByte(7)), query.get_Rs().getBoolean(8));
 			cerrar(query);
 		}
 		catch (final Exception e){}

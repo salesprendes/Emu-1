@@ -5,6 +5,7 @@ import login.ServerSocketLogin;
 import login.comunicador.ServerSocketComunicador;
 import login.fila.ServerFilaLogin;
 import main.consola.Consola;
+import objetos.Comunidades;
 import objetos.Servidores;
 
 final public class Main 
@@ -47,8 +48,8 @@ final public class Main
 		estado_emulador = Estados.ENCENDIDO;
 		
 		/** Threads **/
-		servidor_login = new ServerSocketLogin(443);
-		servidor_comunicador = new ServerSocketComunicador(489);
+		servidor_login = new ServerSocketLogin();
+		servidor_comunicador = new ServerSocketComunicador();
 		fila_espera_login = new ServerFilaLogin();
 		comandos_consola = new Consola();
 	}
@@ -58,6 +59,10 @@ final public class Main
 		System.out.print("> Cargando servidores: ");
 		database.get_Servidores().cargar_Todos_Servidores();
 		System.out.println(Servidores.get_Servidores().size() + " servidores cargados");
+		
+		System.out.print("> Cargando comunidades: ");
+		database.get_Comunidades().cargar_Todas_Comunidades();
+		System.out.println(Comunidades.get_Comunidades().size() + " comunidades cargadas");
 	}
 	
 	public static void cerrar_Emulador()
