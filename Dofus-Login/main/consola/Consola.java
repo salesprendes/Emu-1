@@ -7,9 +7,9 @@ final public class Consola extends Thread implements Runnable
 	public Consola()
 	{
 		setName("Consola-Comandos");
-		System.out.println("======================================================");
-		System.out.println("Administración del login del emulador");
-		System.out.println("Para visualizar los comandos introducir: ?");
+		println("======================================================");
+		println("Administración del login del emulador");
+		println("Para visualizar los comandos introducir: ?");
 		start();
 	}
 	
@@ -18,10 +18,26 @@ final public class Consola extends Thread implements Runnable
 		Scanner sc = new Scanner(System.in);
 		while(!isInterrupted())
 		{
-			System.out.print(">> ");
-			String command = sc.nextLine();
-			Comandos.ejecutar(command);
+			print(">> ");
+			String comando = sc.nextLine();
+			Comandos.ejecutar(comando);
 		}
 		sc.close();
+	}
+	
+	public static void print(final String mensaje)
+	{
+		synchronized(System.out) 
+		{
+			System.out.print(mensaje);
+		}
+	}
+	
+	public static void println(final String mensaje)
+	{
+		synchronized(System.out) 
+		{
+			System.out.println(mensaje);
+		}
 	}
 }

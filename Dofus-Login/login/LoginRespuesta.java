@@ -15,6 +15,7 @@ import login.fila.Fila;
 import main.Estados;
 import main.Formulas;
 import main.Main;
+import main.consola.Consola;
 import objetos.Cuentas;
 
 final public class LoginRespuesta implements Runnable
@@ -73,7 +74,7 @@ final public class LoginRespuesta implements Runnable
 				{
 					if(Main.modo_debug)
 					{
-						System.out.println("> Recibido-login: " + paquete);
+						Consola.println("Recibido-login: " + paquete);
 					}
 					controlador_Paquetes(paquete.toString());
 					paquete.setLength(0);
@@ -208,7 +209,7 @@ final public class LoginRespuesta implements Runnable
 				{
 					enviar_paquete(ErroresLogin.CUENTA_CONECTADA.toString());
 					cerrar_Conexion();
-					System.out.println("paquete incorrecto password");
+					Consola.println("paquete incorrecto password");
 					return;
 				}
 			break;
@@ -279,7 +280,7 @@ final public class LoginRespuesta implements Runnable
 		}
 		catch (final IOException e)
 		{
-			System.out.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
+			Consola.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
 			return;
 		}
 	}
@@ -294,11 +295,11 @@ final public class LoginRespuesta implements Runnable
 				outputStream.print(paquete + (char)0);
 				outputStream.flush();
 				if(Main.modo_debug)
-					System.out.println("Enviado >> " + paquete);
+					Consola.println("Enviado >> " + paquete);
 			} 
 			catch (final UnsupportedEncodingException e) 
 			{
-				System.out.println("> Error al convertir el paquete a UTF-8: " + paquete);
+				Consola.println("Error al convertir el paquete a UTF-8: " + paquete);
 				return;
 			}
 		}

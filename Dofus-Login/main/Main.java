@@ -24,23 +24,22 @@ final public class Main
 	public static void main(String[] args)
 	{
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
-		System.out.print("> Cargando la configuración: ");
+		Consola.print("Cargando la configuración: ");
 		if(Configuracion.cargar_Configuracion())
-			System.out.println("correcta");
+			Consola.println("correcta");
 		else
-			System.out.println("incorrecta");
+			Consola.println("incorrecta");
 		
-		System.out.print("> Conectando a la base de datos: ");
+		Consola.print("Conectando a la base de datos: ");
 		database.cargar_Configuracion();
 		if(database.comprobar_conexion(database.get_Data_Source()))
 		{
 			database.iniciar_Database();
-			System.out.println("correcta");
+			Consola.println("correcta");
 		}
 		else
 		{
-			System.out.println("incorrecta");
-			System.exit(1);
+			Consola.println("incorrecta");
 		}
 		
 		estado_emulador = Estados.CARGANDO;
@@ -56,18 +55,18 @@ final public class Main
 	
 	public static void cargar_Login()
 	{
-		System.out.print("> Cargando servidores: ");
+		Consola.print("Cargando servidores: ");
 		database.get_Servidores().cargar_Todos_Servidores();
-		System.out.println(Servidores.get_Servidores().size() + " servidores cargados");
+		Consola.println(Servidores.servidores.size() + " servidores cargados");
 		
-		System.out.print("> Cargando comunidades: ");
+		Consola.print("Cargando comunidades: ");
 		database.get_Comunidades().cargar_Todas_Comunidades();
-		System.out.println(Comunidades.get_Comunidades().size() + " comunidades cargadas");
+		Consola.println(Comunidades.get_Comunidades().size() + " comunidades cargadas");
 	}
 	
 	public static void cerrar_Emulador()
 	{
-		System.out.println("> El servidor se esta cerrando");
+		Consola.println("> El servidor se esta cerrando");
 		if (estado_emulador == Estados.ENCENDIDO)
 		{
 			estado_emulador = Estados.APAGADO;
@@ -76,7 +75,8 @@ final public class Main
 			fila_espera_login.detener_Fila();
 			comandos_consola.interrupt();
 		}
-		System.out.println("> El emulador esta cerrado.");
+		Consola.println("> El emulador esta cerrado.");
+		System.exit(1);
 	}
 	
 	public static ConexionPool get_Database()

@@ -11,8 +11,10 @@ import java.util.concurrent.Executors;
 import login.enums.EstadosLogin;
 import main.Estados;
 import main.Main;
+import main.consola.Consola;
 import objetos.Cuentas;
 import objetos.Servidores;
+import objetos.Servidores.Estados_Servidor;
 
 final public class ComunicadorRespuesta implements Runnable
 {
@@ -56,7 +58,7 @@ final public class ComunicadorRespuesta implements Runnable
 				{
 					if(Main.modo_debug)
 					{
-						System.out.println("> Recibido-comunicador: " + paquete);
+						Consola.println("Recibido-comunicador: " + paquete);
 					}
 					controlador_Paquetes(paquete.toString());
 					paquete.setLength(0);
@@ -78,23 +80,19 @@ final public class ComunicadorRespuesta implements Runnable
 		switch(paquete.charAt(0))
 		{
 			case 'C':
-				if(paquete.length() > 2)//C|Nombre_servidor
+				if(paquete.length() > 2)//C|id
 				{
-					final String id_servidor_recibido = paquete.substring(2);
-					Servidores.get_Servidores().values().forEach(S ->
-					{
-						if(id_servidor_recibido.equals(S.get_Nombre()))
-							servidor_juego = S;
-					});
+					servidor_juego = Servidores.get(Integer.valueOf(paquete.substring(2)));
 					if(servidor_juego != null)
 					{
 						servidor_juego.set_Comunicador_game(this);
-						servidor_juego.set_Estado((byte) 1);
-						System.out.println("> Servidor " + servidor_juego.get_Nombre() + " conectado");
+						servidor_juego.set_Estado(Estados_Servidor.ENCENDIDO);
+						Consola.println("Servidor " + servidor_juego.get_Id() + " conectado");
+						enviar_Paquete("hola");
 					}
 					else
 					{
-						System.out.println("> Se ha recibido el paquete " + paquete + " pero no existe el servidor");
+						Consola.println("Se ha recibido el paquete " + paquete + " pero no existe el servidor");
 					}
 				}
 			break;
@@ -105,15 +103,15 @@ final public class ComunicadorRespuesta implements Runnable
 					switch (paquete.charAt(2))
 					{
 						case 'A'://abierto
-							servidor_juego.set_Estado((byte) 1);
+							servidor_juego.set_Estado(Estados_Servidor.ENCENDIDO);
 						break;
 	
 						case 'G'://guardando
-							servidor_juego.set_Estado((byte) 2);
+							servidor_juego.set_Estado(Estados_Servidor.GUARDANDO);
 						break;
 	
 						case 'C'://cerrado
-							servidor_juego.set_Estado((byte) 0);
+							servidor_juego.set_Estado(Estados_Servidor.APAGADO);
 						break;
 					}
 				}
@@ -141,7 +139,7 @@ final public class ComunicadorRespuesta implements Runnable
 			outputStream.close();
 			if (servidor_juego != null)
 			{
-				servidor_juego.set_Estado((byte) 0);
+				servidor_juego.set_Estado(Estados_Servidor.APAGADO);
 				Cuentas.get_Cuentas_Cargadas().values().forEach(cuenta ->
 				{
 					cuenta.get_Login_respuesta().enviar_paquete(Servidores.get_Obtener_Servidores());
@@ -152,8 +150,24 @@ final public class ComunicadorRespuesta implements Runnable
 		}
 		catch (IOException e)
 		{
-			System.out.println("Error comunicador: " + e.getCause());
+			Consola.println("Error comunicador: " + e.getCause());
 			return;
+		}
+	}
+	
+	public void enviar_Cuenta(final String cuenta) 
+	{
+		enviar_Paquete('C' + cuenta);
+	}
+	
+	private void enviar_Paquete(String paquete) 
+	{
+		if(outputStream != null && !socket.isClosed() && !paquete.isEmpty() && !paquete.equals("" + (char)0))
+		{
+			outputStream.print(paquete + (char)0x00);
+			outputStream.flush();
+			if(Main.modo_debug)
+				Consola.println("Comunicador: Enviado >> " + paquete);
 		}
 	}
 }

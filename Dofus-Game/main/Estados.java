@@ -3,7 +3,7 @@ package main;
 public enum Estados 
 {
 	APAGADO,
-	VINCULANDO,
 	CARGANDO,
+	VINCULANDO,
 	ENCENDIDO
 }

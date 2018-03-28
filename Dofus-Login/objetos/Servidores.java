@@ -9,22 +9,19 @@ final public class Servidores
 {
 	final private int id;
 	final private Comunidades comunidad;
-	private byte estado;
-	final private String nombre, ip, puerto, ip_database, usuario_database, password_database;
-	private static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
+	private Estados_Servidor estado;
+	public static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	private ComunicadorRespuesta comunicador_game = null;
+	private final boolean servidor_vip;
+	private Poblacion poblacion;
 	
-	public Servidores(int _id, String _nombre, Comunidades _comunidad, byte _estado, String _ip, String _puerto, String _ip_database, String _usuario_database, String _password_database)
+	public Servidores(int _id, Comunidades _comunidad, byte _poblacion, final boolean _vip_necesario)
 	{
 		id = _id;
-		nombre = _nombre;
 		comunidad = _comunidad;
-		estado = _estado;
-		ip = _ip;
-		puerto = _puerto;
-		ip_database = _ip_database;
-		usuario_database = _usuario_database;
-		password_database = _password_database;
+		estado = Estados_Servidor.APAGADO;
+		servidor_vip = _vip_necesario;
+		poblacion = Poblacion.values()[_poblacion];
 		servidores.put(id, this);
 	}
 	
@@ -38,63 +35,22 @@ final public class Servidores
 		return comunidad;
 	}
 	
-	public String get_Nombre() 
+	public static Servidores get(int id)
 	{
-		return nombre;
-	}
-	
-	public String get_Ip() 
-	{
-		return ip;
-	}
-	
-	public String get_Puerto()
-	{
-		return puerto;
-	}
-	
-	public String get_Ip_database()
-	{
-		return ip_database;
-	}
-	
-	public String get_Usuario_database()
-	{
-		return usuario_database;
-	}
-	
-	public String get_Password_database() 
-	{
-		return password_database;
-	}
-	
-	public static String get_Obtener_Servidores()
-	{
-        final StringBuilder paquete_servidores = new StringBuilder(servidores.size() * 10).append("AH");
-        servidores.values().forEach(servidor ->
-        {
-        	paquete_servidores.append(paquete_servidores.length() > 2 ? '|' : "");
-        	paquete_servidores.append(servidor.get_Id()).append(';').append(servidor.get_Estado()).append(";110;1");
-        });
-        return paquete_servidores.toString();
+        return servidores.containsKey(id) ? servidores.get(id) : null;
     }
-	
-	public static ConcurrentMap<Integer, Servidores> get_Servidores()
-	{
-		return servidores;
-	}
 
 	public ComunicadorRespuesta get_Comunicador_game()
 	{
 		return comunicador_game;
 	}
 
-	public byte get_Estado() 
+	public Estados_Servidor get_Estado() 
 	{
 		return estado;
 	}
 
-	public void set_Estado(byte _estado) 
+	public void set_Estado(Estados_Servidor _estado) 
 	{
 		estado = _estado;
 	}
@@ -103,4 +59,63 @@ final public class Servidores
 	{
 		comunicador_game = _comunicador_game;
 	}
+
+	public boolean es_Servidor_Vip()
+	{
+		return servidor_vip;
+	}
+	
+	public Poblacion get_Poblacion()
+	{
+        return poblacion;
+    }
+	
+	public static String get_Obtener_Servidores()
+	{
+        final StringBuilder paquete_servidores = new StringBuilder(servidores.size() * 10).append("AH");
+        servidores.values().forEach(servidor ->
+        {
+        	paquete_servidores.append(paquete_servidores.length() > 2 ? '|' : "");
+        	paquete_servidores.append(servidor.get_Id()).append(';');
+        	paquete_servidores.append(servidor.get_Estado().ordinal()).append(';');
+        	paquete_servidores.append(servidor.get_Poblacion().get_Id()).append(';');
+        	paquete_servidores.append(servidor.es_Servidor_Vip()? 1 : 0);
+        });
+        return paquete_servidores.toString();
+    }
+	
+	public enum Estados_Servidor
+	{
+        APAGADO,
+        ENCENDIDO,
+        GUARDANDO;
+    }
+	
+	public enum Poblacion 
+	{
+		RECOMENDADO((byte) 1, 1000),
+        MEDIA((byte) 2, 500),
+        ELEVADA((byte) 3, 300),
+        COMPLETO((byte) 4, 20),
+		DISPONIBLE_PROXIMAMENTE((byte) 99, 0);
+
+        private final byte id;
+        private final int plazas_libres;
+
+        private Poblacion(byte _id, int _plazas_libres)
+        {
+        	id = _id;
+        	plazas_libres = _plazas_libres;
+        }
+
+		public byte get_Id() 
+		{
+			return id;
+		}
+
+		public int get_Plazas_Libres() 
+		{
+			return plazas_libres;
+		}
+    }
 }

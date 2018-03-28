@@ -23,7 +23,7 @@ public class Servidores_DB extends DatabaseManager
 
 			while(query.get_Rs().next())
 			{
-				new Servidores(query.get_Rs().getInt(1), query.get_Rs().getString(2), Comunidades.get_Comunidades().get(query.get_Rs().getByte(3)), query.get_Rs().getByte(4), query.get_Rs().getString(5), query.get_Rs().getString(6), query.get_Rs().getString(7), query.get_Rs().getString(8), query.get_Rs().getString(9));
+				new Servidores(query.get_Rs().getInt(1), Comunidades.get_Comunidades().get(query.get_Rs().getByte(2)), query.get_Rs().getByte(3), query.get_Rs().getBoolean(4));
 			}
 			cerrar(query);
 		}

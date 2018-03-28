@@ -1,4 +1,4 @@
-SET NAMES utf8mb4;
+﻿SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
@@ -14,14 +14,17 @@ CREATE TABLE `comunidades`  (
 -- ----------------------------
 -- Records of comunidades
 -- ----------------------------
-INSERT INTO `comunidades` VALUES (0, 'fr');
-INSERT INTO `comunidades` VALUES (1, 'en');
-INSERT INTO `comunidades` VALUES (2, 'en');
-INSERT INTO `comunidades` VALUES (3, 'de');
-INSERT INTO `comunidades` VALUES (4, 'es');
-INSERT INTO `comunidades` VALUES (6, 'pt');
-INSERT INTO `comunidades` VALUES (7, 'nl');
-INSERT INTO `comunidades` VALUES (9, 'it');
+INSERT INTO `comunidades` VALUES (0, 'FR');
+INSERT INTO `comunidades` VALUES (1, 'EN');
+INSERT INTO `comunidades` VALUES (2, 'XX');
+INSERT INTO `comunidades` VALUES (3, 'DE');
+INSERT INTO `comunidades` VALUES (4, 'ES');
+INSERT INTO `comunidades` VALUES (5, 'RU');
+INSERT INTO `comunidades` VALUES (6, 'BR');
+INSERT INTO `comunidades` VALUES (7, 'NL');
+INSERT INTO `comunidades` VALUES (9, 'IT');
+INSERT INTO `comunidades` VALUES (10, 'JP');
+INSERT INTO `comunidades` VALUES (11, 'DE');
 
 -- ----------------------------
 -- Table structure for cuentas
@@ -45,10 +48,10 @@ CREATE TABLE `cuentas`  (
 -- ----------------------------
 -- Records of cuentas
 -- ----------------------------
-INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', 3, '2019-03-28 16:23:32', 4, 0);
-INSERT INTO `cuentas` VALUES (2, 'tes', '1', '', 3, '2019-03-06 13:32:41', 4, 0);
-INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', 3, '2017-03-09 19:43:16', 4, 0);
-INSERT INTO `cuentas` VALUES (4, 'vip', '1', '1', 3, '2019-03-31 20:02:24', 4, 0);
+INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', 4, '2030-03-28 17:45:50', 4, 0);
+INSERT INTO `cuentas` VALUES (2, 'tes', '1', '', 4, '2018-03-27 17:46:08', 4, 0);
+INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', 4, '2018-03-28 17:46:23', 4, 0);
+INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', 4, '2018-03-28 17:46:37', 4, 0);
 
 -- ----------------------------
 -- Table structure for personajes
@@ -76,8 +79,8 @@ CREATE TABLE `personajes`  (
 -- Records of personajes
 -- ----------------------------
 INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', -1, -1, -1, 1, 1, 601);
-INSERT INTO `personajes` VALUES (2, 'test', -1, -1, -1, 1, 1, 602);
-INSERT INTO `personajes` VALUES (3, 'test1', -1, -1, -1, 4, 1, 602);
+INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 1, 1, 601);
+INSERT INTO `personajes` VALUES (3, 'test-server', -1, -1, -1, 1, 1, 602);
 
 -- ----------------------------
 -- Table structure for razas
@@ -120,21 +123,17 @@ INSERT INTO `razas` VALUES (12, 'Pandawa', 6, 3, 46, 0, 100, 10289, 250);
 DROP TABLE IF EXISTS `servidores`;
 CREATE TABLE `servidores`  (
   `id` int(4) NOT NULL COMMENT 'Id del servidor',
-  `nombre` varchar(35) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Nombre del servidor',
   `comunidad` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Comunidad del servidor',
-  `estado` tinyint(2) NOT NULL DEFAULT 1 COMMENT 'Estado del servidor',
-  `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'ip del juego',
-  `puerto` varchar(5) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Puerto del juego',
-  `ip_database` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'ip de la database',
-  `usuario_database` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'usuario login de la database',
-  `password_database` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'password de la database',
-  PRIMARY KEY (`id`, `nombre`) USING BTREE
+  `estado` tinyint(2) NOT NULL DEFAULT 1 COMMENT 'RECOMENDADO -> 1,\r\nMEDIA -> 2,\r\nELEVADA -> 3\r\nCOMPLETO -> 4\r\nDISPONIBLE_PROXIMAMENTE -> 5',
+  `poblacion` tinyint(2) NOT NULL DEFAULT 1 COMMENT 'id de las plazas libres del servidor',
+  `vip_necesario` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Solo Acceso vip',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of servidores
 -- ----------------------------
-INSERT INTO `servidores` VALUES (601, 'Eratz', 2, 0, 'localhost', '5555', 'localhost', 'root', '');
-INSERT INTO `servidores` VALUES (602, 'Henual', 2, 0, 'localhost', '5556', 'localhost', 'root', '');
+INSERT INTO `servidores` VALUES (601, 2, 0, 0, 0);
+INSERT INTO `servidores` VALUES (602, 2, 0, 0, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -3,6 +3,7 @@ package login.fila;
 import login.enums.EstadosLogin;
 import main.Estados;
 import main.Main;
+import main.consola.Consola;
 import objetos.Cuentas;
 import objetos.Servidores;
 
@@ -57,7 +58,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 		if(isAlive())
 		{
 			interrupt();
-			System.out.println("> ServerFila cerrada");
+			Consola.println("ServerFila cerrada");
 		}
 	}
 

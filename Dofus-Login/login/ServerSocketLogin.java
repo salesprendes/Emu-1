@@ -9,6 +9,7 @@ import login.enums.ErroresLogin;
 import main.Configuracion;
 import main.Estados;
 import main.Main;
+import main.consola.Consola;
 
 final public class ServerSocketLogin extends Thread implements Runnable
 {
@@ -22,7 +23,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 			setName("Server-Login");
 			server_socket = new ServerSocket(Configuracion.PUERTO_LOGIN);
 			start();
-			System.out.println("> Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
+			Consola.println("Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
 		} 
 		catch (IOException e)
 		{
@@ -54,7 +55,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 				expulsar_Todos_Clientes();
 	            server_socket.close();
 	            interrupt();
-	            System.out.println("> ServerSocket login cerrado");
+	            Consola.println("ServerSocket login cerrado");
 	        } 
 	        catch (IOException e)
 	        {
