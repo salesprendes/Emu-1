@@ -41,8 +41,8 @@ final public class Fila
 			}
 			else
 			{
-				cuenta.get_Login_respuesta().enviar_paquete("M116");
-				cuenta.get_Login_respuesta().enviar_paquete("ATE");
+				cuenta.get_Login_respuesta().enviar_Paquete("M116");
+				cuenta.get_Login_respuesta().enviar_Paquete("ATE");
 				cuenta.get_Login_respuesta().cerrar_Conexion();
 			}
 		}
@@ -103,7 +103,7 @@ final public class Fila
 		{
 			fila.forEach(f -> 
 			{
-				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+				f.get_Cuenta().get_Login_respuesta().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
 			});
 		}
 	}
@@ -115,7 +115,7 @@ final public class Fila
 			fila.forEach(f ->
 			{
 				f.set_Posicion(f.get_Posicion() - 1);
-				f.get_Cuenta().get_Login_respuesta().enviar_paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+				f.get_Cuenta().get_Login_respuesta().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
 			});
 		}
 	}

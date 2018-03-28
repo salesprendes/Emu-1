@@ -73,7 +73,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 	{
 		for(LoginRespuesta jugador : clientes_login)
 		{
-			jugador.enviar_paquete(ErroresLogin.SERVIDOR_EN_MANTENIMIENTO.toString());
+			jugador.enviar_Paquete(ErroresLogin.SERVIDOR_EN_MANTENIMIENTO.toString());
 			jugador.cerrar_Conexion();
 		}
 	}

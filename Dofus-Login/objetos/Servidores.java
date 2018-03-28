@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import login.comunicador.ComunicadorRespuesta;
+import login.enums.ErroresServidor;
 
 final public class Servidores 
 {
@@ -84,10 +85,20 @@ final public class Servidores
         return paquete_servidores.toString();
     }
 	
+	public static String get_Obtener_Servidores_Disponibles() 
+	{
+        final StringBuilder paquete = new StringBuilder(ErroresServidor.SERVIDORES_LIBRES.toString());
+        servidores.values().stream().filter(filtro -> !filtro.es_Servidor_Vip() && filtro.get_Poblacion() != Poblacion.COMPLETO).forEach(servidor -> 
+        {
+        	paquete.append(servidor.get_Id()).append('|');
+        });
+        return paquete.toString();
+    }
+	
 	public enum Estados_Servidor
 	{
         APAGADO,
-        ENCENDIDO,
+        CONECTADO,
         GUARDANDO;
     }
 	
@@ -96,8 +107,7 @@ final public class Servidores
 		RECOMENDADO((byte) 1, 1000),
         MEDIA((byte) 2, 500),
         ELEVADA((byte) 3, 300),
-        COMPLETO((byte) 4, 20),
-		DISPONIBLE_PROXIMAMENTE((byte) 99, 0);
+        COMPLETO((byte) 4, 20);
 
         private final byte id;
         private final int plazas_libres;

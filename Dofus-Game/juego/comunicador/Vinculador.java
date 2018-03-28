@@ -48,7 +48,6 @@ final public class Vinculador extends Thread implements Runnable
 			StringBuilder paquete = new StringBuilder();
 			Main.esta_vinculado = true;
 			final char[] buffer = new char[1];
-			System.out.println();
 			while(inputStreamReader.read(buffer, 0, 1) != -1 && (Main.estado_emulador == Estados.ENCENDIDO || Main.estado_emulador == Estados.VINCULANDO) && !isInterrupted() && socket.isConnected())
 			{
 				if (buffer[0] != (char)0 && buffer[0] != '\n' && buffer[0] != '\r')
@@ -58,7 +57,7 @@ final public class Vinculador extends Thread implements Runnable
 				else if (!paquete.toString().isEmpty())
 				{
 					paquete.append(new String(paquete.toString().getBytes("UTF-8")));
-					//if(Main.modo_debug)
+					if(Main.modo_debug)
 						System.out.println("Comunicador: Recibido >> " + paquete);
 					controlador_Paquetes(paquete.toString());
 					paquete.setLength(0);
@@ -78,6 +77,18 @@ final public class Vinculador extends Thread implements Runnable
 	
 	private void controlador_Paquetes(String paquete)
 	{
+		switch(paquete.charAt(0))
+		{
+			case 'E'://E|estado_letra
+				switch (paquete.charAt(2))
+				{
+					case 'C'://cierra el socket
+						cerrar_Conexion();
+					break;
+				}
+			break;
+		}
+		
 	}
 	
 	private void enviar_Paquete(String paquete) 

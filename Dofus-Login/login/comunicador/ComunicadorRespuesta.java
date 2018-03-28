@@ -86,12 +86,13 @@ final public class ComunicadorRespuesta implements Runnable
 					if(servidor_juego != null)
 					{
 						servidor_juego.set_Comunicador_game(this);
-						servidor_juego.set_Estado(Estados_Servidor.ENCENDIDO);
+						servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
 						Consola.println("Servidor " + servidor_juego.get_Id() + " conectado");
-						enviar_Paquete("hola");
 					}
 					else
 					{
+						enviar_Paquete("E|C");
+						cerrar_Conexion_Comunicador();
 						Consola.println("Se ha recibido el paquete " + paquete + " pero no existe el servidor");
 					}
 				}
@@ -103,7 +104,7 @@ final public class ComunicadorRespuesta implements Runnable
 					switch (paquete.charAt(2))
 					{
 						case 'A'://abierto
-							servidor_juego.set_Estado(Estados_Servidor.ENCENDIDO);
+							servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
 						break;
 	
 						case 'G'://guardando
@@ -122,7 +123,7 @@ final public class ComunicadorRespuesta implements Runnable
 		{
 			Cuentas.get_Cuentas_Cargadas().values().stream().filter(filtro -> filtro.get_Login_respuesta().get_Estado_login() == EstadosLogin.LISTA_SERVIDORES).forEach(cuenta -> 
 			{
-				cuenta.get_Login_respuesta().enviar_paquete(Servidores.get_Obtener_Servidores());
+				cuenta.get_Login_respuesta().enviar_Paquete(Servidores.get_Obtener_Servidores());
 			});
 		}
 	}
@@ -142,7 +143,7 @@ final public class ComunicadorRespuesta implements Runnable
 				servidor_juego.set_Estado(Estados_Servidor.APAGADO);
 				Cuentas.get_Cuentas_Cargadas().values().forEach(cuenta ->
 				{
-					cuenta.get_Login_respuesta().enviar_paquete(Servidores.get_Obtener_Servidores());
+					cuenta.get_Login_respuesta().enviar_Paquete(Servidores.get_Obtener_Servidores());
 				});
 				servidor_juego.set_Comunicador_game(null);
 			}
@@ -155,7 +156,7 @@ final public class ComunicadorRespuesta implements Runnable
 		}
 	}
 	
-	public void enviar_Cuenta(final String cuenta) 
+	public void enviar_Cuenta(final Cuentas cuenta) 
 	{
 		enviar_Paquete('C' + cuenta);
 	}

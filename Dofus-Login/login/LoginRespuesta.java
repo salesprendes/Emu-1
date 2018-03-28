@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import login.enums.ErroresLogin;
+import login.enums.ErroresServidor;
 import login.enums.EstadosLogin;
 import login.fila.Fila;
 import main.Estados;
@@ -17,6 +18,8 @@ import main.Formulas;
 import main.Main;
 import main.consola.Consola;
 import objetos.Cuentas;
+import objetos.Servidores;
+import objetos.Servidores.Estados_Servidor;
 
 final public class LoginRespuesta implements Runnable
 {
@@ -60,7 +63,7 @@ final public class LoginRespuesta implements Runnable
 		final StringBuilder paquete = new StringBuilder();
 
 		hash_key = Formulas.generar_Key();
-		enviar_paquete(paquete.append("HC").append(hash_key).toString());
+		enviar_Paquete(paquete.append("HC").append(hash_key).toString());
 		paquete.setLength(0);
 		try
 		{
@@ -102,7 +105,7 @@ final public class LoginRespuesta implements Runnable
 				}
 				else
 				{
-					enviar_paquete(ErroresLogin.VERSION_INCORRECTA.toString());
+					enviar_Paquete(ErroresLogin.VERSION_INCORRECTA.toString());
 					cerrar_Conexion();
 					return;
 				}
@@ -123,19 +126,19 @@ final public class LoginRespuesta implements Runnable
 						}
 						else
 						{
-							enviar_paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
+							enviar_Paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
 							return;
 						}
 					}
 					else
 					{
-						enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
+						enviar_Paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
+					enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 					cerrar_Conexion();
 				}
 			break;
@@ -152,21 +155,21 @@ final public class LoginRespuesta implements Runnable
 						}
 						else
 						{
-							enviar_paquete(ErroresLogin.CUENTA_BANEADA.toString());
+							enviar_Paquete(ErroresLogin.CUENTA_BANEADA.toString());
 							cerrar_Conexion();
 							return;
 						}
 					}
 					else
 					{
-						enviar_paquete(ErroresLogin.CUENTA_NO_VALIDA.toString());
+						enviar_Paquete(ErroresLogin.CUENTA_NO_VALIDA.toString());
 						cerrar_Conexion();
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete(ErroresLogin.CUENTA_CONECTADA.toString());
+					enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
 					cerrar_Conexion();
 					return;
 				}
@@ -191,8 +194,8 @@ final public class LoginRespuesta implements Runnable
 						}
 						else
 						{
-							_cuenta.get_Login_respuesta().enviar_paquete("ATE");
-							enviar_paquete(ErroresLogin.CUENTA_YA_CONECTADA.toString());
+							_cuenta.get_Login_respuesta().enviar_Paquete("ATE");
+							enviar_Paquete(ErroresLogin.CUENTA_YA_CONECTADA.toString());
 							cerrar_Conexion();
 							_cuenta.get_Login_respuesta().cerrar_Conexion();
 							return;
@@ -200,14 +203,14 @@ final public class LoginRespuesta implements Runnable
 					}
 					else
 					{
-						enviar_paquete(ErroresLogin.CUENTA_PASSWORD_INCORRECTA.toString());
+						enviar_Paquete(ErroresLogin.CUENTA_PASSWORD_INCORRECTA.toString());
 						cerrar_Conexion();
 						return;
 					}
 				}
 				else
 				{
-					enviar_paquete(ErroresLogin.CUENTA_CONECTADA.toString());
+					enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
 					cerrar_Conexion();
 					Consola.println("paquete incorrecto password");
 					return;
@@ -217,7 +220,7 @@ final public class LoginRespuesta implements Runnable
 			case FILA_ESPERA:
 				if(cuenta.get_Apodo().isEmpty() && !cuenta.esta_Creando_apodo() && !cuenta.get_Fila_espera())
 				{
-					enviar_paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
+					enviar_Paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
 					cuenta.set_Creando_apodo(true);
 					estado_login = EstadosLogin.CREACION_APODO;
 				}
@@ -232,19 +235,41 @@ final public class LoginRespuesta implements Runnable
 				switch(paquete.charAt(1))
 				{
 					case 'x':
-						enviar_paquete("AxK" + cuenta.get_Fecha_abono() + Main.get_Database().get_Cuentas().get_Contar_Personajes_Servidor(cuenta));
+						enviar_Paquete("AxK" + cuenta.get_Fecha_abono() + Main.get_Database().get_Cuentas().get_Contar_Personajes_Servidor(cuenta));
 					break;
 					
 					case 'X'://Seleccion del servidor
-						
+						if(estado_login == EstadosLogin.LISTA_SERVIDORES)
+						{
+							Servidores servidor = Servidores.get(Integer.parseInt(paquete.substring(2)));
+							if(servidor.get_Comunicador_game() != null)
+							{
+								if(servidor.get_Estado() != Estados_Servidor.CONECTADO)
+								{
+									enviar_Paquete(ErroresServidor.SERVIDOR_NO_DISPONIBLE.toString());
+									return;
+								}
+								if(servidor.es_Servidor_Vip() && !cuenta.es_Cuenta_Abonada())
+								{
+									enviar_Paquete(Servidores.get_Obtener_Servidores_Disponibles());
+									return;
+								}
+								servidor.get_Comunicador_game().enviar_Cuenta(cuenta);
+							}
+							else
+							{
+								enviar_Paquete(ErroresServidor.SERVIDOR_NO_EXISTENTE.toString());
+								return;
+							}
+						}
 					break;
 					
 					case 'F':
-						enviar_paquete("AF" + Main.get_Database().get_Cuentas().get_Paquete_Buscar_Servidores(paquete.substring(2)));
+						enviar_Paquete("AF" + Main.get_Database().get_Cuentas().get_Paquete_Buscar_Servidores(paquete.substring(2)));
 					break;
 					
 					default:
-						enviar_paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
+						enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 						cerrar_Conexion();
 					break;
 				}
@@ -285,7 +310,7 @@ final public class LoginRespuesta implements Runnable
 		}
 	}
 	
-	public void enviar_paquete(String paquete)
+	public void enviar_Paquete(String paquete)
 	{
 		if (outputStream != null && !socket.isClosed() && !paquete.isEmpty() && !paquete.equals("" + (char)0))
 		{
