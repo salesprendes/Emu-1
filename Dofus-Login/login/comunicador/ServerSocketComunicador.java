@@ -35,7 +35,7 @@ final public class ServerSocketComunicador extends Thread implements Runnable
 		{
 			try 
 			{
-				server_socket.accept();
+				new ComunicadorRespuesta(server_socket.accept());
 			}
 			catch (IOException e)
 			{

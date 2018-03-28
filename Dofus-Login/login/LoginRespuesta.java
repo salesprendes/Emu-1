@@ -294,9 +294,7 @@ final public class LoginRespuesta implements Runnable
 				outputStream.print(paquete + (char)0);
 				outputStream.flush();
 				if(Main.modo_debug)
-				{
 					System.out.println("Enviado >> " + paquete);
-				}
 			} 
 			catch (final UnsupportedEncodingException e) 
 			{
