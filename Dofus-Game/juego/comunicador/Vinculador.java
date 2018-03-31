@@ -7,15 +7,18 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import database.ConexionPool;
 import main.Configuracion;
 import main.Estados;
 import main.Main;
+import objetos.Cuentas;
 
 final public class Vinculador extends Thread implements Runnable
 {
 	private Socket socket;
 	private BufferedReader inputStreamReader;
 	private PrintWriter outputStream;
+	private ConexionPool database = Main.get_Database();
 
 	public Vinculador() 
 	{
@@ -48,7 +51,7 @@ final public class Vinculador extends Thread implements Runnable
 			StringBuilder paquete = new StringBuilder();
 			Main.esta_vinculado = true;
 			final char[] buffer = new char[1];
-			while(inputStreamReader.read(buffer, 0, 1) != -1 && (Main.estado_emulador == Estados.ENCENDIDO || Main.estado_emulador == Estados.VINCULANDO) && !isInterrupted() && socket.isConnected())
+			while(inputStreamReader.read(buffer, 0, 1) != -1 && Main.estado_emulador != Estados.APAGADO && !isInterrupted() && socket.isConnected())
 			{
 				if (buffer[0] != (char)0 && buffer[0] != '\n' && buffer[0] != '\r')
 		    	{
@@ -56,10 +59,9 @@ final public class Vinculador extends Thread implements Runnable
 		    	}
 				else if (!paquete.toString().isEmpty())
 				{
-					paquete.append(new String(paquete.toString().getBytes("UTF-8")));
-					if(Main.modo_debug)
-						System.out.println("Comunicador: Recibido >> " + paquete);
 					controlador_Paquetes(paquete.toString());
+					//if(Main.modo_debug)
+					System.out.println("Comunicador: Recibido >> " + paquete);
 					paquete.setLength(0);
 				}
 			}
@@ -71,7 +73,9 @@ final public class Vinculador extends Thread implements Runnable
 		}
 		finally
 		{
-			cerrar_Conexion();
+			Main.estado_emulador = Estados.VINCULANDO;
+			Main.esta_vinculado = false;
+			Main.Vincular_Login();
 		}
 	}
 	
@@ -84,6 +88,19 @@ final public class Vinculador extends Thread implements Runnable
 				{
 					case 'C'://cierra el socket
 						cerrar_Conexion();
+					break;
+				}
+			break;
+			
+			case 'C'://C|
+				switch (paquete.charAt(2))
+				{
+					case 'N'://C|N|integro ---> nueva conexion cargar cuenta
+						Cuentas cuenta = database.get_Cuentas().cargar_Cuenta(paquete.charAt(4));
+						if(cuenta != null)
+						{
+							
+						}
 					break;
 				}
 			break;

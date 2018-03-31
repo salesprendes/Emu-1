@@ -56,12 +56,10 @@ final public class ComunicadorRespuesta implements Runnable
 				}
 				else if (!paquete.toString().isEmpty())
 				{
-					if(Main.modo_debug)
-					{
-						Consola.println("Recibido-comunicador: " + paquete);
-					}
 					controlador_Paquetes(paquete.toString());
 					paquete.setLength(0);
+					if(Main.modo_debug)
+						Consola.println("Recibido-comunicador: " + paquete);
 				}
 			}
 		}
@@ -83,7 +81,7 @@ final public class ComunicadorRespuesta implements Runnable
 				if(paquete.length() > 2)//C|id
 				{
 					servidor_juego = Servidores.get(Integer.valueOf(paquete.substring(2)));
-					if(servidor_juego != null)
+					if(servidor_juego != null && servidor_juego.get_Comunicador_game() == null)
 					{
 						servidor_juego.set_Comunicador_game(this);
 						servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
@@ -156,9 +154,9 @@ final public class ComunicadorRespuesta implements Runnable
 		}
 	}
 	
-	public void enviar_Cuenta(final Cuentas cuenta) 
+	public void enviar_Cuenta(final int id_cuenta) 
 	{
-		enviar_Paquete('C' + cuenta);
+		enviar_Paquete("C|N|" + id_cuenta);
 	}
 	
 	private void enviar_Paquete(String paquete) 
@@ -169,6 +167,7 @@ final public class ComunicadorRespuesta implements Runnable
 			outputStream.flush();
 			if(Main.modo_debug)
 				Consola.println("Comunicador: Enviado >> " + paquete);
+
 		}
 	}
 }

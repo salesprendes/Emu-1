@@ -24,6 +24,13 @@ public class Configuracion
 	public static String DATABASE_PASSWORD_LOGIN = "";
 	public static String DATABASE_NOMBRE_LOGIN = "dofus_global";
 	
+	/** ACCESO DATABASE LOGIN **/
+	public static String DATABASE_IP_GAME = "127.0.0.1";
+	public static int DATABASE_PUERTO_GAME = 3306;
+	public static String DATABASE_USUARIO_GAME = "root";
+	public static String DATABASE_PASSWORD_GAME = "";
+	public static String DATABASE_NOMBRE_GAME = "dofus_servidor";
+	
 	public static boolean cargar_Configuracion()
 	{
 		try 
@@ -44,6 +51,12 @@ public class Configuracion
 				DATABASE_NOMBRE_LOGIN	=	propiedades.getProperty("DATABASE_NOMBRE_LOGIN");
 				
 				SERVIDOR_ID	=	Integer.valueOf(propiedades.getProperty("SERVIDOR_ID"));
+				
+				DATABASE_IP_GAME		=	propiedades.getProperty("DATABASE_IP_GAME");
+				DATABASE_PUERTO_GAME	=	Integer.valueOf(propiedades.getProperty("DATABASE_PUERTO_GAME"));
+				DATABASE_USUARIO_GAME	=	propiedades.getProperty("DATABASE_USUARIO_GAME");
+				DATABASE_PASSWORD_GAME	=	propiedades.getProperty("DATABASE_PASSWORD_GAME");
+				DATABASE_NOMBRE_GAME	=	propiedades.getProperty("DATABASE_NOMBRE_GAME");
 				
 				propiedades.clear();
 				propiedades = null;
@@ -76,6 +89,12 @@ public class Configuracion
 		propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
 		
 		propiedades.setProperty("SERVIDOR_ID", Integer.toString(SERVIDOR_ID));
+		
+		propiedades.setProperty("DATABASE_IP_GAME", DATABASE_IP_GAME);
+		propiedades.setProperty("DATABASE_PUERTO_GAME", Integer.toString(DATABASE_PUERTO_GAME));
+		propiedades.setProperty("DATABASE_USUARIO_GAME", DATABASE_USUARIO_GAME);
+		propiedades.setProperty("DATABASE_PASSWORD_GAME", DATABASE_PASSWORD_GAME);
+		propiedades.setProperty("DATABASE_NOMBRE_GAME", DATABASE_NOMBRE_GAME);
 		
 		propiedades.store(new FileOutputStream(new File("conf-game.txt")), "Archivo de configuración");
 		propiedades.clear();

@@ -122,10 +122,12 @@ INSERT INTO `razas` VALUES (12, 'Pandawa', 6, 3, 46, 0, 100, 10289, 250);
 -- ----------------------------
 DROP TABLE IF EXISTS `servidores`;
 CREATE TABLE `servidores`  (
-  `id` int(4) NOT NULL COMMENT 'Id del servidor',
+  `id` int(4) NOT NULL DEFAULT 0 COMMENT 'Id del servidor',
   `comunidad` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Comunidad del servidor',
   `poblacion` tinyint(2) NOT NULL DEFAULT 1 COMMENT 'id de las plazas libres del servidor',
   `vip_necesario` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Solo Acceso vip',
+  `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '' COMMENT 'ip del game',
+  `puerto` int(4) NOT NULL COMMENT 'puerto del game',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `Referencia_Comunidad`(`comunidad`) USING BTREE,
   CONSTRAINT `Referencia_Comunidad` FOREIGN KEY (`comunidad`) REFERENCES `comunidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -134,7 +136,7 @@ CREATE TABLE `servidores`  (
 -- ----------------------------
 -- Records of servidores
 -- ----------------------------
-INSERT INTO `servidores` VALUES (601, 2, 0, 0);
-INSERT INTO `servidores` VALUES (602, 2, 0, 0);
+INSERT INTO `servidores` VALUES (601, 2, 0, 1, '127.0.0.1', 5555);
+INSERT INTO `servidores` VALUES (602, 2, 0, 0, '127.0.0.1', 5556);
 
 SET FOREIGN_KEY_CHECKS = 1;

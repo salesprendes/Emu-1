@@ -8,21 +8,24 @@ import login.enums.ErroresServidor;
 
 final public class Servidores 
 {
-	final private int id;
+	final private int id, puerto;
 	final private Comunidades comunidad;
 	private Estados_Servidor estado;
 	public static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	private ComunicadorRespuesta comunicador_game = null;
 	private final boolean servidor_vip;
+	private final String ip;
 	private Poblacion poblacion;
 	
-	public Servidores(int _id, Comunidades _comunidad, byte _poblacion, final boolean _vip_necesario)
+	public Servidores(int _id, Comunidades _comunidad, byte _poblacion, final boolean _vip_necesario, final String _ip, final int _puerto)
 	{
 		id = _id;
 		comunidad = _comunidad;
 		estado = Estados_Servidor.APAGADO;
 		servidor_vip = _vip_necesario;
 		poblacion = Poblacion.values()[_poblacion];
+		ip = _ip;
+		puerto = _puerto;
 		servidores.put(id, this);
 	}
 	
@@ -49,6 +52,16 @@ final public class Servidores
 	public Estados_Servidor get_Estado() 
 	{
 		return estado;
+	}
+	
+	public String get_Ip() 
+	{
+		return ip;
+	}
+
+	public int get_Puerto()
+	{
+		return puerto;
 	}
 
 	public void set_Estado(Estados_Servidor _estado) 

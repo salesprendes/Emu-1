@@ -59,7 +59,7 @@ final public class LoginRespuesta implements Runnable
 
 	public void run()
 	{
-		final char[] buffer = new char[1];
+		final char[] buffer = new char[4];
 		final StringBuilder paquete = new StringBuilder();
 
 		hash_key = Formulas.generar_Key();
@@ -232,15 +232,15 @@ final public class LoginRespuesta implements Runnable
 			break;
 
 			case LISTA_SERVIDORES:
-				switch(paquete.charAt(1))
+				if (paquete.startsWith("A") && estado_login == EstadosLogin.LISTA_SERVIDORES)
 				{
-					case 'x':
-						enviar_Paquete("AxK" + cuenta.get_Fecha_abono() + Main.get_Database().get_Cuentas().get_Contar_Personajes_Servidor(cuenta));
-					break;
-					
-					case 'X'://Seleccion del servidor
-						if(estado_login == EstadosLogin.LISTA_SERVIDORES)
-						{
+					switch(paquete.charAt(1))
+					{
+						case 'x':
+							enviar_Paquete("AxK" + cuenta.get_Fecha_abono() + Main.get_Database().get_Cuentas().get_Contar_Personajes_Servidor(cuenta));
+						break;
+						
+						case 'X'://Seleccion del servidor
 							Servidores servidor = Servidores.get(Integer.parseInt(paquete.substring(2)));
 							if(servidor.get_Comunicador_game() != null)
 							{
@@ -254,24 +254,30 @@ final public class LoginRespuesta implements Runnable
 									enviar_Paquete(Servidores.get_Obtener_Servidores_Disponibles());
 									return;
 								}
-								servidor.get_Comunicador_game().enviar_Cuenta(cuenta);
+								servidor.get_Comunicador_game().enviar_Cuenta(cuenta.get_Id());
+								enviar_Paquete("AYK" + servidor.get_Ip() + ':' + servidor.get_Puerto() + ';' + servidor.get_Id());
 							}
 							else
 							{
 								enviar_Paquete(ErroresServidor.SERVIDOR_NO_EXISTENTE.toString());
 								return;
 							}
-						}
-					break;
-					
-					case 'F':
-						enviar_Paquete("AF" + Main.get_Database().get_Cuentas().get_Paquete_Buscar_Servidores(paquete.substring(2)));
-					break;
-					
-					default:
-						enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
-						cerrar_Conexion();
-					break;
+						break;
+						
+						case 'F':
+							enviar_Paquete("AF" + Main.get_Database().get_Cuentas().get_Paquete_Buscar_Servidores(paquete.substring(2)));
+						break;
+						
+						default:
+							enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
+							cerrar_Conexion();
+						break;
+					}
+				}
+				else
+				{
+					cerrar_Conexion();
+					return;
 				}
 			break;
 		}
@@ -279,53 +285,64 @@ final public class LoginRespuesta implements Runnable
 
 	public void cerrar_Conexion()
 	{
-		try
+		synchronized(this) 
 		{
-			if(inputStreamReader != null)
+			try
 			{
-				inputStreamReader.close();
+				if(inputStreamReader != null)
+				{
+					inputStreamReader.close();
+				}
+				if(outputStream != null)
+				{
+					outputStream.close();
+				}
+				if (socket != null && !socket.isClosed())
+				{
+					socket.close();
+				}
+				Main.servidor_login.get_Clientes().remove(this);
+				if(cuenta != null)
+				{
+					Cuentas.eliminar_Cuenta_Cargada(cuenta.get_Id());
+				}
+				hash_key = null;
+				estado_login = null;
+				cuenta = null;
+				ejecutor.shutdown();
 			}
-			if(outputStream != null)
+			catch (final IOException e)
 			{
-				outputStream.close();
+				Consola.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
+				return;
 			}
-			if (socket != null && !socket.isClosed())
-			{
-				socket.close();
-			}
-			Main.servidor_login.get_Clientes().remove(this);
-			if(cuenta != null)
-			{
-				Cuentas.eliminar_Cuenta_Cargada(cuenta.get_Id());
-			}
-			hash_key = null;
-			estado_login = null;
-			cuenta = null;
-			ejecutor.shutdown();
-		}
-		catch (final IOException e)
-		{
-			Consola.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
-			return;
 		}
 	}
 	
 	public void enviar_Paquete(String paquete)
 	{
-		if (outputStream != null && !socket.isClosed() && !paquete.isEmpty() && !paquete.equals("" + (char)0))
+		synchronized (this) 
 		{
-			try 
+			if (socket.isClosed()) 
 			{
-				paquete = new String(paquete.getBytes("UTF-8"));
-				outputStream.print(paquete + (char)0);
-				outputStream.flush();
-				if(Main.modo_debug)
-					Consola.println("Enviado >> " + paquete);
-			} 
-			catch (final UnsupportedEncodingException e) 
-			{
-				Consola.println("Error al convertir el paquete a UTF-8: " + paquete);
+				cerrar_Conexion();
 				return;
+			}
+			if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0))
+			{
+				try 
+				{
+					paquete = new String(paquete.getBytes("UTF-8"));
+					outputStream.print(paquete + (char)0);
+					outputStream.flush();;
+					if(Main.modo_debug)
+						Consola.println("Enviado >> " + paquete);
+				} 
+				catch (final UnsupportedEncodingException e) 
+				{
+					Consola.println("Error al convertir el paquete a UTF-8: " + paquete);
+					return;
+				}
 			}
 		}
 	}

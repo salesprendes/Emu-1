@@ -1,5 +1,6 @@
 package main;
 
+import database.ConexionPool;
 import juego.comunicador.Vinculador;
 import main.consola.Consola;
 
@@ -12,6 +13,7 @@ public class Main
 	/** THREADS **/
 	public static Vinculador socket_vinculador;
 	public static Consola comandos_consola;
+	private static ConexionPool database = new ConexionPool();
 	
 	public static void main(String[] args) 
 	{
@@ -24,6 +26,22 @@ public class Main
 		else
 			System.out.println("incorrecta");
 		
+		/** Conexion a la database **/
+		database.cargar_Configuracion();
+		System.out.print("Conectando a la base de datos del login: ");
+		if(database.comprobar_conexion(database.get_Login_Database()))
+			System.out.println("correcta");
+		else
+			System.out.println("incorrecta");
+		
+		System.out.print("Conectando a la base de datos del game: ");
+		if(database.comprobar_conexion(database.get_Game_Database()))
+			System.out.println("correcta");
+		else
+			System.out.println("incorrecta");
+		database.iniciar_Database();
+		
+		/** Vincular el game **/
 		estado_emulador = Estados.VINCULANDO;
 		Vincular_Login();
 		
@@ -55,5 +73,10 @@ public class Main
 		}
 		System.out.println("> El emulador esta cerrado.");
 		System.exit(1);
+	}
+	
+	public static ConexionPool get_Database()
+	{
+		return database;
 	}
 }
