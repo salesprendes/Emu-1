@@ -88,14 +88,14 @@ INSERT INTO `personajes` VALUES (3, 'test-server', -1, -1, -1, 1, 1, 602);
 DROP TABLE IF EXISTS `razas`;
 CREATE TABLE `razas`  (
   `id` tinyint(2) NOT NULL COMMENT 'Id de la raza',
-  `nombre` text CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Nombre de la raza',
-  `pa` tinyint(2) NOT NULL COMMENT 'Pa principales para la raza',
-  `pm` tinyint(2) NOT NULL COMMENT 'Pm principales para la raza',
-  `vida` tinyint(4) NOT NULL COMMENT 'Vida principal para la raza',
-  `iniciativa` tinyint(3) NOT NULL COMMENT 'Iniciativa principal para la raza',
-  `prospeccion` tinyint(3) NOT NULL COMMENT 'Prospección principal para la raza',
-  `mapa_inicial` int(4) NOT NULL COMMENT 'Mapa inicial donde iniciara la raza',
-  `celda_inicial` int(4) NOT NULL COMMENT 'Celda donde iniciara la raza',
+  `nombre` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '' COMMENT 'Nombre de la raza',
+  `pa` tinyint(2) NOT NULL DEFAULT 6 COMMENT 'Pa principales para la raza',
+  `pm` tinyint(2) NOT NULL DEFAULT 3 COMMENT 'Pm principales para la raza',
+  `vida` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Vida principal para la raza',
+  `iniciativa` tinyint(3) NOT NULL DEFAULT 0 COMMENT 'Iniciativa principal para la raza',
+  `prospeccion` tinyint(3) NOT NULL DEFAULT 100 COMMENT 'Prospección principal para la raza',
+  `mapa_inicial` int(4) NOT NULL DEFAULT 0 COMMENT 'Mapa inicial donde iniciara la raza',
+  `celda_inicial` int(4) NOT NULL DEFAULT 0 COMMENT 'Celda donde iniciara la raza',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `Relacion_mapa_inicial`(`mapa_inicial`) USING BTREE,
   CONSTRAINT `Relacion_mapa_inicial` FOREIGN KEY (`mapa_inicial`) REFERENCES `mapas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION

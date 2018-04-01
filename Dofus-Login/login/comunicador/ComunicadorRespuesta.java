@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,8 +30,8 @@ final public class ComunicadorRespuesta implements Runnable
 		try 
 		{
 			socket = sock;
-			socket.setSendBufferSize(1048);
-			buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);//80 caracteres
+			socket.setSendBufferSize(1);
+			buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);//80 caracteres
 			outputStream = new PrintWriter(socket.getOutputStream());
 			ejecutor = Executors.newCachedThreadPool();
 			ejecutor.submit(this);
@@ -48,12 +49,11 @@ final public class ComunicadorRespuesta implements Runnable
 			StringBuilder paquete = new StringBuilder();
 			while(paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
 			{
-				controlador_Paquetes(paquete.toString());
-				if(Main.modo_debug)
+				controlador_Paquetes(paquete.toString()); 
+				paquete.setLength(0); 
+				if(Main.modo_debug) 
 					Consola.println("Recibido-comunicador: " + paquete);
-				paquete.setLength(0);
 			}
-			
 		}
 		catch (final IOException e)
 		{
@@ -77,6 +77,7 @@ final public class ComunicadorRespuesta implements Runnable
 					{
 						servidor_juego.set_Comunicador_game(this);
 						servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
+						refrescar_Estado_Servidor();
 						Consola.println("Servidor " + servidor_juego.get_Id() + " conectado");
 					}
 					else
@@ -105,18 +106,9 @@ final public class ComunicadorRespuesta implements Runnable
 							servidor_juego.set_Estado(Estados_Servidor.APAGADO);
 						break;
 					}
+					refrescar_Estado_Servidor();
 				}
 			break;
-		}
-		
-		if(Cuentas.get_Cuentas_Cargadas().size() > 0)
-		{
-			Consola.println(Servidores.get_Obtener_Servidores());
-			String estado_servidor_modificado = Servidores.get_Obtener_Servidores();
-			Cuentas.get_Cuentas_Cargadas().values().stream().filter(filtro -> filtro.get_Login_respuesta().get_Estado_login() == EstadosLogin.LISTA_SERVIDORES).forEach(cuenta -> 
-			{
-				cuenta.get_Login_respuesta().enviar_Paquete(estado_servidor_modificado);
-			});
 		}
 	}
 	
@@ -140,11 +132,7 @@ final public class ComunicadorRespuesta implements Runnable
 			{
 				servidor_juego.set_Estado(Estados_Servidor.APAGADO);
 				servidor_juego.set_Comunicador_game(null);
-				String estado_servidor_modificado = Servidores.get_Obtener_Servidores();
-				Cuentas.get_Cuentas_Cargadas().values().forEach(cuenta ->
-				{
-					cuenta.get_Login_respuesta().enviar_Paquete(estado_servidor_modificado);
-				});
+				refrescar_Estado_Servidor();
 			}
 			ejecutor.shutdown();
 		}
@@ -152,6 +140,18 @@ final public class ComunicadorRespuesta implements Runnable
 		{
 			Consola.println("Error comunicador: " + e.getCause());
 			return;
+		}
+	}
+	
+	private void refrescar_Estado_Servidor()
+	{
+		if(Cuentas.get_Cuentas_Cargadas().size() > 0)
+		{
+			String estado_servidor_modificado = Servidores.get_Obtener_Servidores();
+			Cuentas.get_Cuentas_Cargadas().values().stream().filter(filtro -> filtro.get_Login_respuesta().get_Estado_login() == EstadosLogin.LISTA_SERVIDORES).forEach(cuenta -> 
+			{
+				cuenta.get_Login_respuesta().enviar_Paquete(estado_servidor_modificado);
+			});
 		}
 	}
 	
@@ -169,7 +169,7 @@ final public class ComunicadorRespuesta implements Runnable
 		}
 		if(outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0))
 		{
-			outputStream.print(paquete + (char)0x00);
+			outputStream.println(paquete + (char)0x00);
 			outputStream.flush();
 			if(Main.modo_debug)
 				Consola.println("Comunicador: Enviado >> " + paquete);

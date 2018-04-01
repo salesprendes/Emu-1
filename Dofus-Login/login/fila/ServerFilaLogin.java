@@ -28,7 +28,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 				while(Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted())
 				{
 					nodo_fila = fila.eliminar_Cuenta_Fila_Espera();
-					fila.wait(1100 * fila.get_Fila().size());
+					fila.wait(1100 * fila.get_Fila().size());//1 segundo * tamaño fila
 					if(nodo_fila.get_Cuenta() != null)
 					{
 						fila.get_Fila().remove(nodo_fila);
@@ -58,7 +58,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 		if(isAlive())
 		{
 			interrupt();
-			Consola.println("ServerFila cerrada");
+			Consola.println(">> ServerFila cerrada");
 		}
 	}
 

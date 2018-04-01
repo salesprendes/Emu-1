@@ -3,9 +3,11 @@ package juego.comunicador;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 import database.ConexionPool;
 import main.Configuracion;
@@ -16,7 +18,7 @@ import objetos.Cuentas;
 final public class Vinculador extends Thread implements Runnable
 {
 	private Socket socket;
-	private BufferedReader inputStreamReader;
+	private BufferedReader buffered_reader;
 	private PrintWriter outputStream;
 	private ConexionPool database = Main.get_Database();
 
@@ -25,9 +27,9 @@ final public class Vinculador extends Thread implements Runnable
 		try 
 		{
 			socket = new Socket("localhost", Configuracion.PUERTO_COMUNICADOR);
-			socket.setReceiveBufferSize(1048);
-			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			outputStream = new PrintWriter(socket.getOutputStream());
+			socket.setReceiveBufferSize(1);
+			buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 			setName("Socket-Vinculador");
 			start();
 			Main.esta_vinculado = true;
@@ -45,37 +47,32 @@ final public class Vinculador extends Thread implements Runnable
 
 	public void run() 
 	{
-		try 
+		if(Main.esta_vinculado)
 		{
-			enviar_Paquete("C|" + Configuracion.SERVIDOR_ID);
-			StringBuilder paquete = new StringBuilder();
-			Main.esta_vinculado = true;
-			final char[] buffer = new char[1];
-			while(inputStreamReader.read(buffer, 0, 1) != -1 && Main.estado_emulador != Estados.APAGADO && !isInterrupted() && socket.isConnected())
+			try 
 			{
-				if (buffer[0] != (char)0 && buffer[0] != '\n' && buffer[0] != '\r')
-		    	{
-					paquete.append(buffer[0]);
-		    	}
-				else if (!paquete.toString().isEmpty())
+				enviar_Paquete("C|" + Configuracion.SERVIDOR_ID);
+				StringBuilder paquete = new StringBuilder();
+				
+				while(paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && !isInterrupted() && socket.isConnected())
 				{
 					controlador_Paquetes(paquete.toString());
-					//if(Main.modo_debug)
-					System.out.println("Comunicador: Recibido >> " + paquete);
+					if(Main.modo_debug)
+						System.out.println("Comunicador: Recibido >> " + paquete);
 					paquete.setLength(0);
 				}
 			}
-		}
-		catch (final IOException e) 
-		{
-			Main.esta_vinculado = false;
-			Main.Vincular_Login();
-		}
-		finally
-		{
-			Main.estado_emulador = Estados.VINCULANDO;
-			Main.esta_vinculado = false;
-			Main.Vincular_Login();
+			catch (final IOException e) 
+			{
+				Main.esta_vinculado = false;
+				Main.Vincular_Login();
+			}
+			finally
+			{
+				Main.estado_emulador = Estados.VINCULANDO;
+				Main.esta_vinculado = false;
+				Main.Vincular_Login();
+			}
 		}
 	}
 	
@@ -112,7 +109,7 @@ final public class Vinculador extends Thread implements Runnable
 	{
 		if(outputStream != null && !socket.isClosed() && !paquete.isEmpty() && !paquete.equals("" + (char)0))
 		{
-			outputStream.print(paquete + (char)0x00);
+			outputStream.println(paquete + (char)0x00);
 			outputStream.flush();
 			if(Main.modo_debug)
 				System.out.println("Comunicador: Enviado >> " + paquete);
@@ -123,9 +120,9 @@ final public class Vinculador extends Thread implements Runnable
 	{
 		try 
 		{
-			if(inputStreamReader != null)
+			if(buffered_reader != null)
 			{
-				inputStreamReader.close();
+				buffered_reader.close();
 			}
 			if(outputStream != null)
 			{

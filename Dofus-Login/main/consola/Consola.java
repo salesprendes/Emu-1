@@ -18,7 +18,7 @@ final public class Consola extends Thread implements Runnable
 		Scanner sc = new Scanner(System.in);
 		while(!isInterrupted())
 		{
-			print(">> ");
+			print("");
 			String comando = sc.nextLine();
 			Comandos.ejecutar(comando);
 		}
@@ -29,7 +29,7 @@ final public class Consola extends Thread implements Runnable
 	{
 		synchronized(System.out) 
 		{
-			System.out.print(mensaje);
+			System.out.print(">> " + mensaje);
 		}
 	}
 	

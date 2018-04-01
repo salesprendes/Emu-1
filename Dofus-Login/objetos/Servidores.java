@@ -11,11 +11,11 @@ final public class Servidores
 	final private int id, puerto;
 	final private Comunidades comunidad;
 	private Estados_Servidor estado;
-	public static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	private ComunicadorRespuesta comunicador_game = null;
 	private final boolean servidor_vip;
 	private final String ip;
 	private Poblacion poblacion;
+	public static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
 	
 	public Servidores(int _id, Comunidades _comunidad, byte _poblacion, final boolean _vip_necesario, final String _ip, final int _puerto)
 	{
@@ -103,10 +103,15 @@ final public class Servidores
         final StringBuilder paquete = new StringBuilder(ErroresServidor.SERVIDORES_LIBRES.toString());
         servidores.values().stream().filter(filtro -> !filtro.es_Servidor_Vip() && filtro.get_Poblacion() != Poblacion.COMPLETO).forEach(servidor -> 
         {
-        	paquete.append(servidor.get_Id()).append('|');
+        	paquete.append(servidor.get_Id()).append(paquete.length() > 0 ? '|' : "");
         });
         return paquete.toString();
     }
+	
+	public static ConcurrentMap<Integer, Servidores> get_Servidores() 
+	{
+		return servidores;
+	}
 	
 	public enum Estados_Servidor
 	{

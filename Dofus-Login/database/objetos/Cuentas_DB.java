@@ -23,7 +23,7 @@ public class Cuentas_DB extends DatabaseManager
 		Cuentas cuenta = null;
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
 			if(query.get_Rs().next())
 				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(5), formato_fecha.parse(query.get_Rs().getString(6)).getTime(), Comunidades.get_Comunidades().get(query.get_Rs().getByte(7)), query.get_Rs().getBoolean(8));
@@ -37,7 +37,7 @@ public class Cuentas_DB extends DatabaseManager
 	{
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
 			String valor = null;
 			if(query.get_Rs().next())
@@ -56,7 +56,7 @@ public class Cuentas_DB extends DatabaseManager
 		StringBuilder paquete = new StringBuilder();
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT p.servidor_id, COUNT(p.id) FROM personajes p JOIN cuentas c ON p.cuenta_id = c.id WHERE c.usuario = '" + cuenta.get_Usuario() + "' GROUP BY p.servidor_id;");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT p.servidor_id, COUNT(p.id) FROM personajes p JOIN cuentas c ON p.cuenta_id = c.id WHERE c.usuario = '" + cuenta.get_Usuario() + "' GROUP BY p.servidor_id;");
 			
 			while(query.get_Rs().next())
 			{
@@ -72,7 +72,7 @@ public class Cuentas_DB extends DatabaseManager
 	{
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE " + campo_condicion + " = '" + nombre_condicion + "';");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE " + campo_condicion + " = '" + nombre_condicion + "';");
 			
 			boolean existe = query.get_Rs().next();
 			cerrar(query);
@@ -86,7 +86,7 @@ public class Cuentas_DB extends DatabaseManager
 	{
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE " + campo_condicion + " = '" + nombre_condicion + "';");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE " + campo_condicion + " = '" + nombre_condicion + "';");
 			
 			query.get_Rs().next();
 			boolean comprobacion = query.get_Rs().getBoolean(1);
@@ -102,7 +102,7 @@ public class Cuentas_DB extends DatabaseManager
 		StringBuilder paquete = new StringBuilder();
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT servidor_id, count(p.id) from cuentas c JOIN personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT servidor_id, count(p.id) from cuentas c JOIN personajes p ON c.id = p.cuenta_id WHERE c.apodo = '" + nombre + "' or p.nombre = '" + nombre + "' GROUP BY p.servidor_id;");
 
 			while(query.get_Rs().next())
 			{

@@ -19,7 +19,7 @@ public class Servidores_DB extends DatabaseManager
 	{
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT * FROM servidores;");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM servidores;");
 
 			while(query.get_Rs().next())
 			{

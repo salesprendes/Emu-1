@@ -3,8 +3,10 @@ package login;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,8 +40,8 @@ final public class LoginRespuesta implements Runnable
 			try
 			{
 				socket = _socket;
-				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"), 1);//80 caracteres
-				outputStream = new PrintWriter(socket.getOutputStream());
+				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);//80 caracteres
+				outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 				ejecutor = Executors.newCachedThreadPool();
 				ejecutor.submit(this);
 				ip = _ip;

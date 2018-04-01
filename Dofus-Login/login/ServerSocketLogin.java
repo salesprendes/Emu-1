@@ -23,7 +23,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 			setName("Server-Login");
 			server_socket = new ServerSocket(Configuracion.PUERTO_LOGIN, 10);
 			start();
-			Consola.println("Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
+			Consola.println(">> Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
 		} 
 		catch (IOException e)
 		{

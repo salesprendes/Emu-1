@@ -18,7 +18,7 @@ public class Comunidades_DB extends DatabaseManager
 	{
 		try
 		{
-			final Ejecucion_Query query = super.ejecutar_Query_Select("SELECT * FROM comunidades;");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM comunidades;");
 
 			while(query.get_Rs().next())
 			{
