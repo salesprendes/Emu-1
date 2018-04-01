@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,64 +23,59 @@ import objetos.Servidores.Estados_Servidor;
 final public class LoginRespuesta implements Runnable
 {
 	private Socket socket;
-	private BufferedReader inputStreamReader;
+	private BufferedReader buffered_reader;
 	private PrintWriter outputStream;
 	private Cuentas cuenta;
-	private String hash_key, cuenta_paquete;
+	private String hash_key, cuenta_paquete, ip;
 	private ExecutorService ejecutor;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
 	private Fila fila = Main.fila_espera_login.get_Fila();
 	
-	public LoginRespuesta(final Socket _socket)
+	public LoginRespuesta(final Socket _socket, final String _ip)
 	{
-		try 
+		if(!_socket.isClosed() && _socket.isBound())
 		{
-			socket = _socket;
-			inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			outputStream = new PrintWriter(socket.getOutputStream());
-			ejecutor = Executors.newCachedThreadPool();
-			ejecutor.submit(this);
-		}
-		catch (final IOException e) 
-		{
-			cerrar_Conexion();
-		}
-		finally
-		{
-			if(cuenta != null)
+			try
 			{
-				Main.servidor_login.get_Clientes().remove(this);
-				cuenta.set_Login_respuesta(null);
-				Cuentas.get_Cuentas_Cargadas().remove(cuenta.get_Id());
+				socket = _socket;
+				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"), 1);//80 caracteres
+				outputStream = new PrintWriter(socket.getOutputStream());
+				ejecutor = Executors.newCachedThreadPool();
+				ejecutor.submit(this);
+				ip = _ip;
+			}
+			catch (final IOException e) 
+			{
+				cerrar_Conexion();
+			}
+			finally
+			{
+				if(cuenta != null)
+				{
+					Main.servidor_login.eliminar_Cliente(this);
+					cuenta.set_Login_respuesta(null);
+					Cuentas.get_Cuentas_Cargadas().remove(cuenta.get_Id());
+				}
 			}
 		}
 	}
 
 	public void run()
 	{
-		final char[] buffer = new char[4];
-		final StringBuilder paquete = new StringBuilder();
-
-		hash_key = Formulas.generar_Key();
-		enviar_Paquete(paquete.append("HC").append(hash_key).toString());
-		paquete.setLength(0);
 		try
 		{
-			while (inputStreamReader.read(buffer, 0, 1) != -1 && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
+			final StringBuilder paquete = new StringBuilder();
+
+			hash_key = Formulas.generar_Key();
+			enviar_Paquete(paquete.append("HC").append(hash_key).toString());
+			paquete.setLength(0);
+			
+			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
 			{
-				if (buffer[0] != (char)0 && buffer[0] != '\n' && buffer[0] != '\r')
-				{
-					paquete.append(buffer[0]);
-				}
-				else if (!paquete.toString().isEmpty())
-				{
-					if(Main.modo_debug)
-					{
-						Consola.println("Recibido-login: " + paquete);
-					}
-					controlador_Paquetes(paquete.toString());
-					paquete.setLength(0);
-				}
+				controlador_Paquetes(paquete.toString());
+				if(Main.modo_debug)
+					Consola.println("Recibido-login: " + paquete.toString());
+				paquete.setLength(0);
 			}
 		}
 		catch (IOException e)
@@ -289,19 +283,19 @@ final public class LoginRespuesta implements Runnable
 		{
 			try
 			{
-				if(inputStreamReader != null)
-				{
-					inputStreamReader.close();
-				}
 				if(outputStream != null)
 				{
 					outputStream.close();
+				}
+				if(buffered_reader != null)
+				{
+					buffered_reader.close();
 				}
 				if (socket != null && !socket.isClosed())
 				{
 					socket.close();
 				}
-				Main.servidor_login.get_Clientes().remove(this);
+				Main.servidor_login.eliminar_Cliente(this);
 				if(cuenta != null)
 				{
 					Cuentas.eliminar_Cuenta_Cargada(cuenta.get_Id());
@@ -330,19 +324,10 @@ final public class LoginRespuesta implements Runnable
 			}
 			if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0))
 			{
-				try 
-				{
-					paquete = new String(paquete.getBytes("UTF-8"));
-					outputStream.print(paquete + (char)0);
-					outputStream.flush();;
-					if(Main.modo_debug)
-						Consola.println("Enviado >> " + paquete);
-				} 
-				catch (final UnsupportedEncodingException e) 
-				{
-					Consola.println("Error al convertir el paquete a UTF-8: " + paquete);
-					return;
-				}
+				outputStream.print(paquete + (char)0);
+				outputStream.flush();
+				if(Main.modo_debug)
+					Consola.println("Enviado >> " + paquete);
 			}
 		}
 	}
@@ -355,5 +340,10 @@ final public class LoginRespuesta implements Runnable
 	public void set_Estado_login(EstadosLogin _estado_login)
 	{
 		estado_login = _estado_login;
+	}
+	
+	public String get_Ip() 
+	{
+		return ip;
 	}
 }

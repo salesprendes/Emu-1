@@ -44,7 +44,7 @@ final public class ServerSocketComunicador extends Thread implements Runnable
 			}
 		}
 	}
-	
+
 	public synchronized void detener_Server_Socket()
 	{
 		if (server_socket != null && !server_socket.isClosed())

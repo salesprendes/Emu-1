@@ -2,10 +2,10 @@ package login;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.Socket;
+import java.util.Map;
+import java.util.TreeMap;
 
-import login.enums.ErroresLogin;
 import main.Configuracion;
 import main.Estados;
 import main.Main;
@@ -14,7 +14,7 @@ import main.consola.Consola;
 final public class ServerSocketLogin extends Thread implements Runnable
 {
 	protected ServerSocket server_socket;
-	private final List<LoginRespuesta> clientes_login = new ArrayList<LoginRespuesta>();
+	private final Map<String, ConexionesCliente> conexiones_clientes = new TreeMap<String, ConexionesCliente>();
 	
 	public ServerSocketLogin()
 	{
@@ -37,10 +37,32 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		{
 			try 
 			{
-				clientes_login.add(new LoginRespuesta(server_socket.accept()));
+				Socket socket = server_socket.accept();
+				String ip = socket.getInetAddress().getHostAddress();
+				ConexionesCliente nueva_conexion = conexiones_clientes.get(ip);
+				
+				if (nueva_conexion != null && nueva_conexion.get_Tiempo_Ultima_Conexion() < 500)
+				{
+					Consola.println("possible ddos desde la ip: " + nueva_conexion.get_Ip_Cliente());
+					nueva_conexion.refrescar_Tiempo_Ultima_Conexion();
+					socket.close();
+					return;
+				}
+				
+				LoginRespuesta nuevo_cliente = new LoginRespuesta(socket, ip);
+				if (!conexiones_clientes.containsKey(ip))
+				{
+					nueva_conexion = new ConexionesCliente(ip , nuevo_cliente);
+					conexiones_clientes.put(ip, nueva_conexion);
+				}
+				else
+				{
+					conexiones_clientes.get(ip).agregar_Cliente(nuevo_cliente);
+				}
 			} 
 			catch (Exception e)
 			{
+				System.out.println(e.getMessage());
 				detener_Server_Socket();
 			}
 		}
@@ -64,25 +86,18 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		}
     }
 	
-	public List<LoginRespuesta> get_Clientes() 
-	{
-		return clientes_login;
-	}
-	
 	public void expulsar_Todos_Clientes()
 	{
-		for(LoginRespuesta jugador : clientes_login)
-		{
-			jugador.enviar_Paquete(ErroresLogin.SERVIDOR_EN_MANTENIMIENTO.toString());
-			jugador.cerrar_Conexion();
-		}
+		conexiones_clientes.values().forEach(clientes -> clientes.expulsar_Todos_Clientes());
 	}
 	
 	public void eliminar_Cliente(LoginRespuesta _loginRespuesta)
 	{
-		int id = clientes_login.indexOf(_loginRespuesta);
-		clientes_login.get(id).cerrar_Conexion();
-		clientes_login.remove(id);
+		String ip = _loginRespuesta.get_Ip();
+		if (conexiones_clientes.containsKey(ip)) 
+		{
+			conexiones_clientes.get(ip).eliminar_Cliente(_loginRespuesta);
+		}
 		System.gc();
 	}
 }
