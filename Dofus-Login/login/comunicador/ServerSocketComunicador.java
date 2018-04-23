@@ -27,8 +27,8 @@ final public class ServerSocketComunicador extends Thread implements Runnable
 			server_socket.bind(new InetSocketAddress("localhost", Configuracion.PUERTO_COMUNICADOR));
 			new Thread(this);
 			setDaemon(true);
-			start();
 			Servidores.get_Servidores().values().forEach(servidor -> ip_servidores.add(servidor.get_Ip()));
+			start();
 			Consola.println(">> Intercambio del servidor iniciado en el puerto: " + Configuracion.PUERTO_COMUNICADOR);
 		}
 		catch (final IOException | RuntimeException e) 

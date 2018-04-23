@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import login.enums.EstadosLogin;
 import main.Estados;
@@ -22,7 +20,6 @@ final public class ComunicadorRespuesta implements Runnable
 	private Socket socket;
 	private BufferedReader buffered_reader;
 	private PrintWriter outputStream;
-	private ExecutorService ejecutor;
 	private Servidores servidor_juego = null;
 	
 	public ComunicadorRespuesta(final Socket sock) 
@@ -33,8 +30,6 @@ final public class ComunicadorRespuesta implements Runnable
 			socket.setSendBufferSize(1);
 			buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);//80 caracteres
 			outputStream = new PrintWriter(socket.getOutputStream());
-			ejecutor = Executors.newCachedThreadPool();
-			ejecutor.submit(this);
 		}
 		catch (final IOException e)
 		{
@@ -47,7 +42,7 @@ final public class ComunicadorRespuesta implements Runnable
 		try
 		{
 			StringBuilder paquete = new StringBuilder();
-			while(paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
+			while(paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == Estados.ENCENDIDO && socket.isConnected())
 			{
 				controlador_Paquetes(paquete.toString()); 
 				paquete.setLength(0); 
@@ -62,6 +57,7 @@ final public class ComunicadorRespuesta implements Runnable
 		finally 
 		{
 			cerrar_Conexion_Comunicador();
+			refrescar_Estado_Servidor();
 		}
 	}
 	
@@ -132,9 +128,7 @@ final public class ComunicadorRespuesta implements Runnable
 			{
 				servidor_juego.set_Estado(Estados_Servidor.APAGADO);
 				servidor_juego.set_Comunicador_game(null);
-				refrescar_Estado_Servidor();
 			}
-			ejecutor.shutdown();
 		}
 		catch (IOException e)
 		{

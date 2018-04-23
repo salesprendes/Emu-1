@@ -21,7 +21,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		try
 		{
 			setName("Server-Login");
-			server_socket = new ServerSocket(Configuracion.PUERTO_LOGIN, 10);
+			server_socket = new ServerSocket(Configuracion.PUERTO_LOGIN);
 			start();
 			Consola.println(">> Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
 		} 
@@ -41,7 +41,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 				String ip = socket.getInetAddress().getHostAddress();
 				ConexionesCliente nueva_conexion = conexiones_clientes.get(ip);
 				
-				if (nueva_conexion != null && nueva_conexion.get_Tiempo_Ultima_Conexion() < 500)
+				if (nueva_conexion != null && nueva_conexion.get_Tiempo_Ultima_Conexion() < 700)
 				{
 					Consola.println("possible ddos desde la ip: " + nueva_conexion.get_Ip_Cliente());
 					nueva_conexion.refrescar_Tiempo_Ultima_Conexion();
@@ -62,7 +62,6 @@ final public class ServerSocketLogin extends Thread implements Runnable
 			} 
 			catch (Exception e)
 			{
-				System.out.println(e.getMessage());
 				detener_Server_Socket();
 			}
 		}
@@ -98,6 +97,5 @@ final public class ServerSocketLogin extends Thread implements Runnable
 		{
 			conexiones_clientes.get(ip).eliminar_Cliente(_loginRespuesta);
 		}
-		System.gc();
 	}
 }

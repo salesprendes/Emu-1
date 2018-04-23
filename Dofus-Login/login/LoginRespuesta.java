@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import login.enums.ErroresLogin;
 import login.enums.ErroresServidor;
@@ -29,8 +29,8 @@ final public class LoginRespuesta implements Runnable
 	private PrintWriter outputStream;
 	private Cuentas cuenta;
 	private String hash_key, cuenta_paquete, ip;
-	private ExecutorService ejecutor;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
+	private ExecutorService ejecutor;
 	private Fila fila = Main.fila_espera_login.get_Fila();
 	
 	public LoginRespuesta(final Socket _socket, final String _ip)
@@ -42,8 +42,6 @@ final public class LoginRespuesta implements Runnable
 				socket = _socket;
 				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);//80 caracteres
 				outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-				ejecutor = Executors.newCachedThreadPool();
-				ejecutor.submit(this);
 				ip = _ip;
 			}
 			catch (final IOException e) 
@@ -190,11 +188,18 @@ final public class LoginRespuesta implements Runnable
 						}
 						else
 						{
-							_cuenta.get_Login_respuesta().enviar_Paquete("ATE");
-							enviar_Paquete(ErroresLogin.CUENTA_YA_CONECTADA.toString());
-							cerrar_Conexion();
-							_cuenta.get_Login_respuesta().cerrar_Conexion();
-							return;
+							if(_cuenta.get_Login_respuesta().get_Estado_login() != EstadosLogin.LISTA_SERVIDORES)
+							{
+								enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
+								cerrar_Conexion();
+							}
+							else
+							{
+								_cuenta.get_Login_respuesta().enviar_Paquete("ATE");
+								enviar_Paquete(ErroresLogin.CUENTA_YA_CONECTADA.toString());
+								cerrar_Conexion();
+								_cuenta.get_Login_respuesta().cerrar_Conexion();
+							}
 						}
 					}
 					else
@@ -347,5 +352,10 @@ final public class LoginRespuesta implements Runnable
 	public String get_Ip() 
 	{
 		return ip;
+	}
+	
+	public void set_Ejecutor(Future<?> future)
+	{
+		ejecutor = future;
 	}
 }
