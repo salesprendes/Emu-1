@@ -11,17 +11,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import login.enums.ErroresLogin;
-import login.enums.ErroresServidor;
 import login.enums.EstadosLogin;
 import login.fila.Fila;
+import login.paquetes.GestorPaquetes;
+import login.paquetes.bienvenida.VerificarCuenta;
+import login.paquetes.bienvenida.VerificarPassword;
 import main.Configuracion;
 import main.EstadosEmuLogin;
 import main.Formulas;
 import main.Main;
 import main.consola.Consola;
 import objetos.Cuentas;
-import objetos.Servidores;
-import objetos.Servidores.Estados_Servidor;
 
 final public class LoginRespuesta implements Runnable
 {
@@ -33,7 +33,7 @@ final public class LoginRespuesta implements Runnable
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
 	private ExecutorService ejecutor;
 	private Fila fila = Main.fila_espera_login.get_Fila();
-	
+
 	public LoginRespuesta(final Socket _socket, final String _ip)
 	{
 		if(!_socket.isClosed() && _socket.isBound())
@@ -62,7 +62,7 @@ final public class LoginRespuesta implements Runnable
 			}
 		}
 	}
-
+	
 	public void run()
 	{
 		try
@@ -70,13 +70,12 @@ final public class LoginRespuesta implements Runnable
 			final StringBuilder paquete = new StringBuilder();
 			hash_key = Formulas.generar_Key();
 			enviar_Paquete("HC" + hash_key);
-			
+
 			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == EstadosEmuLogin.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
 			{
-				controlador_Paquetes(paquete.toString());
-
 				if(Main.modo_debug)
 					Consola.println("Recibido-login: " + paquete.toString());
+				controlador_Paquetes(paquete.toString());
 				paquete.setLength(0);
 			}
 		}
@@ -92,205 +91,45 @@ final public class LoginRespuesta implements Runnable
 	
 	private void controlador_Paquetes(String paquete)
 	{
-		Configuracion.get_Paquetes_Emulador().get(paquete).parse(this, paquete);
-	}
-
-	private void controlador_Paquetes1(String paquete)
-	{
-		switch(estado_login)
+		if(paquete.length() >= 2)
 		{
-			case VERSION:
-				if (paquete.equalsIgnoreCase("1.29.1"))
-				{
-					estado_login = EstadosLogin.NOMBRE_CUENTA;
-				}
-				else
-				{
-					enviar_Paquete(ErroresLogin.VERSION_INCORRECTA.toString());
-					cerrar_Conexion();
-					return;
-				}
-			break;
+			GestorPaquetes buscar_paquete = Configuracion.get_Paquetes_Emulador().get(paquete);
 			
-			case CREACION_APODO:
-				if(cuenta.get_Apodo().isEmpty() && cuenta.esta_Creando_apodo())
+			if(buscar_paquete != null)
+			{
+				buscar_paquete.analizar(this, paquete);
+			}
+			else
+			{
+				switch(estado_login)
 				{
-					if(!paquete.toLowerCase().equals(cuenta.get_Usuario().toLowerCase()))
-					{
-						if(paquete.matches("[A-Za-z0-9.@.-]+") && !Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("apodo", "apodo", paquete))
+					case NOMBRE_CUENTA:
+						new VerificarCuenta().analizar(this, paquete);
+					break;
+					
+					case PASSWORD_CUENTA:
+						if(paquete.substring(0, 2).equalsIgnoreCase("#1"))
 						{
-							cuenta.set_Apodo(paquete);
-							cuenta.set_Creando_apodo(false);
-							cuenta.set_Fila_espera(true);
-							fila.agregar_Cuenta(cuenta);
-							estado_login = EstadosLogin.FILA_ESPERA;
+							new VerificarPassword().analizar(this, paquete);
 						}
 						else
 						{
-							enviar_Paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
+							enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
+							cerrar_Conexion();
+							Consola.println("paquete incorrecto password");
 							return;
 						}
-					}
-					else
-					{
-						enviar_Paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
-						return;
-					}
+					break;
 				}
-				else
-				{
-					enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
-					cerrar_Conexion();
-				}
-			break;
-
-			case NOMBRE_CUENTA:
-				if(paquete.length() >= 2)
-				{
-					if(Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("usuario", "usuario", paquete.toLowerCase()))
-					{
-						if(!Main.get_Database().get_Cuentas().get_Comprobar_Campo_Cuenta_Booleano("baneado", "usuario", paquete.toLowerCase()))
-						{
-							cuenta_paquete = paquete.toLowerCase();
-							estado_login = EstadosLogin.PASSWORD_CUENTA;
-						}
-						else
-						{
-							enviar_Paquete(ErroresLogin.CUENTA_BANEADA.toString());
-							cerrar_Conexion();
-							return;
-						}
-					}
-					else
-					{
-						enviar_Paquete(ErroresLogin.CUENTA_NO_VALIDA.toString());
-						cerrar_Conexion();
-						return;
-					}
-				}
-				else
-				{
-					enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
-					cerrar_Conexion();
-					return;
-				}
-			break;
-
-			case PASSWORD_CUENTA:
-				if(paquete.substring(0, 2).equalsIgnoreCase("#1"))
-				{
-					if(paquete.equals(Formulas.desencriptar_Password(hash_key, Main.get_Database().get_Cuentas().get_Obtener_Cuenta_Campo_String("password", cuenta_paquete))))
-					{
-						cuenta = Main.get_Database().get_Cuentas().cargar_Cuenta(cuenta_paquete);
-						
-						/** puntero que extrae la dirección de memoria del hashmap **/
-						Cuentas _cuenta = Cuentas.get_Cuentas_Cargadas().get(cuenta.get_Id());
-
-						if(_cuenta == null)//Si el puntero es nulo no esta conectado
-						{
-							
-							Cuentas.agregar_Cuenta_Cargada(cuenta);
-							cuenta.set_Login_respuesta(this);
-							estado_login = EstadosLogin.FILA_ESPERA;
-						}
-						else
-						{
-							if(_cuenta.get_Login_respuesta().get_Estado_login() != EstadosLogin.LISTA_SERVIDORES)
-							{
-								enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
-								cerrar_Conexion();
-							}
-							else
-							{
-								_cuenta.get_Login_respuesta().enviar_Paquete("ATE");
-								enviar_Paquete(ErroresLogin.CUENTA_YA_CONECTADA.toString());
-								cerrar_Conexion();
-								_cuenta.get_Login_respuesta().cerrar_Conexion();
-							}
-						}
-					}
-					else
-					{
-						enviar_Paquete(ErroresLogin.CUENTA_PASSWORD_INCORRECTA.toString());
-						cerrar_Conexion();
-						return;
-					}
-				}
-				else
-				{
-					enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
-					cerrar_Conexion();
-					Consola.println("paquete incorrecto password");
-					return;
-				}
-			break;
-
-			case FILA_ESPERA:
-				if(cuenta.get_Apodo().isEmpty() && !cuenta.esta_Creando_apodo() && !cuenta.get_Fila_espera())
-				{
-					enviar_Paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
-					cuenta.set_Creando_apodo(true);
-					estado_login = EstadosLogin.CREACION_APODO;
-				}
-				else if(!cuenta.get_Fila_espera())
-				{
-					cuenta.set_Fila_espera(true);
-					fila.agregar_Cuenta(cuenta);
-				}
-			break;
-
-			case LISTA_SERVIDORES:
-				if (paquete.startsWith("A") && estado_login == EstadosLogin.LISTA_SERVIDORES)
-				{
-					switch(paquete.charAt(1))
-					{
-						case 'x':
-							enviar_Paquete("AxK" + cuenta.get_Fecha_abono() + Main.get_Database().get_Cuentas().get_Contar_Personajes_Servidor(cuenta));
-						break;
-						
-						case 'X'://Seleccion del servidor
-							Servidores servidor = Servidores.get(Integer.parseInt(paquete.substring(2)));
-							if(servidor.get_Comunicador_game() != null)
-							{
-								if(servidor.get_Estado() != Estados_Servidor.CONECTADO)
-								{
-									enviar_Paquete(ErroresServidor.SERVIDOR_NO_DISPONIBLE.toString());
-									return;
-								}
-								if(servidor.es_Servidor_Vip() && !cuenta.es_Cuenta_Abonada())
-								{
-									enviar_Paquete(Servidores.get_Obtener_Servidores_Disponibles());
-									return;
-								}
-								servidor.get_Comunicador_game().enviar_Cuenta(cuenta.get_Id());
-								enviar_Paquete("AYK" + servidor.get_Ip() + ':' + servidor.get_Puerto() + ';' + servidor.get_Id());
-							}
-							else
-							{
-								enviar_Paquete(ErroresServidor.SERVIDOR_NO_EXISTENTE.toString());
-								return;
-							}
-						break;
-						
-						case 'F':
-							enviar_Paquete("AF" + Main.get_Database().get_Cuentas().get_Paquete_Buscar_Servidores(paquete.substring(2)));
-						break;
-						
-						default:
-							enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
-							cerrar_Conexion();
-						break;
-					}
-				}
-				else
-				{
-					cerrar_Conexion();
-					return;
-				}
-			break;
+			}
+		}
+		else
+		{
+			cerrar_Conexion();
+			return;
 		}
 	}
-
+	
 	public void cerrar_Conexion()
 	{
 		synchronized(this) 
@@ -298,17 +137,11 @@ final public class LoginRespuesta implements Runnable
 			try
 			{
 				if(outputStream != null)
-				{
 					outputStream.close();
-				}
 				if(buffered_reader != null)
-				{
 					buffered_reader.close();
-				}
 				if (socket != null && !socket.isClosed())
-				{
 					socket.close();
-				}
 				Main.servidor_login.eliminar_Cliente(this);
 				if(cuenta != null)
 				{
@@ -345,19 +178,84 @@ final public class LoginRespuesta implements Runnable
 			}
 		}
 	}
-	
-	public EstadosLogin get_Estado_login()
+
+	public Socket get_Socket() 
+	{
+		return socket;
+	}
+
+	public void set_Socket(Socket _socket) 
+	{
+		socket = _socket;
+	}
+
+	public BufferedReader get_Buffered_reader()
+	{
+		return buffered_reader;
+	}
+
+	public void set_Buffered_reader(BufferedReader _buffered_reader) 
+	{
+		buffered_reader = _buffered_reader;
+	}
+
+	public PrintWriter get_OutputStream() 
+	{
+		return outputStream;
+	}
+
+	public void set_OutputStream(PrintWriter _outputStream)
+	{
+		outputStream = _outputStream;
+	}
+
+	public Cuentas get_Cuenta()
+	{
+		return cuenta;
+	}
+
+	public void set_Cuenta(Cuentas _cuenta)
+	{
+		cuenta = _cuenta;
+	}
+
+	public String get_Hash_key() 
+	{
+		return hash_key;
+	}
+
+	public void set_Hash_key(String _hash_key)
+	{
+		hash_key = _hash_key;
+	}
+
+	public String get_Cuenta_paquete()
+	{
+		return cuenta_paquete;
+	}
+
+	public void set_Cuenta_paquete(String _cuenta_paquete) 
+	{
+		cuenta_paquete = _cuenta_paquete;
+	}
+
+	public EstadosLogin get_Estado_login() 
 	{
 		return estado_login;
 	}
-	
-	public void set_Estado_login(EstadosLogin _estado_login)
+
+	public void set_Estado_login(EstadosLogin _estado_login) 
 	{
 		estado_login = _estado_login;
 	}
-	
-	public String get_Ip() 
+
+	public String get_Ip()
 	{
 		return ip;
+	}
+
+	public void set_Ip(String _ip)
+	{
+		ip = _ip;
 	}
 }

@@ -4,5 +4,5 @@ import login.LoginRespuesta;
 
 public interface GestorPaquetes 
 {
-	public void parse(LoginRespuesta jugador, String paquete);
+	public void analizar(LoginRespuesta jugador, String paquete);
 }

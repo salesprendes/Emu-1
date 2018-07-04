@@ -9,7 +9,7 @@ import login.paquetes.Paquete;
 @Paquete("1.29.1")
 public class VerificarVersion implements GestorPaquetes
 {
-	public void parse(LoginRespuesta jugador, String paquete)
+	public void analizar(LoginRespuesta jugador, String paquete)
 	{
 		if (paquete.equalsIgnoreCase("1.29.1"))
 		{
