@@ -10,10 +10,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import login.enums.ErroresLogin;
 import login.enums.EstadosLogin;
 import login.fila.Fila;
 import login.paquetes.GestorPaquetes;
+import login.paquetes.bienvenida.VerificarCreacionApodo;
 import login.paquetes.bienvenida.VerificarCuenta;
 import login.paquetes.bienvenida.VerificarPassword;
 import main.Configuracion;
@@ -108,17 +108,17 @@ final public class LoginRespuesta implements Runnable
 					break;
 					
 					case PASSWORD_CUENTA:
-						if(paquete.substring(0, 2).equalsIgnoreCase("#1"))
-						{
-							new VerificarPassword().analizar(this, paquete);
-						}
-						else
-						{
-							enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
-							cerrar_Conexion();
-							Consola.println("paquete incorrecto password");
-							return;
-						}
+						new VerificarPassword().analizar(this, paquete);
+					break;
+					
+					case CREACION_APODO:
+						new VerificarCreacionApodo().analizar(this, paquete);
+					break;
+					
+					case VERSION:
+					default:
+						System.out.println("Paquete desconocido: " + paquete);
+						cerrar_Conexion();
 					break;
 				}
 			}
@@ -257,5 +257,15 @@ final public class LoginRespuesta implements Runnable
 	public void set_Ip(String _ip)
 	{
 		ip = _ip;
+	}
+
+	public Fila get_Fila() 
+	{
+		return fila;
+	}
+
+	public void set_Fila(Fila _fila)
+	{
+		fila = _fila;
 	}
 }
