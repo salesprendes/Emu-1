@@ -4,13 +4,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
+import org.reflections.Reflections;
+
+import login.paquetes.GestorPaquetes;
+import login.paquetes.Paquete;
 import main.consola.Consola;
 
 public class Configuracion 
 {
 	private static Properties propiedades;
+	private static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
 	
 	/** Puertos **/
 	public static int PUERTO_LOGIN = 443;
@@ -38,15 +45,17 @@ public class Configuracion
 				//Puertos
 				PUERTO_LOGIN		=	Integer.valueOf(propiedades.getProperty("PUERTO_LOGIN"));
 				PUERTO_COMUNICADOR	=	Integer.valueOf(propiedades.getProperty("PUERTO_COMUNICADOR"));
-				
-				DATABASE_IP_LOGIN		=	propiedades.getProperty("DATABASE_IP_LOGIN");
 				DATABASE_PUERTO_LOGIN	=	Integer.valueOf(propiedades.getProperty("DATABASE_PUERTO_LOGIN"));
+				
+				//Acceso Database
+				DATABASE_IP_LOGIN		=	propiedades.getProperty("DATABASE_IP_LOGIN");
 				DATABASE_USUARIO_LOGIN	=	propiedades.getProperty("DATABASE_USUARIO_LOGIN");
 				DATABASE_PASSWORD_LOGIN	=	propiedades.getProperty("DATABASE_PASSWORD_LOGIN");
 				DATABASE_NOMBRE_LOGIN	=	propiedades.getProperty("DATABASE_NOMBRE_LOGIN");
 				
+				//Otros
 				MAXIMOS_LOGINS_FILA_ESPERA = Integer.valueOf(propiedades.getProperty("MAXIMOS_LOGINS_FILA_ESPERA"));
-				
+
 				propiedades.clear();
 				propiedades = null;
 			}
@@ -82,5 +91,23 @@ public class Configuracion
 		propiedades.store(new FileOutputStream(new File("conf-login.txt")), "Archivo de configuración");
 		propiedades.clear();
 		propiedades = null;
+	}
+	
+	public static void cargar_Paquetes()
+	{
+        Reflections reflections = new Reflections("login.paquetes");
+        reflections.getTypesAnnotatedWith(Paquete.class).forEach(x ->
+        {
+        	try 
+        	{
+				paquetes_emulador.put(x.getAnnotation(Paquete.class).value(), GestorPaquetes.class.cast(x.newInstance()));
+			} 
+        	catch (InstantiationException | IllegalAccessException e) {}
+        });
+    }
+	
+	public static Map<String, GestorPaquetes> get_Paquetes_Emulador() 
+	{
+		return paquetes_emulador;
 	}
 }

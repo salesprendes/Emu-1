@@ -8,13 +8,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.Executors;
 
 import login.enums.ErroresLogin;
 import login.enums.ErroresServidor;
 import login.enums.EstadosLogin;
 import login.fila.Fila;
-import main.Estados;
+import main.Configuracion;
+import main.EstadosEmuLogin;
 import main.Formulas;
 import main.Main;
 import main.consola.Consola;
@@ -42,6 +43,8 @@ final public class LoginRespuesta implements Runnable
 				socket = _socket;
 				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);//80 caracteres
 				outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+				ejecutor = Executors.newCachedThreadPool();
+				ejecutor.submit(this);
 				ip = _ip;
 			}
 			catch (final IOException e) 
@@ -65,14 +68,13 @@ final public class LoginRespuesta implements Runnable
 		try
 		{
 			final StringBuilder paquete = new StringBuilder();
-
 			hash_key = Formulas.generar_Key();
-			enviar_Paquete(paquete.append("HC").append(hash_key).toString());
-			paquete.setLength(0);
+			enviar_Paquete("HC" + hash_key);
 			
-			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == Estados.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
+			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == EstadosEmuLogin.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
 			{
 				controlador_Paquetes(paquete.toString());
+
 				if(Main.modo_debug)
 					Consola.println("Recibido-login: " + paquete.toString());
 				paquete.setLength(0);
@@ -87,8 +89,13 @@ final public class LoginRespuesta implements Runnable
 			cerrar_Conexion();
 		}
 	}
-
+	
 	private void controlador_Paquetes(String paquete)
+	{
+		Configuracion.get_Paquetes_Emulador().get(paquete).parse(this, paquete);
+	}
+
+	private void controlador_Paquetes1(String paquete)
 	{
 		switch(estado_login)
 		{
@@ -352,10 +359,5 @@ final public class LoginRespuesta implements Runnable
 	public String get_Ip() 
 	{
 		return ip;
-	}
-	
-	public void set_Ejecutor(Future<?> future)
-	{
-		ejecutor = future;
 	}
 }

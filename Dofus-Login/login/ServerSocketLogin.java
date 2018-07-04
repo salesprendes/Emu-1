@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import main.Configuracion;
-import main.Estados;
+import main.EstadosEmuLogin;
 import main.Main;
 import main.consola.Consola;
 
@@ -33,7 +33,7 @@ final public class ServerSocketLogin extends Thread implements Runnable
 	
 	public void run()
 	{
-		while(Main.estado_emulador == Estados.ENCENDIDO && !server_socket.isClosed() && !isInterrupted())
+		while(Main.estado_emulador == EstadosEmuLogin.ENCENDIDO && !server_socket.isClosed() && !isInterrupted())
 		{
 			try 
 			{

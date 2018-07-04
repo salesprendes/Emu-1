@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import main.Configuracion;
-import main.Estados;
+import main.EstadosEmuLogin;
 import main.Main;
 import main.consola.Consola;
 import objetos.Servidores;
@@ -40,7 +40,7 @@ final public class ServerSocketComunicador extends Thread implements Runnable
 
 	public void run()
 	{
-		while (Main.estado_emulador == Estados.ENCENDIDO && !server_socket.isClosed() && !isInterrupted())
+		while (Main.estado_emulador == EstadosEmuLogin.ENCENDIDO && !server_socket.isClosed() && !isInterrupted())
 		{
 			try 
 			{

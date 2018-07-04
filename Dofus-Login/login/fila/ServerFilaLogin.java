@@ -1,7 +1,7 @@
 package login.fila;
 
 import login.enums.EstadosLogin;
-import main.Estados;
+import main.EstadosEmuLogin;
 import main.Main;
 import main.consola.Consola;
 import objetos.Cuentas;
@@ -25,7 +25,7 @@ final public class ServerFilaLogin extends Thread implements Runnable
 		{
 			try
 			{
-				while(Main.estado_emulador == Estados.ENCENDIDO && !isInterrupted())
+				while(Main.estado_emulador == EstadosEmuLogin.ENCENDIDO && !isInterrupted())
 				{
 					nodo_fila = fila.eliminar_Cuenta_Fila_Espera();
 					fila.wait(1100 * fila.get_Fila().size());//1 segundo * tamaño fila

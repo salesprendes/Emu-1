@@ -11,7 +11,7 @@ import objetos.Servidores;
 final public class Main 
 {
 	public static boolean modo_debug = false;
-	public static Estados estado_emulador = Estados.APAGADO;
+	public static EstadosEmuLogin estado_emulador = EstadosEmuLogin.APAGADO;
 
 	/** THREADS **/
 	public static ServerSocketLogin servidor_login;
@@ -19,11 +19,11 @@ final public class Main
 	public static ServerFilaLogin fila_espera_login;
 	public static Consola comandos_consola;
 	private static ConexionPool database = new ConexionPool();
-
-
+	
 	public static void main(String[] args)
 	{
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
+		
 		Consola.print("Cargando la configuración: ");
 		if(Configuracion.cargar_Configuracion())
 			Consola.println("correcta");
@@ -42,10 +42,11 @@ final public class Main
 			Consola.println("incorrecta");
 		}
 
-		estado_emulador = Estados.CARGANDO;
+		estado_emulador = EstadosEmuLogin.CARGANDO;
 		cargar_Login();
-		estado_emulador = Estados.ENCENDIDO;
-
+		estado_emulador = EstadosEmuLogin.ENCENDIDO;
+		
+		Configuracion.cargar_Paquetes();
 		/** Threads **/
 		servidor_login = new ServerSocketLogin();
 		servidor_comunicador = new ServerSocketComunicador();
@@ -67,9 +68,9 @@ final public class Main
 	public static void cerrar_Emulador()
 	{
 		Consola.println("> El servidor se esta cerrando");
-		if (estado_emulador == Estados.ENCENDIDO)
+		if (estado_emulador == EstadosEmuLogin.ENCENDIDO)
 		{
-			estado_emulador = Estados.APAGADO;
+			estado_emulador = EstadosEmuLogin.APAGADO;
 			servidor_comunicador.detener_Server_Socket();
 			servidor_login.detener_Server_Socket();
 			fila_espera_login.detener_Fila();
