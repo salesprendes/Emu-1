@@ -1,4 +1,4 @@
-package login.paquetes.bienvenida;
+package login.paquetes.entrada;
 
 import login.LoginRespuesta;
 import login.enums.ErroresLogin;

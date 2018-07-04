@@ -44,7 +44,7 @@ final public class Cuentas
 		return password;
 	}
 	
-	public long get_Fecha_abono()
+	public long get_Tiempo_Abono()
 	{
 		return tiempo_abono <= System.currentTimeMillis() ? 0 : tiempo_abono - System.currentTimeMillis();
 	}

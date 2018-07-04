@@ -13,9 +13,9 @@ import java.util.concurrent.Executors;
 import login.enums.EstadosLogin;
 import login.fila.Fila;
 import login.paquetes.GestorPaquetes;
-import login.paquetes.bienvenida.VerificarCreacionApodo;
-import login.paquetes.bienvenida.VerificarCuenta;
-import login.paquetes.bienvenida.VerificarPassword;
+import login.paquetes.entrada.VerificarCreacionApodo;
+import login.paquetes.entrada.VerificarCuenta;
+import login.paquetes.entrada.VerificarPassword;
 import main.Configuracion;
 import main.EstadosEmuLogin;
 import main.Formulas;
@@ -41,7 +41,7 @@ final public class LoginRespuesta implements Runnable
 			try
 			{
 				socket = _socket;
-				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);//80 caracteres
+				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);
 				outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 				ejecutor = Executors.newCachedThreadPool();
 				ejecutor.submit(this);
@@ -117,7 +117,7 @@ final public class LoginRespuesta implements Runnable
 					
 					case VERSION:
 					default:
-						System.out.println("Paquete desconocido: " + paquete);
+						Consola.println("Paquete desconocido: " + paquete);
 						cerrar_Conexion();
 					break;
 				}

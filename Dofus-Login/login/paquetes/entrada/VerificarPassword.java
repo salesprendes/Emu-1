@@ -1,11 +1,10 @@
-package login.paquetes.bienvenida;
+package login.paquetes.entrada;
 
 import login.LoginRespuesta;
 import login.enums.ErroresLogin;
 import login.enums.EstadosLogin;
 import main.Formulas;
 import main.Main;
-import main.consola.Consola;
 import objetos.Cuentas;
 
 public class VerificarPassword
@@ -23,7 +22,6 @@ public class VerificarPassword
 
 				if(_cuenta == null)//Si el puntero es nulo no esta conectado
 				{
-
 					Cuentas.agregar_Cuenta_Cargada(jugador.get_Cuenta());
 					jugador.get_Cuenta().set_Login_respuesta(jugador);
 					jugador.set_Estado_login(EstadosLogin.FILA_ESPERA);
@@ -55,7 +53,6 @@ public class VerificarPassword
 		{
 			jugador.enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
 			jugador.cerrar_Conexion();
-			Consola.println("paquete incorrecto password");
 			return;
 		}
 	}
