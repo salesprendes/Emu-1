@@ -9,7 +9,7 @@ import objetos.Servidores;
 import objetos.Servidores.Estados_Servidor;
 
 @Paquete("AX")
-public class PaqueteServidorSeleccionado implements GestorPaquetes
+public class ServidorSeleccionado implements GestorPaquetes
 {
 	public void analizar(LoginRespuesta jugador, String paquete) 
 	{

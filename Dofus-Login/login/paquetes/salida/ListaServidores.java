@@ -5,10 +5,10 @@ final public class ListaServidores
 	final private long tiempo_abono;
 	final private String personajes;
 	
-	public ListaServidores(long _tiempo_abono, String _query_personajes)
+	public ListaServidores(long _tiempo_abono, String query_personajes)
 	{
 		tiempo_abono = _tiempo_abono;
-		personajes = _query_personajes;
+		personajes = query_personajes;
     }
 	
     public String toString() 

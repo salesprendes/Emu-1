@@ -3,7 +3,7 @@ package login;
 import java.util.ArrayList;
 import java.util.List;
 
-import login.enums.ErroresLogin;
+import login.paquetes.salida.ErroresLogin;
 
 public class ConexionesCliente 
 {
@@ -59,7 +59,7 @@ public class ConexionesCliente
 	{
 		clientes_login.forEach(cliente ->
 		{
-			cliente.enviar_Paquete(ErroresLogin.SERVIDOR_EN_MANTENIMIENTO.toString());
+			cliente.enviar_Paquete(new ErroresLogin(ErroresLogin.SERVIDOR_EN_MANTENIMIENTO).toString());
 			cliente.cerrar_Conexion();
 		});
 	}

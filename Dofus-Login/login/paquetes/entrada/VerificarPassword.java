@@ -1,8 +1,8 @@
 package login.paquetes.entrada;
 
 import login.LoginRespuesta;
-import login.enums.ErroresLogin;
 import login.enums.EstadosLogin;
+import login.paquetes.salida.ErroresLogin;
 import main.Formulas;
 import main.Main;
 import objetos.Cuentas;
@@ -30,13 +30,13 @@ public class VerificarPassword
 				{
 					if(_cuenta.get_Login_respuesta().get_Estado_login() != EstadosLogin.LISTA_SERVIDORES)
 					{
-						jugador.enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
+						jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_CONECTADA).toString());
 						jugador.cerrar_Conexion();
 					}
 					else
 					{
 						_cuenta.get_Login_respuesta().enviar_Paquete("ATE");
-						jugador.enviar_Paquete(ErroresLogin.CUENTA_YA_CONECTADA.toString());
+						jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_YA_CONECTADA).toString());
 						jugador.cerrar_Conexion();
 						_cuenta.get_Login_respuesta().cerrar_Conexion();
 					}
@@ -44,14 +44,14 @@ public class VerificarPassword
 			}
 			else
 			{
-				jugador.enviar_Paquete(ErroresLogin.CUENTA_PASSWORD_INCORRECTA.toString());
+				jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_PASSWORD_INCORRECTA).toString());
 				jugador.cerrar_Conexion();
 				return;
 			}
 		}
 		else
 		{
-			jugador.enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
+			jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_CONECTADA).toString());
 			jugador.cerrar_Conexion();
 			return;
 		}

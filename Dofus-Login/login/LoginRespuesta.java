@@ -16,6 +16,7 @@ import login.paquetes.GestorPaquetes;
 import login.paquetes.entrada.VerificarCreacionApodo;
 import login.paquetes.entrada.VerificarCuenta;
 import login.paquetes.entrada.VerificarPassword;
+import login.paquetes.salida.BienvenidaConexion;
 import main.Configuracion;
 import main.EstadosEmuLogin;
 import main.Formulas;
@@ -69,7 +70,7 @@ final public class LoginRespuesta implements Runnable
 		{
 			final StringBuilder paquete = new StringBuilder();
 			hash_key = Formulas.generar_Key();
-			enviar_Paquete("HC" + hash_key);
+			enviar_Paquete(new BienvenidaConexion(hash_key).toString());
 
 			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == EstadosEmuLogin.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
 			{
@@ -93,9 +94,9 @@ final public class LoginRespuesta implements Runnable
 	{
 		if(paquete.length() >= 2)
 		{
-			GestorPaquetes buscar_paquete = Configuracion.get_Paquetes_Emulador().get(paquete);
+			GestorPaquetes buscar_paquete = manejar_paquete(paquete);
 			
-			if(buscar_paquete != null)
+			if(manejar_paquete(paquete) != null)
 			{
 				buscar_paquete.analizar(this, paquete);
 			}
@@ -128,6 +129,18 @@ final public class LoginRespuesta implements Runnable
 			cerrar_Conexion();
 			return;
 		}
+	}
+	
+	private GestorPaquetes manejar_paquete(String paquete_string)
+	{
+		GestorPaquetes paquete_buscado = Configuracion.get_Paquetes_Emulador().get(paquete_string);
+		int tamano_paquete = paquete_string.length() >= 3 ? 3 : 2;
+
+		if(paquete_buscado == null)
+			paquete_buscado = Configuracion.get_Paquetes_Emulador().get(paquete_string);
+		if(paquete_buscado == null && tamano_paquete != 2)
+			paquete_buscado = Configuracion.get_Paquetes_Emulador().get(paquete_string.substring(0, tamano_paquete - 1));
+		return paquete_buscado;
 	}
 	
 	public void cerrar_Conexion()

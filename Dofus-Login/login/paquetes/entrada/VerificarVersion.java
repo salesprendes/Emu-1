@@ -1,10 +1,10 @@
 package login.paquetes.entrada;
 
 import login.LoginRespuesta;
-import login.enums.ErroresLogin;
 import login.enums.EstadosLogin;
 import login.paquetes.GestorPaquetes;
 import login.paquetes.Paquete;
+import login.paquetes.salida.ErroresLogin;
 
 @Paquete("1.29.1")
 public class VerificarVersion implements GestorPaquetes
@@ -17,7 +17,7 @@ public class VerificarVersion implements GestorPaquetes
 		}
 		else
 		{
-			jugador.enviar_Paquete(ErroresLogin.VERSION_INCORRECTA.toString());
+			jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.VERSION_INCORRECTA).toString());
 			jugador.cerrar_Conexion();
 			return;
 		}

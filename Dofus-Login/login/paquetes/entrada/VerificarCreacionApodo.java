@@ -1,8 +1,8 @@
 package login.paquetes.entrada;
 
 import login.LoginRespuesta;
-import login.enums.ErroresLogin;
 import login.enums.EstadosLogin;
+import login.paquetes.salida.ErroresLogin;
 import main.Main;
 
 public class VerificarCreacionApodo
@@ -23,19 +23,19 @@ public class VerificarCreacionApodo
 				}
 				else
 				{
-					jugador.enviar_Paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
+					jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_APODO_ERROR).toString());
 					return;
 				}
 			}
 			else
 			{
-				jugador.enviar_Paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
+				jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_SIN_APODO).toString());
 				return;
 			}
 		}
 		else
 		{
-			jugador.enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
+			jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CONEXION_NO_TERMINADA).toString());
 			jugador.cerrar_Conexion();
 		}
 	}

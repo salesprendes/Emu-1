@@ -7,7 +7,7 @@ import login.paquetes.salida.ListaServidores;
 import main.Main;
 
 @Paquete("Ax")
-final public class PaquetePersonajesCuenta implements GestorPaquetes
+final public class PersonajesCuenta implements GestorPaquetes
 {
 	public void analizar(LoginRespuesta jugador, String paquete)
 	{
