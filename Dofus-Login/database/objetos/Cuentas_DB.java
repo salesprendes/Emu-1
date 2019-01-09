@@ -2,12 +2,16 @@ package database.objetos;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
 import objetos.Comunidades;
 import objetos.Cuentas;
+import objetos.Servidores;
 
 public class Cuentas_DB extends DatabaseManager
 {
@@ -26,11 +30,27 @@ public class Cuentas_DB extends DatabaseManager
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
 			if(query.get_Rs().next())
-				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(5), formato_fecha.parse(query.get_Rs().getString(6)).getTime(), Comunidades.get_Comunidades().get(query.get_Rs().getByte(7)), query.get_Rs().getBoolean(8));
+				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), Comunidades.get_Comunidades().get(query.get_Rs().getByte(8)), query.get_Rs().getBoolean(9));
 			cerrar(query);
 		}
 		catch (final Exception e){}
 		return cuenta;
+	}
+	
+	public int get_Obtener_Id_Cuenta(final String nombre_usuario)
+	{
+		int id = 0;
+		try
+		{
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT id FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
+			
+			if(query.get_Rs().next())
+				id = query.get_Rs().getInt(1);
+			cerrar(query);
+			return id;
+		}
+		catch (final SQLException e){}
+		return id;
 	}
 	
 	public String get_Obtener_Cuenta_Campo_String(final String campo, final String nombre_usuario)
@@ -51,7 +71,7 @@ public class Cuentas_DB extends DatabaseManager
 		return null;
 	}
 	
-	public String get_Contar_Personajes_Servidor(Cuentas cuenta)
+	public String get_Contar_Personajes_Servidor(final Cuentas cuenta)
 	{
 		StringBuilder paquete = new StringBuilder();
 		try
@@ -112,5 +132,54 @@ public class Cuentas_DB extends DatabaseManager
 		}
 		catch (final SQLException e){}
 		return paquete.toString().isEmpty() ? "null" : paquete.toString();
+	}
+	
+	public void actualizar_Apodo(final Cuentas cuenta)
+	{
+		ejecutar_Update_O_Insert("UPDATE cuentas SET apodo = '" + cuenta.get_Apodo() + "' WHERE id = " + cuenta.get_Id() + ";");
+	}
+	
+	public void get_Cargar_Todas_Cuentas()
+	{
+		try
+		{
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM cuentas;");
+			
+			while(query.get_Rs().next())
+			{
+				//id, apodo, ip, rango_cuenta, tiempo_abono, comunidad, baneado.
+				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), Comunidades.get_Comunidades().get(query.get_Rs().getByte(8)), query.get_Rs().getBoolean(9));
+			}
+			cerrar(query);
+		}
+		catch (final Exception e){}
+	}
+	
+	public Map<Servidores, ArrayList<Integer>> get_Cargar_Todos_Personajes_Cuenta_Id(final int cuenta_id, final int servidor_id) 
+	{
+		Map<Servidores, ArrayList<Integer>> mapeo = new HashMap<Servidores, ArrayList<Integer>>();
+		try 
+		{
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT id, servidor_id FROM personajes WHERE cuenta_id = " + cuenta_id + " AND NOT servidor_id = " + servidor_id + ";");
+			
+			while(query.get_Rs().next()) 
+			{
+				Servidores server = Servidores.get_Servidores().get(query.get_Rs().getInt(2));
+				int id = query.get_Rs().getInt(1);
+				if(mapeo.get(server) == null) 
+				{
+					ArrayList<Integer> array = new ArrayList<Integer>();
+					array.add(id);	
+					mapeo.put(server, array);
+				} 
+				else 
+				{
+					mapeo.get(server).add(id);
+				}
+			}
+			cerrar(query);
+		} 
+		catch(SQLException e){}
+		return mapeo;
 	}
 }

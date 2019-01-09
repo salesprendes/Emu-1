@@ -26,7 +26,9 @@ final public class Fila
 			if(Configuracion.MAXIMOS_LOGINS_FILA_ESPERA >= fila.size())
 			{
 				int posicion = fila.size() + 1;
-				fila.add(new NodoFila(cuenta, posicion));
+				NodoFila nodo = new NodoFila(cuenta, posicion);
+				fila.add(nodo);
+				cuenta.set_Nodo_fila(nodo);
 				if(cuenta.es_Cuenta_Abonada())
 				{
 					total_abonados++;
@@ -59,7 +61,7 @@ final public class Fila
 
 	public NodoFila eliminar_Cuenta_Fila_Espera()
 	{
-		NodoFila nodo_cuenta = null;
+		NodoFila nodo = null;
 		synchronized(fila)
 		{
 			try
@@ -68,8 +70,8 @@ final public class Fila
 				{
 					fila.wait();
 				}
-				nodo_cuenta = fila.peek();
-				if(nodo_cuenta.get_Cuenta().es_Cuenta_Abonada())
+				nodo = fila.peek();
+				if(nodo.get_Cuenta().es_Cuenta_Abonada())
 				{
 					total_abonados--;
 				}
@@ -77,10 +79,11 @@ final public class Fila
 				{
 					total_no_abonados--;
 				}
+				nodo.get_Cuenta().set_Nodo_fila(null);
 			}
 			catch (InterruptedException e){}
 		}
-		return nodo_cuenta;
+		return nodo;
 	}
 
 	private String get_Paquete_Fila_Espera(int posicion, boolean esta_abonado)
@@ -97,7 +100,7 @@ final public class Fila
 		}
 	}
 
-	private void actualizar_Posiciones()
+	public void actualizar_Posiciones()
 	{
 		synchronized(fila)
 		{

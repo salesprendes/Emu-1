@@ -17,14 +17,15 @@ import login.paquetes.entrada.VerificarCreacionApodo;
 import login.paquetes.entrada.VerificarCuenta;
 import login.paquetes.entrada.VerificarPassword;
 import login.paquetes.salida.BienvenidaConexion;
+import login.paquetes.salida.ErroresLogin;
 import main.Configuracion;
-import main.EstadosEmuLogin;
+import main.Estados;
 import main.Formulas;
 import main.Main;
 import main.consola.Consola;
 import objetos.Cuentas;
 
-final public class LoginRespuesta implements Runnable
+final public class LoginSocket implements Runnable
 {
 	private Socket socket;
 	private BufferedReader buffered_reader;
@@ -35,14 +36,14 @@ final public class LoginRespuesta implements Runnable
 	private ExecutorService ejecutor;
 	private Fila fila = Main.fila_espera_login.get_Fila();
 
-	public LoginRespuesta(final Socket _socket, final String _ip)
+	public LoginSocket(final Socket _socket, final String _ip)
 	{
 		if(!_socket.isClosed() && _socket.isBound())
 		{
 			try
 			{
 				socket = _socket;
-				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);
+				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 				outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 				ejecutor = Executors.newCachedThreadPool();
 				ejecutor.submit(this);
@@ -51,15 +52,6 @@ final public class LoginRespuesta implements Runnable
 			catch (final IOException e) 
 			{
 				cerrar_Conexion();
-			}
-			finally
-			{
-				if(cuenta != null)
-				{
-					Main.servidor_login.eliminar_Cliente(this);
-					cuenta.set_Login_respuesta(null);
-					Cuentas.get_Cuentas_Cargadas().remove(cuenta.get_Id());
-				}
 			}
 		}
 	}
@@ -72,7 +64,7 @@ final public class LoginRespuesta implements Runnable
 			hash_key = Formulas.generar_Key();
 			enviar_Paquete(new BienvenidaConexion(hash_key).toString());
 
-			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador == EstadosEmuLogin.ENCENDIDO && !ejecutor.isShutdown() && socket.isConnected())
+			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && !ejecutor.isShutdown() && socket.isConnected())
 			{
 				if(Main.modo_debug)
 					Consola.println("Recibido-login: " + paquete.toString());
@@ -80,7 +72,7 @@ final public class LoginRespuesta implements Runnable
 				paquete.setLength(0);
 			}
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			cerrar_Conexion();
 		}
@@ -116,7 +108,6 @@ final public class LoginRespuesta implements Runnable
 						new VerificarCreacionApodo().analizar(this, paquete);
 					break;
 					
-					case VERSION:
 					default:
 						Consola.println("Paquete desconocido: " + paquete);
 						cerrar_Conexion();
@@ -126,6 +117,7 @@ final public class LoginRespuesta implements Runnable
 		}
 		else
 		{
+			enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_CONECTADA).toString());
 			cerrar_Conexion();
 			return;
 		}
@@ -153,13 +145,19 @@ final public class LoginRespuesta implements Runnable
 					outputStream.close();
 				if(buffered_reader != null)
 					buffered_reader.close();
-				if (socket != null && !socket.isClosed())
-					socket.close();
-				Main.servidor_login.eliminar_Cliente(this);
-				if(cuenta != null)
+				if (socket != null && socket.isClosed())
 				{
-					Cuentas.eliminar_Cuenta_Cargada(cuenta.get_Id());
+					if(cuenta != null)
+					{
+						LoginServer.get_Eliminar_Cliente(this);
+						if(cuenta.get_Login_respuesta() == this)
+							cuenta.set_Login_respuesta(null);
+						if(cuenta.get_Fila_espera() && cuenta.get_Nodo_fila() != null)
+							fila.set_eliminar_Cuenta(cuenta.get_Nodo_fila());
+					}
+					socket.close();
 				}
+				LoginServer.get_Eliminar_Cliente(this);
 				hash_key = null;
 				estado_login = null;
 				cuenta = null;
@@ -177,17 +175,20 @@ final public class LoginRespuesta implements Runnable
 	{
 		synchronized (this) 
 		{
-			if (socket.isClosed()) 
+			if (!socket.isClosed()) 
+			{
+				if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0))
+				{
+					outputStream.print(paquete + (char)0);
+					outputStream.flush();
+					if(Main.modo_debug)
+						Consola.println("Enviado >> " + paquete);
+				}
+			}
+			else
 			{
 				cerrar_Conexion();
 				return;
-			}
-			if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0))
-			{
-				outputStream.print(paquete + (char)0);
-				outputStream.flush();
-				if(Main.modo_debug)
-					Consola.println("Enviado >> " + paquete);
 			}
 		}
 	}

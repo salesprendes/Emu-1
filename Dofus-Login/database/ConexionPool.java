@@ -14,6 +14,8 @@ public class ConexionPool
 {
 	private HikariDataSource dataSource;
 	private Cuentas_DB cuentas;
+	
+	//Objetos
 	private Servidores_DB servidores;
 	private Comunidades_DB comunidades;
 	
@@ -43,6 +45,20 @@ public class ConexionPool
 		dataSource = new HikariDataSource(config);
 	}
 	
+	public boolean comprobar_conexion(HikariDataSource dataSource)
+	{
+		try 
+		{
+			Connection conexion = dataSource.getConnection();
+			conexion.close();
+			return true;
+		} 
+		catch (Exception e) 
+		{
+			return false;
+		}
+	}
+	
 	public Cuentas_DB get_Cuentas() 
 	{ 
 		return cuentas; 
@@ -61,19 +77,5 @@ public class ConexionPool
 	public HikariDataSource get_Data_Source()
 	{
 		return dataSource;
-	}
-	
-	public boolean comprobar_conexion(HikariDataSource dataSource)
-	{
-		try 
-		{
-			Connection conexion = dataSource.getConnection();
-			conexion.close();
-			return true;
-		} 
-		catch (Exception e) 
-		{
-			return false;
-		}
 	}
 }

@@ -5,7 +5,13 @@ import java.sql.Connection;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import database.objetos.Areas_DB;
 import database.objetos.Cuentas_DB;
+import database.objetos.Mapas_DB;
+import database.objetos.Personajes_DB;
+import database.objetos.Razas_DB;
+import database.objetos.SubAreas_DB;
+import database.objetos.SuperAreas_DB;
 import main.Configuracion;
 
 public class ConexionPool 
@@ -15,10 +21,22 @@ public class ConexionPool
 	
 	//objetos
 	private Cuentas_DB cuentas;
+	private Personajes_DB personajes;
+	private SuperAreas_DB super_areas;
+	private Areas_DB areas;
+	private SubAreas_DB sub_areas;
+	private Mapas_DB mapas;
+	private Razas_DB razas;
 	
 	public void iniciar_Database() 
 	{
 		cuentas = new Cuentas_DB(login_database);
+		personajes = new Personajes_DB(login_database);
+		super_areas = new SuperAreas_DB(game_database);
+		areas = new Areas_DB(game_database);
+		sub_areas = new SubAreas_DB(game_database);
+		mapas = new Mapas_DB(game_database);
+		razas = new Razas_DB(game_database);
 	}
 	
 	public Cuentas_DB get_Cuentas()
@@ -26,6 +44,36 @@ public class ConexionPool
 		return cuentas;
 	}
 	
+	public Personajes_DB get_Personajes()
+	{
+		return personajes;
+	}
+
+	public SuperAreas_DB get_Super_areas() 
+	{
+		return super_areas;
+	}
+
+	public Areas_DB get_Areas()
+	{
+		return areas;
+	}
+
+	public SubAreas_DB get_Sub_areas() 
+	{
+		return sub_areas;
+	}
+
+	public Mapas_DB get_Mapas() 
+	{
+		return mapas;
+	}
+
+	public Razas_DB get_Razas() 
+	{
+		return razas;
+	}
+
 	public void cargar_Configuracion() 
 	{
 		HikariConfig config = new HikariConfig();

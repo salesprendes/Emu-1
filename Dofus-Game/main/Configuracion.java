@@ -4,18 +4,31 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import org.reflections.Reflections;
+
+import juego.paquetes.GestorPaquetes;
+import juego.paquetes.Paquete;
+import main.consola.Consola;
 
 public class Configuracion 
 {
 	private static Properties propiedades;
+	private static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
 	
 	/** Puertos **/
-	public static int SERVIDOR_ID = 601;
+	public static int SERVIDOR_ID = 601;//Eratz
 	
 	/** Puertos **/
 	public static int PUERTO_GAME = 5555;
 	public static int PUERTO_COMUNICADOR = 489;
+	
+	/** ACCESO SERVIDOR **/
+	public static boolean ACTIVAR_FILA_DE_ESPERA = true;
+	public static int MAXIMOS_LOGINS_FILA_ESPERA = 100;
 	
 	/** ACCESO DATABASE LOGIN **/
 	public static String DATABASE_IP_LOGIN = "127.0.0.1";
@@ -58,6 +71,9 @@ public class Configuracion
 				DATABASE_PASSWORD_GAME	=	propiedades.getProperty("DATABASE_PASSWORD_GAME");
 				DATABASE_NOMBRE_GAME	=	propiedades.getProperty("DATABASE_NOMBRE_GAME");
 				
+				ACTIVAR_FILA_DE_ESPERA = Boolean.parseBoolean((propiedades.getProperty("ACTIVAR_FILA_DE_ESPERA")));
+				MAXIMOS_LOGINS_FILA_ESPERA = Integer.valueOf(propiedades.getProperty("MAXIMOS_LOGINS_FILA_ESPERA"));
+				
 				propiedades.clear();
 				propiedades = null;
 			}
@@ -69,7 +85,7 @@ public class Configuracion
 		}
 		catch (final IOException e) 
 		{
-			System.out.println("Error en la configuracion: " + e.getMessage());
+			Consola.println("Error en la configuracion: " + e.getMessage());
 		}
 		System.exit(0);
 		return false;
@@ -96,8 +112,29 @@ public class Configuracion
 		propiedades.setProperty("DATABASE_PASSWORD_GAME", DATABASE_PASSWORD_GAME);
 		propiedades.setProperty("DATABASE_NOMBRE_GAME", DATABASE_NOMBRE_GAME);
 		
+		propiedades.setProperty("ACTIVAR_FILA_DE_ESPERA", Boolean.toString(ACTIVAR_FILA_DE_ESPERA));
+		propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
+		
 		propiedades.store(new FileOutputStream(new File("conf-game.txt")), "Archivo de configuración");
 		propiedades.clear();
 		propiedades = null;
+	}
+	
+	public static void cargar_Paquetes()
+	{
+        Reflections reflections = new Reflections("juego.paquetes");
+        reflections.getTypesAnnotatedWith(Paquete.class).forEach(x ->
+        {
+        	try 
+        	{
+				paquetes_emulador.put(x.getAnnotation(Paquete.class).value(), GestorPaquetes.class.cast(x.newInstance()));
+			} 
+        	catch (InstantiationException | IllegalAccessException e) {}
+        });
+    }
+	
+	public static Map<String, GestorPaquetes> get_Paquetes_Emulador() 
+	{
+		return paquetes_emulador;
 	}
 }

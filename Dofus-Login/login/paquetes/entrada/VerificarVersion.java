@@ -1,6 +1,6 @@
 package login.paquetes.entrada;
 
-import login.LoginRespuesta;
+import login.LoginSocket;
 import login.enums.EstadosLogin;
 import login.paquetes.GestorPaquetes;
 import login.paquetes.Paquete;
@@ -9,7 +9,7 @@ import login.paquetes.salida.ErroresLogin;
 @Paquete("1.29.1")
 public class VerificarVersion implements GestorPaquetes
 {
-	public void analizar(LoginRespuesta jugador, String paquete)
+	public void analizar(LoginSocket jugador, String paquete)
 	{
 		if (paquete.equalsIgnoreCase("1.29.1"))
 		{

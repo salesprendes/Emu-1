@@ -33,7 +33,6 @@ final public class NodoFila implements Comparable<NodoFila>
 		posicion = _posicion;
 	}
 
-	@Override
 	public int compareTo(NodoFila comparacion)
 	{
 		if(cuenta.es_Cuenta_Abonada() && !comparacion.get_Cuenta().es_Cuenta_Abonada())

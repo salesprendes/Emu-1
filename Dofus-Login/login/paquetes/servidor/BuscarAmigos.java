@@ -1,6 +1,6 @@
 package login.paquetes.servidor;
 
-import login.LoginRespuesta;
+import login.LoginSocket;
 import login.enums.EstadosLogin;
 import login.paquetes.GestorPaquetes;
 import login.paquetes.Paquete;
@@ -9,7 +9,7 @@ import main.Main;
 @Paquete("AF")
 public class BuscarAmigos implements GestorPaquetes
 {
-	public void analizar(LoginRespuesta jugador, String paquete) 
+	public void analizar(LoginSocket jugador, String paquete) 
 	{
 		if (jugador.get_Estado_login() == EstadosLogin.LISTA_SERVIDORES)
 		{

@@ -1,6 +1,6 @@
 package main;
 
-public enum EstadosEmuLogin
+public enum Estados
 {
 	APAGADO,
 	CARGANDO,

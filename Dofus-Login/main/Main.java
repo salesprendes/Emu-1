@@ -1,22 +1,23 @@
 package main;
 
 import database.ConexionPool;
-import login.ServerSocketLogin;
-import login.comunicador.ServerSocketComunicador;
-import login.fila.ServerFilaLogin;
+import login.LoginServer;
+import login.comunicador.ComunicadorServer;
+import login.fila.FilaServer;
 import main.consola.Consola;
 import objetos.Comunidades;
+import objetos.Cuentas;
 import objetos.Servidores;
 
 final public class Main 
 {
 	public static boolean modo_debug = false;
-	public static EstadosEmuLogin estado_emulador = EstadosEmuLogin.APAGADO;
+	public static Estados estado_emulador = Estados.APAGADO;
 
 	/** THREADS **/
-	public static ServerSocketLogin servidor_login;
-	public static ServerSocketComunicador servidor_comunicador;
-	public static ServerFilaLogin fila_espera_login;
+	public static LoginServer servidor_login;
+	public static ComunicadorServer servidor_comunicador;
+	public static FilaServer fila_espera_login;
 	public static Consola comandos_consola;
 	private static ConexionPool database = new ConexionPool();
 	
@@ -32,6 +33,7 @@ final public class Main
 
 		Consola.print("Conectando a la base de datos: ");
 		database.cargar_Configuracion();
+		
 		if(database.comprobar_conexion(database.get_Data_Source()))
 		{
 			database.iniciar_Database();
@@ -42,39 +44,47 @@ final public class Main
 			Consola.println("incorrecta");
 		}
 
-		estado_emulador = EstadosEmuLogin.CARGANDO;
-		cargar_Login();
-		estado_emulador = EstadosEmuLogin.ENCENDIDO;
-		
+		estado_emulador = Estados.CARGANDO;
+		get_Cargar_Login();
 		Configuracion.cargar_Paquetes();
+		
 		/** Threads **/
-		servidor_login = new ServerSocketLogin();
-		servidor_comunicador = new ServerSocketComunicador();
-		fila_espera_login = new ServerFilaLogin();
+		servidor_login = new LoginServer();
+		servidor_comunicador = new ComunicadorServer();
+		fila_espera_login = new FilaServer();
 		comandos_consola = new Consola();
+		estado_emulador = Estados.ENCENDIDO;
 	}
 
-	public static void cargar_Login()
+	public static void get_Cargar_Login()
 	{
 		Consola.print("Cargando servidores: ");
 		database.get_Servidores().cargar_Todos_Servidores();
-		Consola.println(Servidores.servidores.size() + " servidores cargados");
+		Consola.println(Servidores.get_Servidores().size() + " servidores cargados");
 
 		Consola.print("Cargando comunidades: ");
 		database.get_Comunidades().cargar_Todas_Comunidades();
 		Consola.println(Comunidades.get_Comunidades().size() + " comunidades cargadas");
+		
+		Consola.print("Cargando cuentas: ");
+		database.get_Cuentas().get_Cargar_Todas_Cuentas();
+		Consola.println(Cuentas.get_Cuentas_Cargadas().size() + " cuentas cargadas");
 	}
 
 	public static void cerrar_Emulador()
 	{
 		Consola.println("> El servidor se esta cerrando");
-		if (estado_emulador == EstadosEmuLogin.ENCENDIDO)
+		if (estado_emulador == Estados.ENCENDIDO)
 		{
-			estado_emulador = EstadosEmuLogin.APAGADO;
-			servidor_comunicador.detener_Server_Socket();
-			servidor_login.detener_Server_Socket();
-			fila_espera_login.detener_Fila();
-			comandos_consola.interrupt();
+			if(servidor_comunicador != null)
+				servidor_comunicador.detener_Server_Socket();
+			if(servidor_login != null)
+				servidor_login.detener_Server_Socket();
+			if(fila_espera_login != null)
+				fila_espera_login.detener_Fila();
+			if(comandos_consola != null)
+				comandos_consola.interrupt();
+			estado_emulador = Estados.APAGADO;
 		}
 		Consola.println("> El emulador esta cerrado.");
 		System.exit(1);

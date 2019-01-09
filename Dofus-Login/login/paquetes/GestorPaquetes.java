@@ -1,9 +1,9 @@
 package login.paquetes;
 
-import login.LoginRespuesta;
+import login.LoginSocket;
 
 public interface GestorPaquetes 
 {
-	public void analizar(LoginRespuesta jugador, String paquete);
+	public void analizar(LoginSocket jugador, String paquete);
 	public String toString();
 }

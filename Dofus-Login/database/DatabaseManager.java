@@ -108,7 +108,7 @@ public class DatabaseManager
 			try 
 			{
 				conexion.close();
-			} 
+			}
 			catch(final Exception e) {}
 		}
 	}

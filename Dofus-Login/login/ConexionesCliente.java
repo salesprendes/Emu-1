@@ -5,13 +5,13 @@ import java.util.List;
 
 import login.paquetes.salida.ErroresLogin;
 
-public class ConexionesCliente 
+public final class ConexionesCliente 
 {
 	private String ip_cliente;
 	private long tiempo_ultima_conexion;
-	private final List<LoginRespuesta> clientes_login = new ArrayList<LoginRespuesta>();
+	private static final List<LoginSocket> clientes_login = new ArrayList<LoginSocket>();
 
-	public ConexionesCliente(String ip, LoginRespuesta cliente)
+	public ConexionesCliente(String ip, LoginSocket cliente)
 	{
 		ip_cliente = ip;
 		tiempo_ultima_conexion = System.currentTimeMillis();
@@ -33,12 +33,12 @@ public class ConexionesCliente
 		return ip_cliente;
 	}
 
-	public List<LoginRespuesta> get_Clientes_Login()
+	public List<LoginSocket> get_Clientes_Login()
 	{
 		return clientes_login;
 	}
 
-	public void agregar_Cliente(LoginRespuesta cliente)
+	public void agregar_Cliente(LoginSocket cliente)
 	{
 		refrescar_Tiempo_Ultima_Conexion();
 		if (!clientes_login.contains(cliente)) 
@@ -47,7 +47,7 @@ public class ConexionesCliente
 		}
 	}
 
-	public void eliminar_Cliente(LoginRespuesta g)
+	public void eliminar_Cliente(LoginSocket g)
 	{
 		if (clientes_login.contains(g))
 		{
@@ -55,7 +55,7 @@ public class ConexionesCliente
 		}
 	}
 	
-	public void expulsar_Todos_Clientes()
+	public static void expulsar_Todos_Clientes()
 	{
 		clientes_login.forEach(cliente ->
 		{

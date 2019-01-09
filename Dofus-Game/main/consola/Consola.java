@@ -18,10 +18,26 @@ final public class Consola extends Thread implements Runnable
 		Scanner sc = new Scanner(System.in);
 		while(!isInterrupted())
 		{
-			System.out.print(">> ");
-			String command = sc.nextLine();
-			Comandos.ejecutar(command);
+			print("");
+			String comando = sc.nextLine();
+			Comandos.ejecutar(comando);
 		}
 		sc.close();
+	}
+	
+	public static void print(final String mensaje)
+	{
+		synchronized(System.out) 
+		{
+			System.out.print(">> " + mensaje);
+		}
+	}
+	
+	public static void println(final String mensaje)
+	{
+		synchronized(System.out) 
+		{
+			System.out.println(mensaje);
+		}
 	}
 }

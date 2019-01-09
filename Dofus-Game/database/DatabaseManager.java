@@ -70,7 +70,7 @@ public class DatabaseManager
 						conexion.rollback();
 					}
 				} 
-				catch (final Exception ignorar) {}
+				catch (final Exception e1) {}
 			}
 			return null;
 		}

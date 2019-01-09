@@ -1,9 +1,8 @@
 package objetos;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-import login.comunicador.ComunicadorRespuesta;
+import login.comunicador.ComunicadorSocket;
 import login.enums.ErroresServidor;
 
 final public class Servidores 
@@ -11,11 +10,11 @@ final public class Servidores
 	final private int id, puerto;
 	final private Comunidades comunidad;
 	private Estados_Servidor estado;
-	private ComunicadorRespuesta comunicador_game = null;
+	private ComunicadorSocket comunicador_game = null;
 	private final boolean servidor_vip;
 	private final String ip;
 	private Poblacion poblacion;
-	public static final ConcurrentMap<Integer, Servidores> servidores = new ConcurrentHashMap<Integer, Servidores>();
+	private static final ConcurrentHashMap<Integer, Servidores> servidores_cargados = new ConcurrentHashMap<Integer, Servidores>();
 	
 	public Servidores(int _id, Comunidades _comunidad, byte _poblacion, final boolean _vip_necesario, final String _ip, final int _puerto)
 	{
@@ -26,7 +25,8 @@ final public class Servidores
 		poblacion = Poblacion.values()[_poblacion];
 		ip = _ip;
 		puerto = _puerto;
-		servidores.put(id, this);
+		
+		servidores_cargados.put(id, this);
 	}
 	
 	public int get_Id() 
@@ -41,10 +41,10 @@ final public class Servidores
 	
 	public static Servidores get(int id)
 	{
-        return servidores.containsKey(id) ? servidores.get(id) : null;
+        return servidores_cargados.containsKey(id) ? servidores_cargados.get(id) : null;
     }
 
-	public ComunicadorRespuesta get_Comunicador_game()
+	public ComunicadorSocket get_Comunicador_game()
 	{
 		return comunicador_game;
 	}
@@ -69,7 +69,7 @@ final public class Servidores
 		estado = _estado;
 	}
 
-	public void set_Comunicador_game(ComunicadorRespuesta _comunicador_game)
+	public void set_Comunicador_game(ComunicadorSocket _comunicador_game)
 	{
 		comunicador_game = _comunicador_game;
 	}
@@ -86,8 +86,8 @@ final public class Servidores
 	
 	public static String get_Obtener_Servidores()
 	{
-        final StringBuilder paquete_servidores = new StringBuilder(servidores.size() * 10).append("AH");
-        servidores.values().forEach(servidor ->
+        final StringBuilder paquete_servidores = new StringBuilder(servidores_cargados.size() * 10).append("AH");
+        servidores_cargados.values().forEach(servidor ->
         {
         	paquete_servidores.append(paquete_servidores.length() > 2 ? '|' : "");
         	paquete_servidores.append(servidor.get_Id()).append(';');
@@ -101,16 +101,16 @@ final public class Servidores
 	public static String get_Obtener_Servidores_Disponibles() 
 	{
         final StringBuilder paquete = new StringBuilder(ErroresServidor.SERVIDORES_LIBRES.toString());
-        servidores.values().stream().filter(filtro -> !filtro.es_Servidor_Vip() && filtro.get_Poblacion() != Poblacion.COMPLETO).forEach(servidor -> 
+        servidores_cargados.values().stream().filter(filtro -> !filtro.es_Servidor_Vip() && filtro.get_Poblacion() != Poblacion.COMPLETO).forEach(servidor -> 
         {
         	paquete.append(servidor.get_Id()).append(paquete.length() > 0 ? '|' : "");
         });
         return paquete.toString();
     }
 	
-	public static ConcurrentMap<Integer, Servidores> get_Servidores() 
+	public static ConcurrentHashMap<Integer, Servidores> get_Servidores() 
 	{
-		return servidores;
+		return servidores_cargados;
 	}
 	
 	public enum Estados_Servidor

@@ -11,6 +11,7 @@ final public class Consola extends Thread implements Runnable
 		println("Administración del login del emulador");
 		println("Para visualizar los comandos introducir: ?");
 		start();
+		setPriority(7);
 	}
 	
 	public void run()
