@@ -16,7 +16,7 @@ import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
 import objetos.cuentas.Migracion;
-import objetos.personajes.Personajes;
+import objetos.entidades.personajes.Personajes;
 
 final public class JuegoVinculador extends Thread implements Runnable
 {

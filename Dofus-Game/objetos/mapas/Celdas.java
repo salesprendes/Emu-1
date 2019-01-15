@@ -2,7 +2,7 @@ package objetos.mapas;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import objetos.personajes.Personajes;
+import objetos.entidades.personajes.Personajes;
 
 public class Celdas 
 {
@@ -136,7 +136,7 @@ public class Celdas
         if(!personajes.contains(jugador))
         	personajes.add(jugador);
         if (agregar_mapa)
-        	mapa.get_Agregar_Jugador(jugador);
+         	mapa.get_Agregar_Jugador(jugador);
     }
 
     public void get_Eliminar_Personaje(Personajes jugador, boolean eliminar_mapa) 
@@ -145,10 +145,8 @@ public class Celdas
         {
             if(personajes.contains(jugador))
             	personajes.remove(jugador);
-            
             if (eliminar_mapa)
         		mapa.get_Eliminar_Personaje(jugador);
-            
             if (personajes.isEmpty()) 
             	jugador = null;
         }

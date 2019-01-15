@@ -35,26 +35,31 @@ final public class FilaServer extends Thread implements Runnable
 					{
 						fila.set_eliminar_Cuenta(nodo_fila);
 						JuegoSocket socket = nodo_fila.get_Cuenta().get_Juego_socket();
-						if(socket != null && socket.get_Personaje() != null)
+						if(socket != null)
 						{
-							socket.get_Personaje().get_Conexion_juego();
-							socket.set_Estado_Juego(EstadosJuego.CONECTADO);
-						}
-						else if(socket != null)
-						{
-							if(Main.get_Database().get_Cuentas().get_Puede_Migrar(nodo_fila.get_Cuenta().get_Id())) 
+							if(socket.get_Personaje() != null)
 							{
-								String servidores = Main.get_Database().get_Cuentas().get_Lista_Servidores_Otros_Personajes(nodo_fila.get_Cuenta().get_Id());
-								if(!servidores.isEmpty())
+								socket.get_Personaje().get_Conexion_juego();
+								socket.set_Estado_Juego(EstadosJuego.CONECTADO);
+							}
+							else
+							{
+								if(Main.get_Database().get_Cuentas().get_Puede_Migrar(nodo_fila.get_Cuenta().get_Id())) 
 								{
-									new Migracion(nodo_fila.get_Cuenta().get_Id(), servidores);
-									Main.socket_vinculador.enviar_Paquete("C|M|P|" + nodo_fila.get_Cuenta().get_Id());
-									socket.set_Estado_Juego(EstadosJuego.MIGRACION);
-									return;
+									String servidores = Main.get_Database().get_Cuentas().get_Lista_Servidores_Otros_Personajes(nodo_fila.get_Cuenta().get_Id());
+									if(!servidores.isEmpty())
+									{
+										new Migracion(nodo_fila.get_Cuenta().get_Id(), servidores);
+										Main.socket_vinculador.enviar_Paquete("C|M|P|" + nodo_fila.get_Cuenta().get_Id());
+										socket.set_Estado_Juego(EstadosJuego.MIGRACION);
+									}
+								}
+								else
+								{
+									socket.enviar_Paquete(get_Paquete_Lista_Personajes(nodo_fila.get_Cuenta()));
+									socket.set_Estado_Juego(EstadosJuego.SELECCION_PERSONAJE);
 								}
 							}
-							socket.enviar_Paquete(get_Paquete_Lista_Personajes(nodo_fila.get_Cuenta()));
-							socket.set_Estado_Juego(EstadosJuego.SELECCION_PERSONAJE);
 						}
 						nodo_fila.get_Cuenta().set_Fila_espera(false);
 					}

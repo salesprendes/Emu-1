@@ -5,8 +5,10 @@ import java.sql.Connection;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import database.objetos.Alineamientos_DB;
 import database.objetos.Areas_DB;
 import database.objetos.Cuentas_DB;
+import database.objetos.Experiencia_DB;
 import database.objetos.Mapas_DB;
 import database.objetos.Personajes_DB;
 import database.objetos.Razas_DB;
@@ -27,6 +29,8 @@ public class ConexionPool
 	private SubAreas_DB sub_areas;
 	private Mapas_DB mapas;
 	private Razas_DB razas;
+	private Alineamientos_DB alineamientos;
+	private Experiencia_DB experiencia;
 	
 	public void iniciar_Database() 
 	{
@@ -37,6 +41,8 @@ public class ConexionPool
 		sub_areas = new SubAreas_DB(game_database);
 		mapas = new Mapas_DB(game_database);
 		razas = new Razas_DB(game_database);
+		alineamientos = new Alineamientos_DB(game_database);
+		experiencia = new Experiencia_DB(game_database);
 	}
 	
 	public Cuentas_DB get_Cuentas()
@@ -59,6 +65,11 @@ public class ConexionPool
 		return areas;
 	}
 
+	public Alineamientos_DB get_Alineamientos()
+	{
+		return alineamientos;
+	}
+
 	public SubAreas_DB get_Sub_areas() 
 	{
 		return sub_areas;
@@ -72,6 +83,11 @@ public class ConexionPool
 	public Razas_DB get_Razas() 
 	{
 		return razas;
+	}
+
+	public Experiencia_DB get_Experiencia()
+	{
+		return experiencia;
 	}
 
 	public void cargar_Configuracion() 

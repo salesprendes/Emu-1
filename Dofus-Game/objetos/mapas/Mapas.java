@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import main.consola.Consola;
 import main.util.Compresor;
-import objetos.personajes.Personajes;
+import objetos.entidades.personajes.Personajes;
 
 public class Mapas 
 {
@@ -149,7 +149,7 @@ public class Mapas
     }
 	
 	/** capacidades de los mapas 
-	 * https://github.com/Emudofus/Dofus/blob/1.29/dofus/managers/MapsServersManager.as#L141 **/
+	 * https://github.com/Emudofus/Dofus/blob/1.29/dofus/managers/MapsServersManager.as#L141 */
 	
 	public boolean get_Se_Puede_Desafiar() 
 	{

@@ -20,7 +20,7 @@ import main.Estados;
 import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
-import objetos.personajes.Personajes;
+import objetos.entidades.personajes.Personajes;
 
 public class JuegoSocket implements Runnable
 {

@@ -3,7 +3,7 @@ package database.objetos;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
-import objetos.personajes.Razas;
+import objetos.entidades.personajes.Razas;
 
 public class Razas_DB extends DatabaseManager
 {

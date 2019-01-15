@@ -98,10 +98,7 @@ final public class FilaSocket
 	{
 		synchronized(fila)
 		{
-			fila.forEach(f -> 
-			{
-				f.get_Cuenta().get_Juego_socket().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
-			});
+			fila.forEach(f -> f.get_Cuenta().get_Juego_socket().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada())));
 		}
 	}
 

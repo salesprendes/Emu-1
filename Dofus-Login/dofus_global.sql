@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : Localhost
  Source Server Type    : MySQL
  Source Server Version : 50723
  Source Host           : localhost:3306
@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 09/01/2019 06:45:45
+ Date: 15/01/2019 14:27:38
 */
 
 SET NAMES utf8mb4;
@@ -55,7 +55,7 @@ CREATE TABLE `cuentas`  (
   `rango_cuenta` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0: Usuario\r\n1: Mod\r\n2: GM\r\n3: Admin',
   `tiempo_abono` datetime(0) NOT NULL COMMENT 'Abono con fecha y tiempo para la cuenta',
   `comunidad` tinyint(2) NULL DEFAULT 4 COMMENT 'id de la comunidad',
-  `baneado` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0: No baneado\r\n1: Baneado',
+  `baneado` bit(1) NOT NULL DEFAULT b'0' COMMENT '0: No baneado\r\n1: Baneado',
   `migracion` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `index_nombre_usuario`(`usuario`) USING BTREE,
@@ -66,10 +66,10 @@ CREATE TABLE `cuentas`  (
 -- ----------------------------
 -- Records of cuentas
 -- ----------------------------
-INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '127.0.0.1', 4, '2030-03-28 17:45:50', 4, 0, 0);
-INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, 0, 0);
-INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', NULL, 4, '2018-03-28 17:46:23', 4, 0, 0);
-INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', NULL, 4, '2018-03-28 17:46:37', 4, 0, 0);
+INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '127.0.0.1', 4, '2030-03-28 17:45:50', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', NULL, 4, '2018-03-28 17:46:23', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', NULL, 4, '2018-03-28 17:46:37', 4, b'0', 0);
 
 -- ----------------------------
 -- Table structure for personajes
@@ -84,29 +84,61 @@ CREATE TABLE `personajes`  (
   `nivel` int(4) NOT NULL DEFAULT 1 COMMENT 'nivel del personaje',
   `gfx` int(4) NOT NULL,
   `tamano` int(4) NOT NULL DEFAULT 100 COMMENT 'tamaño del gfx (short maximo 32767)',
-  `mapa_id` int(4) NOT NULL,
+  `mapa_id` int(5) NOT NULL,
   `celda_id` int(4) NOT NULL DEFAULT 0,
+  `sexo` tinyint(1) NOT NULL COMMENT 'sexo del personaje 0 = masculino, 1 = femenino',
+  `experiencia` bigint(30) NOT NULL DEFAULT 0,
+  `kamas` bigint(30) NULL DEFAULT 0,
+  `porcentaje_vida` tinyint(3) NOT NULL DEFAULT 100,
   `raza_id` tinyint(2) NOT NULL COMMENT 'raza vinculado a raza',
+  `vitalidad` int(11) NOT NULL DEFAULT 0,
+  `sabiduria` int(11) NOT NULL DEFAULT 0,
+  `fuerza` int(11) NOT NULL DEFAULT 0,
+  `inteligencia` int(11) NOT NULL DEFAULT 0,
+  `suerte` int(11) NOT NULL DEFAULT 0,
+  `agilidad` int(11) NOT NULL DEFAULT 0,
+  `emotes` int(7) NOT NULL DEFAULT 1 COMMENT 'numero de los emotes del personaje',
+  `canales` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '*p?:',
   `cuenta_id` int(4) NOT NULL COMMENT 'cuenta referencia a cuentas',
   `derechos` int(5) NOT NULL DEFAULT 8192 COMMENT 'numero de los derechos que tiene el personaje',
   `restricciones` tinyint(3) NOT NULL DEFAULT 8 COMMENT 'numero de las restricciones que tiene el personaje',
   `servidor_id` int(4) NOT NULL,
   PRIMARY KEY (`id`, `nombre`) USING BTREE,
   INDEX `Referencia_cuenta`(`cuenta_id`) USING BTREE,
-  INDEX `Referencia_raza`(`raza_id`) USING BTREE,
   INDEX `Referencia_servidor`(`servidor_id`) USING BTREE,
-  INDEX `Referencia_mapa`(`mapa_id`) USING BTREE,
+  INDEX `id`(`id`) USING BTREE,
   CONSTRAINT `Referencia_cuenta` FOREIGN KEY (`cuenta_id`) REFERENCES `cuentas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Referencia_mapa` FOREIGN KEY (`mapa_id`) REFERENCES `dofus_servidor`.`mapas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `Referencia_raza` FOREIGN KEY (`raza_id`) REFERENCES `dofus_servidor`.`razas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Referencia_servidor` FOREIGN KEY (`servidor_id`) REFERENCES `servidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of personajes
 -- ----------------------------
-INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', -1, -1, 11568205, 1, 10, 100, 666, 250, 5, 1, 8192, 8, 601);
-INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 10, 20, 100, 666, 122, 1, 1, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', 11568205, 11568205, 11568205, 1, 10, 100, 666, 250, 0, 0, 0, 100, 5, 900, 900, 900, 900, 900, 900, 1, '*p?:', 1, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 10, 20, 100, 666, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 2, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (3, 'test', -1, -1, -1, 1, 10, 100, 666, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 1, 8192, 8, 602);
+
+-- ----------------------------
+-- Table structure for personajes_alineamientos
+-- ----------------------------
+DROP TABLE IF EXISTS `personajes_alineamientos`;
+CREATE TABLE `personajes_alineamientos`  (
+  `personaje` int(11) NOT NULL,
+  `alineamiento` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'id del alineamiento',
+  `orden` int(4) NOT NULL DEFAULT 0,
+  `orden_nivel` int(4) NOT NULL DEFAULT 0 COMMENT 'nivel de la orden',
+  `honor` int(11) NOT NULL DEFAULT 0 COMMENT 'honor total del alineamiento',
+  `deshonor` int(11) NOT NULL DEFAULT 0 COMMENT 'deshonor del alineamiento',
+  `activado` bit(1) NOT NULL DEFAULT b'0' COMMENT 'sirve para mostrar o ocultar las alas',
+  PRIMARY KEY (`personaje`) USING BTREE,
+  CONSTRAINT `referencia_personajes` FOREIGN KEY (`personaje`) REFERENCES `personajes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of personajes_alineamientos
+-- ----------------------------
+INSERT INTO `personajes_alineamientos` VALUES (1, 1, 0, 0, 18000, 5, b'1');
+INSERT INTO `personajes_alineamientos` VALUES (3, 0, 0, 0, 0, 0, b'1');
 
 -- ----------------------------
 -- Table structure for servidores

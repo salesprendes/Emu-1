@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import juego.JuegoSocket;
 import juego.fila.Nodo;
-import objetos.personajes.Personajes;
+import objetos.entidades.personajes.Personajes;
 
 final public class Cuentas 
 {

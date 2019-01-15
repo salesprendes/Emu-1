@@ -5,13 +5,15 @@ import juego.JuegoServer;
 import juego.JuegoVinculador;
 import juego.fila.FilaServer;
 import main.consola.Consola;
+import objetos.Experiencia;
 import objetos.cuentas.Cuentas;
+import objetos.entidades.alineamientos.AlineamientosModelo;
+import objetos.entidades.personajes.Personajes;
+import objetos.entidades.personajes.Razas;
 import objetos.mapas.Areas;
 import objetos.mapas.Mapas;
 import objetos.mapas.SubAreas;
 import objetos.mapas.SuperAreas;
-import objetos.personajes.Personajes;
-import objetos.personajes.Razas;
 
 public class Main 
 {
@@ -29,7 +31,7 @@ public class Main
 	public static void main(String[] args) 
 	{
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
-		
+
 		Consola.print("Cargando la configuración: ");
 		if(Configuracion.cargar_Configuracion())
 			Consola.println("correcta");
@@ -105,12 +107,21 @@ public class Main
 		database.get_Mapas().get_Cargar_Todos_Mapas();
 		Consola.println(Mapas.get_Mapas_Cargados().size() + " mapas cargados");
 		
+		Consola.print("Cargando las experiencias: ");
+		database.get_Experiencia().get_Cargar_Todas_Experiencia();
+		Consola.println(Experiencia.get_Experiencias_Cargadas().size() + " experiencias cargadas");
+		
+		Consola.print("Cargando alineamientos: ");
+		database.get_Alineamientos().get_Cargar_Todos_Alineamientos();
+		Consola.println(AlineamientosModelo.get_Alineamientos_Cargados().size() + " alineamientos cargados");
+		
 		Consola.print("Cargando razas: ");
 		database.get_Razas().get_Cargar_Todas_Razas();
 		Consola.println(Razas.get_Razas_Cargadas().size() + " razas cargadas");
 		
 		Consola.print("Cargando personajes: ");
 		database.get_Personajes().get_Cargar_Todos_Personajes();
+		database.get_Personajes().get_Cargar_Alineaciones_Personajes();
 		Consola.println(Personajes.get_Personajes_Cargados().size() + " personajes cargados");
 	}
 	
