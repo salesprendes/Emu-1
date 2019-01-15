@@ -427,21 +427,28 @@ public class Personajes implements Entidades
 			StringBuilder paquete = new StringBuilder(500);
 
 			paquete.append("As").append(get_Obtener_Experiencia_Personaje(",")).append('|');
-			paquete.append(kamas + "|").append(puntos_stats).append('|').append(puntos_hechizos).append('|');
+			paquete.append(kamas).append('|').append(puntos_stats).append('|').append(puntos_hechizos).append('|');
 			paquete.append(get_Alineamiento_Id()).append('~').append(get_Alineamiento_Id()).append(',').append(get_Alineamiento_Orden_Nivel()).append(',').append(get_Grado_Alas()).append(',').append(get_Alineamiento_Honor()).append(',').append(get_Alineamiento_Deshonor()).append(',').append(get_Alineamiento_Tiene_Alas_Activadas()).append('|');
 			
 			get_Actualizar_Vida();
-			paquete.append(puntos_vida + "," + puntos_vida_maxima + "|");
-			paquete.append(10000 + ",10000|");
-			paquete.append(0 + "|");//iniciativa
+			paquete.append(puntos_vida).append(',').append(puntos_vida_maxima).append('|');
+			paquete.append(10000).append(',').append(servidor == 22 ? 1 : 10000).append('|');//energia
+			paquete.append(get_Iniciativa()).append('|');//iniciativa
 			paquete.append(0 + "|");//prospeccion
 			
 			final int[] array_stats =
 			{
-					TipoStats.AGREGAR_PA, TipoStats.AGREGAR_PM, 118, 125, 124, 123, 119, 
-					126, 117, TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 112, 142, 165, 138, 178, 225, 226, 220, 115, 122, 160, 
-					161, 244, 214, 264, 254, 240, 210, 260, 250, 241, 211, 261, 251, 242, 
-					212, 262, 252, 243, 213, 263, 253
+				TipoStats.AGREGAR_PA, TipoStats.AGREGAR_PM, TipoStats.AGREGAR_FUERZA, TipoStats.AGREGAR_VITALIDAD, 
+				TipoStats.AGREGAR_SABIDURIA, TipoStats.AGREGAR_SUERTE, TipoStats.AGREGAR_AGILIDAD, TipoStats.AGREGAR_INTELIGENCIA, 
+				TipoStats.AGREGAR_ALCANCE, TipoStats.AGREGAR_CRIATURAS_INVOCABLES, TipoStats.AGREGAR_DANOS, TipoStats.AGREGAR_DANO_FISICO, 
+				TipoStats.AGREGAR_DOMINIO_ARMAS, TipoStats.AGREGAR_PORC_DANOS, TipoStats.AGREGAR_CURAS, TipoStats.AGREGAR_DANOS_TRAMPA, 
+				TipoStats.AGREGAR_PORC_DANOS_TRAMPA, TipoStats.AGREGAR_REENVIA_DANOS, TipoStats.AGREGAR_GOLPES_CRITICOS, TipoStats.AGREGAR_FALLOS_CRITICOS, 
+				TipoStats.AGREGAR_ESQUIVA_PERD_PA, TipoStats.AGREGAR_ESQUIVA_PERD_PM, TipoStats.AGREGAR_RES_FIJA_NEUTRAL, TipoStats.AGREGAR_RES_PORC_NEUTRAL, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_NEUTRAL, TipoStats.AGREGAR_RES_PORC_PVP_NEUTRAL, TipoStats.AGREGAR_RES_FIJA_TIERRA, TipoStats.AGREGAR_RES_PORC_TIERRA, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_TIERRA, TipoStats.AGREGAR_RES_PORC_PVP_TIERRA, TipoStats.AGREGAR_RES_FIJA_AGUA, TipoStats.AGREGAR_RES_PORC_AGUA, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_AGUA, TipoStats.AGREGAR_RES_PORC_PVP_AGUA, TipoStats.AGREGAR_RES_FIJA_AIRE, TipoStats.AGREGAR_RES_PORC_AIRE, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_AIRE, TipoStats.AGREGAR_RES_PORC_PVP_AIRE, TipoStats.AGREGAR_RES_FIJA_FUEGO, TipoStats.AGREGAR_RES_PORC_FUEGO, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_FUEGO, TipoStats.AGREGAR_RES_PORC_PVP_FUEGO
 			};
 			
 			for (final int s : array_stats)
@@ -452,6 +459,26 @@ public class Personajes implements Entidades
 			cache_as = paquete.toString();
 		}
 		return cache_as;
+	}
+	
+	public int get_Iniciativa() 
+	{
+		float fact = 4;
+		int vida_maxima = puntos_vida_maxima - raza.get_Vida_base();
+		int vida = puntos_vida - raza.get_Vida_base();
+		if (raza.get_Id() == 11)//sacrogito
+			fact = 8;
+		int iniciativa = 0;
+		
+		if (vida_maxima > 0) 
+		{
+			iniciativa += vida_maxima / fact;
+			fact = (float) vida / vida_maxima;
+			iniciativa *= fact;
+		}
+		if (iniciativa < 0)
+			iniciativa = 0;
+		return 0;
 	}
 
 	public int get_Grado_Alas()

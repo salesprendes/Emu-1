@@ -69,8 +69,8 @@ public class Experiencia
 	
 	public static long get_Experiencia_Personajes(int nivel) 
 	{
-		if (nivel >= 200) 
-			return 200;
+		if (nivel > 200) 
+			return Long.MAX_VALUE;
 		else if (nivel < 1) 
 			nivel = 1;
 		
@@ -79,8 +79,8 @@ public class Experiencia
 	
 	public static int get_Experiencia_Alineamientos(int nivel) 
 	{
-		if (nivel >= 10) 
-			return 10;
+		if (nivel > 10) 
+			nivel = 10;
 		
 		else if (nivel < 1)
 			nivel = 1;
