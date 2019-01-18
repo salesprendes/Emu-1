@@ -21,7 +21,7 @@ public class SuperAreas_DB extends DatabaseManager
 			while(query.get_Rs().next())
 			{
 				//id(1)
-				new SuperAreas(query.get_Rs().getShort(1));
+				new SuperAreas(query.get_Rs().getByte(1));
 			}
 			cerrar(query);
 		}

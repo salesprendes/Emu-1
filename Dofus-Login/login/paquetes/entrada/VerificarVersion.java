@@ -17,7 +17,7 @@ public class VerificarVersion implements GestorPaquetes
 		}
 		else
 		{
-			jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.VERSION_INCORRECTA).toString());
+			jugador.enviar_Paquete(ErroresLogin.VERSION_INCORRECTA.toString());
 			jugador.cerrar_Conexion();
 			return;
 		}

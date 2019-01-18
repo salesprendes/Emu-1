@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 15/01/2019 14:27:38
+ Date: 18/01/2019 15:08:49
 */
 
 SET NAMES utf8mb4;
@@ -23,24 +23,24 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `comunidades`;
 CREATE TABLE `comunidades`  (
   `id` tinyint(2) NOT NULL COMMENT '0: Francesa\r\n1: Internacional\r\n2: Inglesa\r\n3: Alemana\r\n4: Española\r\n6: Portuguesa\r\n7: Holandesa\r\n9: Italiana',
-  `nombre` varchar(2) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
+  `nombre` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of comunidades
 -- ----------------------------
-INSERT INTO `comunidades` VALUES (0, 'FR');
-INSERT INTO `comunidades` VALUES (1, 'EN');
-INSERT INTO `comunidades` VALUES (2, 'XX');
-INSERT INTO `comunidades` VALUES (3, 'DE');
-INSERT INTO `comunidades` VALUES (4, 'ES');
-INSERT INTO `comunidades` VALUES (5, 'RU');
-INSERT INTO `comunidades` VALUES (6, 'BR');
-INSERT INTO `comunidades` VALUES (7, 'NL');
-INSERT INTO `comunidades` VALUES (9, 'IT');
-INSERT INTO `comunidades` VALUES (10, 'JP');
-INSERT INTO `comunidades` VALUES (11, 'DE');
+INSERT INTO `comunidades` VALUES (0, 'Francófona');
+INSERT INTO `comunidades` VALUES (1, 'Reino Unido & Irlanda');
+INSERT INTO `comunidades` VALUES (2, 'Internacional');
+INSERT INTO `comunidades` VALUES (3, 'Alemana');
+INSERT INTO `comunidades` VALUES (4, 'HispaÑia');
+INSERT INTO `comunidades` VALUES (5, 'Rusa');
+INSERT INTO `comunidades` VALUES (6, 'Brasileña');
+INSERT INTO `comunidades` VALUES (7, 'Neerlandesa');
+INSERT INTO `comunidades` VALUES (9, 'Italiana');
+INSERT INTO `comunidades` VALUES (10, 'Japonesa');
+INSERT INTO `comunidades` VALUES (99, 'DEBUG');
 
 -- ----------------------------
 -- Table structure for cuentas
@@ -68,7 +68,7 @@ CREATE TABLE `cuentas`  (
 -- ----------------------------
 INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '127.0.0.1', 4, '2030-03-28 17:45:50', 4, b'0', 0);
 INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', NULL, 4, '2018-03-28 17:46:23', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 0);
 INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', NULL, 4, '2018-03-28 17:46:37', 4, b'0', 0);
 
 -- ----------------------------
@@ -114,7 +114,7 @@ CREATE TABLE `personajes`  (
 -- ----------------------------
 -- Records of personajes
 -- ----------------------------
-INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', 11568205, 11568205, 11568205, 1, 10, 100, 666, 250, 0, 0, 0, 100, 5, 900, 900, 900, 900, 900, 900, 1, '*p?:', 1, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', 11568205, 11568205, 11568205, 200, 10, 100, 7411, 250, 0, 0, 0, 100, 5, 900, 900, 900, 900, 900, 900, 1, '*p?:', 1, 8192, 8, 601);
 INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 10, 20, 100, 666, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 2, 8192, 8, 601);
 INSERT INTO `personajes` VALUES (3, 'test', -1, -1, -1, 1, 10, 100, 666, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 1, 8192, 8, 602);
 
@@ -137,8 +137,28 @@ CREATE TABLE `personajes_alineamientos`  (
 -- ----------------------------
 -- Records of personajes_alineamientos
 -- ----------------------------
-INSERT INTO `personajes_alineamientos` VALUES (1, 1, 0, 0, 18000, 5, b'1');
-INSERT INTO `personajes_alineamientos` VALUES (3, 0, 0, 0, 0, 0, b'1');
+INSERT INTO `personajes_alineamientos` VALUES (1, 1, 0, 0, 18000, 0, b'1');
+
+-- ----------------------------
+-- Table structure for personajes_items
+-- ----------------------------
+DROP TABLE IF EXISTS `personajes_items`;
+CREATE TABLE `personajes_items`  (
+  `personaje` int(11) NOT NULL COMMENT 'id del personaje',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id del objeto',
+  `id_modelo` int(11) NOT NULL COMMENT 'id del modelo del objeto base',
+  `cantidad` int(11) NOT NULL,
+  `posicion_inventario` tinyint(3) NOT NULL,
+  `stats` text CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  PRIMARY KEY (`id`, `personaje`) USING BTREE,
+  INDEX `referencia_personaje`(`personaje`) USING BTREE,
+  CONSTRAINT `referencia_personaje` FOREIGN KEY (`personaje`) REFERENCES `personajes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of personajes_items
+-- ----------------------------
+INSERT INTO `personajes_items` VALUES (1, 1, 39, 1, -1, '');
 
 -- ----------------------------
 -- Table structure for servidores
@@ -147,8 +167,8 @@ DROP TABLE IF EXISTS `servidores`;
 CREATE TABLE `servidores`  (
   `id` int(4) NOT NULL DEFAULT 0 COMMENT 'Id del servidor',
   `comunidad` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Comunidad del servidor',
-  `poblacion` tinyint(2) NOT NULL DEFAULT 1 COMMENT 'id de las plazas libres del servidor',
-  `vip_necesario` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Solo Acceso vip',
+  `poblacion` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'id de las plazas libres del servidor',
+  `abono_necesario` bit(1) NOT NULL DEFAULT b'0' COMMENT 'Solo cuentas con abono',
   `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '' COMMENT 'ip del game',
   `puerto` int(4) NOT NULL COMMENT 'puerto del game',
   PRIMARY KEY (`id`) USING BTREE,
@@ -159,7 +179,7 @@ CREATE TABLE `servidores`  (
 -- ----------------------------
 -- Records of servidores
 -- ----------------------------
-INSERT INTO `servidores` VALUES (601, 2, 0, 1, '127.0.0.1', 5555);
-INSERT INTO `servidores` VALUES (602, 2, 0, 0, '127.0.0.1', 5556);
+INSERT INTO `servidores` VALUES (601, 4, 0, b'0', '127.0.0.1', 5555);
+INSERT INTO `servidores` VALUES (602, 4, 0, b'0', '127.0.0.1', 5556);
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -19,7 +19,7 @@ final public class Cuentas
 	
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_cargadas = new ConcurrentHashMap<Integer, Cuentas>();
 	
-	public Cuentas(final int _id, final String _usuario, final String _password, String _apodo, final byte _rango_cuenta, long _tiempo_abono, final Comunidades _comunidad, boolean _baneado)
+	public Cuentas(final int _id, final String _usuario, final String _password, String _apodo, final byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
 	{
 		id = _id;
 		usuario = _usuario;
@@ -27,7 +27,7 @@ final public class Cuentas
 		apodo = _apodo;
 		rango_cuenta = _rango_cuenta;
 		tiempo_abono = _tiempo_abono;
-		comunidad = _comunidad;
+		comunidad = Comunidades.get_Comunidades().get(_comunidad);
 		cuenta_baneada = _baneado;
 		
 		cuentas_cargadas.put(id, this);

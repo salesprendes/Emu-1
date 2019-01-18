@@ -117,7 +117,7 @@ final public class LoginSocket implements Runnable
 		}
 		else
 		{
-			enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_CONECTADA).toString());
+			enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 			cerrar_Conexion();
 			return;
 		}
@@ -135,61 +135,55 @@ final public class LoginSocket implements Runnable
 		return paquete_buscado;
 	}
 	
-	public void cerrar_Conexion()
+	public synchronized void cerrar_Conexion()
 	{
-		synchronized(this) 
+		try
 		{
-			try
+			if(outputStream != null)
+				outputStream.close();
+			if(buffered_reader != null)
+				buffered_reader.close();
+			if (socket != null && socket.isClosed())
 			{
-				if(outputStream != null)
-					outputStream.close();
-				if(buffered_reader != null)
-					buffered_reader.close();
-				if (socket != null && socket.isClosed())
+				if(cuenta != null)
 				{
-					if(cuenta != null)
-					{
-						LoginServer.get_Eliminar_Cliente(this);
-						if(cuenta.get_Login_respuesta() == this)
-							cuenta.set_Login_respuesta(null);
-						if(cuenta.get_Fila_espera() && cuenta.get_Nodo_fila() != null)
-							fila.set_eliminar_Cuenta(cuenta.get_Nodo_fila());
-					}
-					socket.close();
+					LoginServer.get_Eliminar_Cliente(this);
+					if(cuenta.get_Login_respuesta() == this)
+						cuenta.set_Login_respuesta(null);
+					if(cuenta.get_Fila_espera() && cuenta.get_Nodo_fila() != null)
+						fila.set_eliminar_Cuenta(cuenta.get_Nodo_fila());
 				}
-				LoginServer.get_Eliminar_Cliente(this);
-				hash_key = null;
-				estado_login = null;
-				cuenta = null;
-				ejecutor.shutdown();
+				socket.close();
 			}
-			catch (final IOException e)
-			{
-				Consola.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
-				return;
-			}
+			LoginServer.get_Eliminar_Cliente(this);
+			hash_key = null;
+			estado_login = null;
+			cuenta = null;
+			ejecutor.shutdown();
+		}
+		catch (final IOException e)
+		{
+			Consola.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
+			return;
 		}
 	}
 	
-	public void enviar_Paquete(String paquete)
+	public synchronized void enviar_Paquete(String paquete)
 	{
-		synchronized (this) 
+		if (!socket.isClosed()) 
 		{
-			if (!socket.isClosed()) 
+			if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0))
 			{
-				if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0))
-				{
-					outputStream.print(paquete + (char)0);
-					outputStream.flush();
-					if(Main.modo_debug)
-						Consola.println("Enviado >> " + paquete);
-				}
+				outputStream.print(paquete + (char)0);
+				outputStream.flush();
+				if(Main.modo_debug)
+					Consola.println("Enviado >> " + paquete);
 			}
-			else
-			{
-				cerrar_Conexion();
-				return;
-			}
+		}
+		else
+		{
+			cerrar_Conexion();
+			return;
 		}
 	}
 

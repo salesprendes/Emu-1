@@ -9,10 +9,38 @@ public class Alineamientos
 	public Alineamientos(final AlineamientosModelo _alineamiento, final int _orden, final int _orden_nivel, final int _honor, final int _deshonor, final boolean _activado)
 	{
 		alineamiento = _alineamiento;
-		orden = _orden;
-		orden_nivel = _orden_nivel;
-		honor = _honor;
-		deshonor = _deshonor;
+		if (_orden == 0)
+		{
+			orden_nivel = 0;
+			switch (alineamiento.get_Id())
+			{
+				case 1://bonta
+					orden = 1;
+				break;
+				
+				case 2://brakmar
+					orden = 5;
+				break;
+				
+				case 3://mercenario
+					orden = 9;
+				break;
+				
+				default:
+					orden = 0;
+				break;
+			}
+		}
+		else
+		{
+			orden_nivel = _orden_nivel;
+			orden = _orden;
+		}
+		if(alineamiento.get_Id() != 0)
+		{
+			honor = _honor;
+			deshonor = _deshonor;
+		}
 		activado = _activado;
 	}
 

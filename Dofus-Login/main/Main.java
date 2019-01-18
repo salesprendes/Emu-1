@@ -58,14 +58,14 @@ final public class Main
 
 	public static void get_Cargar_Login()
 	{
-		Consola.print("Cargando servidores: ");
-		database.get_Servidores().cargar_Todos_Servidores();
-		Consola.println(Servidores.get_Servidores().size() + " servidores cargados");
-
 		Consola.print("Cargando comunidades: ");
 		database.get_Comunidades().cargar_Todas_Comunidades();
 		Consola.println(Comunidades.get_Comunidades().size() + " comunidades cargadas");
 		
+		Consola.print("Cargando servidores: ");
+		database.get_Servidores().cargar_Todos_Servidores();
+		Consola.println(Servidores.get_Servidores().size() + " servidores cargados");
+
 		Consola.print("Cargando cuentas: ");
 		database.get_Cuentas().get_Cargar_Todas_Cuentas();
 		Consola.println(Cuentas.get_Cuentas_Cargadas().size() + " cuentas cargadas");

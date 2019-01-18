@@ -18,14 +18,14 @@ public class VerificarCuenta
 			}
 			else
 			{
-				jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_BANEADA).toString());
+				jugador.enviar_Paquete(ErroresLogin.CUENTA_BANEADA.toString());
 				jugador.cerrar_Conexion();
 				return;
 			}
 		}
 		else
 		{
-			jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_NO_VALIDA).toString());
+			jugador.enviar_Paquete(ErroresLogin.CUENTA_NO_VALIDA.toString());
 			jugador.cerrar_Conexion();
 			return;
 		}

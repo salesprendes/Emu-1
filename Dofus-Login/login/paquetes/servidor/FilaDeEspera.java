@@ -20,7 +20,7 @@ public class FilaDeEspera implements GestorPaquetes
 			{
 				if(cuenta.get_Apodo().isEmpty() && !cuenta.esta_Creando_apodo() && !cuenta.get_Fila_espera())
 				{
-					jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_SIN_APODO).toString());
+					jugador.enviar_Paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
 					cuenta.set_Creando_apodo(true);
 					jugador.set_Estado_login(EstadosLogin.CREACION_APODO);
 				}
@@ -42,7 +42,7 @@ public class FilaDeEspera implements GestorPaquetes
 		}
 		else
 		{
-			jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_NO_VALIDA).toString());
+			jugador.enviar_Paquete(ErroresLogin.CUENTA_NO_VALIDA.toString());
 			jugador.cerrar_Conexion();
 		}
 	}

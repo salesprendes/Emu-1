@@ -2,7 +2,10 @@ package juego.enums;
 
 final public class TipoStats
 {
+	public static final int ROBA_PM = 77;
+	public static final int AGREGAR_PM2 = 78;
 	public static final int RETIRAR_PA = 101;
+	public static final int AGREGAR_DANOS_DEVUELTOS = 107;
 	public static final int AGREGAR_VIDA = 110;
 	public static final int AGREGAR_PA = 111;
 	public static final int AGREGAR_DANOS = 112;
@@ -12,6 +15,7 @@ final public class TipoStats
 	public static final int AGREGAR_FUERZA = 118;
 	public static final int AGREGAR_AGILIDAD = 119;
 	public static final int AGREGAR_PA2 = 120;
+	public static final int AGREGAR_DANOS2 = 121;
 	public static final int AGREGAR_FALLOS_CRITICOS = 122;
 	public static final int AGREGAR_SUERTE = 123;
 	public static final int AGREGAR_SABIDURIA = 124;
@@ -27,6 +31,7 @@ final public class TipoStats
 	public static final int AGREGAR_ESQUIVA_PERD_PM = 161;
 	public static final int AGREGAR_DOMINIO_ARMAS = 165;
 	public static final int RETIRAR_PA_FIJO_NO_ESQUIVABLE = 168;
+	public static final int RETIRAR_PM_FIJO = 169;
 	public static final int AGREGAR_INICIATIVA = 174;
 	public static final int RETIRAR_INICIATIVA = 175;
 	public static final int AGREGAR_PROSPECCION = 176;

@@ -9,6 +9,7 @@ import main.Configuracion;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.alineamientos.Alineamientos;
 import objetos.entidades.alineamientos.AlineamientosModelo;
+import objetos.entidades.personajes.Items;
 import objetos.entidades.personajes.Personajes;
 
 public class Personajes_DB extends DatabaseManager
@@ -53,6 +54,23 @@ public class Personajes_DB extends DatabaseManager
 			{
 				//personaje_id(1), alineamiento(2), orden(3), orden_nivel(4), honor(5), deshonor(6), activado(7)
 				Personajes.get_Personaje_Cargado(query.get_Rs().getInt(1)).set_Alineamiento(new Alineamientos(AlineamientosModelo.get_Alineamientos_Cargados(query.get_Rs().getByte(2)), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getInt(5), query.get_Rs().getInt(6), query.get_Rs().getBoolean(7)));
+			}
+			
+			cerrar(query);
+		}
+		catch (final Exception e){}
+	}
+	
+	public void get_Cargar_Items_Personajes()
+	{
+		try
+		{
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes_items;");
+			
+			while(query.get_Rs().next())
+			{
+				//personaje_id(1), id_objeto(2), id_modelo_objeto(3), cantidad(4), posicion_inventario(5), stats(6)
+				Personajes.get_Personaje_Cargado(query.get_Rs().getInt(1)).get_objetos().put(query.get_Rs().getInt(2), new Items(query.get_Rs().getInt(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getByte(5), query.get_Rs().getString(6)));
 			}
 			
 			cerrar(query);

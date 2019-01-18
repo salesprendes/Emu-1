@@ -10,8 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import login.enums.EstadosLogin;
 import main.Estados;
@@ -21,12 +19,11 @@ import objetos.Cuentas;
 import objetos.Servidores;
 import objetos.Servidores.Estados_Servidor;
 
-final public class ComunicadorSocket implements Runnable
+final public class ComunicadorSocket extends Thread implements Runnable
 {
 	private Socket socket;
 	private BufferedReader buffered_reader;
 	private PrintWriter outputStream;
-	private ExecutorService ejecutor;
 	private Servidores servidor_juego = null;
 	
 	public ComunicadorSocket(final Socket sock) 
@@ -36,8 +33,8 @@ final public class ComunicadorSocket implements Runnable
 			socket = sock;
 			buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 			outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-			ejecutor = Executors.newCachedThreadPool();
-			ejecutor.submit(this);
+			setDaemon(true);
+			start();
 		}
 		catch (final IOException e)
 		{
@@ -113,43 +110,53 @@ final public class ComunicadorSocket implements Runnable
 				}
 			break;
 			
-			case 'S':
-				if(paquete.length() > 2)//C|id
+			case 'S'://Servidor
+				switch(paquete.charAt(2))
 				{
-					servidor_juego = Servidores.get(Integer.valueOf(paquete.substring(2)));
-					if(servidor_juego != null && servidor_juego.get_Comunicador_game() == null)
-					{
-						servidor_juego.set_Comunicador_game(this);
-						servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
-						refrescar_Estado_Servidor();
-						Consola.println("Servidor " + servidor_juego.get_Id() + " conectado");
-					}
-					else
-					{
-						enviar_Paquete("E|C");
-						cerrar_Conexion_Comunicador();
-					}
-				}
-			break;
+					case 'C': //Conectar
+						if(paquete.length() > 4)//S|C|id
+						{
+							servidor_juego = Servidores.get(Integer.valueOf(paquete.substring(4)));
+							if(servidor_juego != null && servidor_juego.get_Comunicador_game() == null)
+							{
+								servidor_juego.set_Comunicador_game(this);
+								servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
+								refrescar_Estado_Servidor();
+								Consola.println("Servidor " + servidor_juego.get_Id() + " conectado");
+							}
+							else
+							{
+								enviar_Paquete("E|C");
+								cerrar_Conexion_Comunicador();
+							}
+						}
+					break;
+					
+					case 'E'://Estado|letra
+						if(servidor_juego != null)
+						{
+							switch (paquete.charAt(4))
+							{
+								case 'A'://abierto
+									servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
+								break;
 			
-			case 'E'://E|estado_letra
-				if(servidor_juego != null)
-				{
-					switch (paquete.charAt(2))
-					{
-						case 'A'://abierto
-							servidor_juego.set_Estado(Estados_Servidor.CONECTADO);
-						break;
-	
-						case 'G'://guardando
-							servidor_juego.set_Estado(Estados_Servidor.GUARDANDO);
-						break;
-	
-						case 'C'://cerrado
-							servidor_juego.set_Estado(Estados_Servidor.APAGADO);
-						break;
-					}
-					refrescar_Estado_Servidor();
+								case 'G'://guardando
+									servidor_juego.set_Estado(Estados_Servidor.GUARDANDO);
+								break;
+			
+								case 'C'://cerrado
+									servidor_juego.set_Estado(Estados_Servidor.APAGADO);
+								break;
+							}
+							refrescar_Estado_Servidor();
+						}
+					break;
+					
+					case 'P'://plazas libres|plazas_libres_restantes
+						final short plazas_libres = Short.valueOf(paquete.substring(4));
+						servidor_juego.set_Poblacion(plazas_libres);
+					break;
 				}
 			break;
 		}
@@ -188,17 +195,16 @@ final public class ComunicadorSocket implements Runnable
 	{
 		if(Cuentas.get_Cuentas_Cargadas().size() > 0)
 		{
-			String estado_servidor_modificado = Servidores.get_Obtener_Servidores();
 			Cuentas.get_Cuentas_Cargadas().values().stream().filter(filtro -> filtro.get_Login_respuesta() != null && filtro.get_Login_respuesta().get_Estado_login() == EstadosLogin.LISTA_SERVIDORES).forEach(cuenta -> 
 			{
-				cuenta.get_Login_respuesta().enviar_Paquete(estado_servidor_modificado);
+				cuenta.get_Login_respuesta().enviar_Paquete(Servidores.get_Obtener_Servidores(cuenta));
 			});
 		}
 	}
 	
-	public void get_Nueva_Conexion_Cuenta(final int id_cuenta) 
+	public void get_Nueva_Conexion_Cuenta(final int id_cuenta, final String ip) 
 	{
-		enviar_Paquete("C|N|" + id_cuenta);
+		enviar_Paquete("C|N|" + id_cuenta + ';' + ip);
 	}
 	
 	public void get_Desconectar_Cuenta(final int id_cuenta) 

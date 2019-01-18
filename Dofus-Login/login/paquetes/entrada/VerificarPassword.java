@@ -23,7 +23,7 @@ public class VerificarPassword
 				
 				if(cuenta == null)
 				{
-					socket.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_NO_VALIDA).toString());
+					socket.enviar_Paquete(ErroresLogin.CUENTA_NO_VALIDA.toString());
 					socket.cerrar_Conexion();
 					return;
 				}
@@ -41,7 +41,7 @@ public class VerificarPassword
 				if(cuenta.get_Login_respuesta() != null && cuenta.get_Login_respuesta() != socket)
 				{
 					cuenta.get_Login_respuesta().enviar_Paquete("ATE");
-					socket.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_CONECTADA_SERVIDOR_JUEGO).toString());
+					socket.enviar_Paquete(ErroresLogin.CUENTA_CONECTADA_SERVIDOR_JUEGO.toString());
 					socket.cerrar_Conexion();
 					cuenta.get_Login_respuesta().cerrar_Conexion();
 					return;
@@ -51,14 +51,14 @@ public class VerificarPassword
 			}
 			else
 			{
-				socket.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_PASSWORD_INCORRECTA).toString());
+				socket.enviar_Paquete(ErroresLogin.CUENTA_PASSWORD_INCORRECTA.toString());
 				socket.cerrar_Conexion();
 				return;
 			}
 		}
 		else
 		{
-			socket.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_CONECTADA).toString());
+			socket.enviar_Paquete(ErroresLogin.CUENTA_CONECTADA.toString());
 			socket.cerrar_Conexion();
 			return;
 		}

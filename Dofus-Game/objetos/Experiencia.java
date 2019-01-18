@@ -81,7 +81,6 @@ public class Experiencia
 	{
 		if (nivel > 10) 
 			nivel = 10;
-		
 		else if (nivel < 1)
 			nivel = 1;
 		

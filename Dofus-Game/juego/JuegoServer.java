@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import main.Configuracion;
 import main.Estados;
@@ -14,8 +16,10 @@ import objetos.cuentas.Cuentas;
 public class JuegoServer extends Thread implements Runnable
 {
 	protected ServerSocket juego_servidor;
+	private ExecutorService threadPool;
 	private static final CopyOnWriteArrayList<JuegoSocket> clientes = new CopyOnWriteArrayList<JuegoSocket>();
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_esperando = new ConcurrentHashMap<Integer, Cuentas>();
+	private static final CopyOnWriteArrayList<String> ip_esperando = new CopyOnWriteArrayList<String>();
 	
 	public JuegoServer()
 	{
@@ -23,6 +27,7 @@ public class JuegoServer extends Thread implements Runnable
 		{
 			setName("Server-Juego");
 			juego_servidor = new ServerSocket(Configuracion.PUERTO_GAME);
+			threadPool = Executors.newFixedThreadPool(Configuracion.PLAZAS_SERVIDOR);
 			start();
 			Consola.println(">> Juego del servidor iniciado en el puerto: " + Configuracion.PUERTO_GAME);
 		} 
@@ -34,17 +39,21 @@ public class JuegoServer extends Thread implements Runnable
 	
 	public void run()
 	{
-		try
+		while(Main.estado_emulador != Estados.APAGADO && !juego_servidor.isClosed() && !isInterrupted())
 		{
-			while(Main.estado_emulador != Estados.APAGADO && !juego_servidor.isClosed() && !isInterrupted())
+			try
 			{
-				clientes.add(new JuegoSocket(juego_servidor.accept()));
+				JuegoSocket cliente = new JuegoSocket(juego_servidor.accept());
+				clientes.add(cliente);
+				threadPool.execute(cliente);
+			}
+			catch (Exception e)
+			{
+				detener_Server_Socket();
+				throw new RuntimeException(e.getMessage());
 			}
 		}
-		catch (Exception e)
-		{
-			detener_Server_Socket();
-		}
+		threadPool.shutdown();
 	}
 	
 	public synchronized void detener_Server_Socket()
@@ -65,6 +74,11 @@ public class JuegoServer extends Thread implements Runnable
     }
 	
 	/** Metodos Clientes **/
+	public CopyOnWriteArrayList<JuegoSocket> get_Clientes()
+	{
+		return clientes;
+	}
+	
 	public static void get_Agregar_Cliente(final JuegoSocket _socket)
 	{
 		if (!clientes.contains(_socket) && _socket != null)
@@ -101,5 +115,15 @@ public class JuegoServer extends Thread implements Runnable
 		{
 			cuentas_esperando.remove(cuenta.get_Id());
 		}
+	}
+	
+	public static boolean get_Borrar_Ip_Esperando(final String ip) 
+	{
+		return ip_esperando.remove(ip);
+	}
+	
+	public static void get_Agregar_Ip_Esperando(final String ip)
+	{
+		ip_esperando.add(ip);
 	}
 }

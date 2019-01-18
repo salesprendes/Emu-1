@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
-import objetos.Comunidades;
 import objetos.Servidores;
 
 public class Servidores_DB extends DatabaseManager
@@ -23,7 +22,7 @@ public class Servidores_DB extends DatabaseManager
 
 			while(query.get_Rs().next())
 			{
-				new Servidores(query.get_Rs().getInt(1), Comunidades.get_Comunidades().get(query.get_Rs().getByte(2)), query.get_Rs().getByte(3), query.get_Rs().getBoolean(4), query.get_Rs().getString(5), query.get_Rs().getInt(6));
+				new Servidores(query.get_Rs().getInt(1), query.get_Rs().getByte(2), query.get_Rs().getByte(3), query.get_Rs().getBoolean(4), query.get_Rs().getString(5), query.get_Rs().getInt(6));
 			}
 			cerrar(query);
 		}

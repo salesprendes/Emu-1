@@ -9,8 +9,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import juego.enums.EstadosJuego;
 import juego.fila.FilaSocket;
@@ -26,7 +24,6 @@ public class JuegoSocket implements Runnable
 {
 	private Cuentas cuenta;
 	private Personajes personaje;
-	private ExecutorService ejecutor;
 	private BufferedReader buffered_reader;
 	private PrintWriter outputStream;
 	private Socket socket;
@@ -35,7 +32,7 @@ public class JuegoSocket implements Runnable
 
 	/** Buffer paquetes **/
 	private Map<Integer, String> buffer_paquetes = new TreeMap<Integer, String>();
-	private String ultimo_paquete = "";
+	private String ultimo_paquete, ip;
 	private long tiempo_ultimo_paquete = 0;
 
 
@@ -44,13 +41,18 @@ public class JuegoSocket implements Runnable
 		try
 		{
 			socket = _socket;
+			ip = socket.getInetAddress().getHostAddress();
 			buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);
 			outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-			ejecutor = Executors.newCachedThreadPool();
-			ejecutor.submit(this);
 
 			if(Configuracion.ACTIVAR_FILA_DE_ESPERA)
 				fila = Main.fila_espera.get_Fila();
+			
+			if(!JuegoServer.get_Borrar_Ip_Esperando(ip))
+			{
+				enviar_Paquete("M029");
+				cerrar_Conexion();
+			}
 		}
 		catch (final IOException e) 
 		{
@@ -66,7 +68,7 @@ public class JuegoSocket implements Runnable
 		{
 			enviar_Paquete("HG");//envia la bienvenida al papasito
 
-			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && (Main.estado_emulador == Estados.ENCENDIDO || Main.estado_emulador == Estados.VINCULANDO) && !ejecutor.isShutdown() && socket.isConnected())
+			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && (Main.estado_emulador == Estados.ENCENDIDO || Main.estado_emulador == Estados.VINCULANDO) && socket.isConnected())
 			{
 				Consola.println("Recibido-Game: " + paquete.toString());
 				controlador_Paquetes(paquete.toString());
@@ -128,73 +130,65 @@ public class JuegoSocket implements Runnable
 		}
 	}
 
-	public void enviar_Paquete(final String paquete)
+	public synchronized void enviar_Paquete(final String paquete)
 	{
-		synchronized (this) 
+		if (!socket.isClosed()) 
 		{
-			if (!socket.isClosed()) 
+			if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0x00))
 			{
-				if (outputStream != null && !paquete.isEmpty() && !paquete.equals("" + (char)0x00))
+				if(buffer_paquetes.containsKey(outputStream.hashCode()))
 				{
-					if(buffer_paquetes.containsKey(outputStream.hashCode()))
-					{
-						final String paquete_bufferizado = buffer_paquetes.get(outputStream.hashCode()) + (char)0x00;
-						buffer_paquetes.put(outputStream.hashCode(), paquete_bufferizado + paquete);
-					}
-					else if(!(paquete.equalsIgnoreCase(ultimo_paquete) && (System.currentTimeMillis() - tiempo_ultimo_paquete) < 500))
-					{
-						outputStream.print(paquete + (char)0x00);
-						outputStream.flush();
-						ultimo_paquete = paquete;
-						tiempo_ultimo_paquete = System.currentTimeMillis();
-						Consola.println("Enviado >> " + paquete);
-					}
+					final String paquete_bufferizado = buffer_paquetes.get(outputStream.hashCode()) + (char)0x00;
+					buffer_paquetes.put(outputStream.hashCode(), paquete_bufferizado + paquete);
+				}
+				else if(!(paquete.equalsIgnoreCase(ultimo_paquete) && (System.currentTimeMillis() - tiempo_ultimo_paquete) < 500))
+				{
+					outputStream.print(paquete + (char)0x00);
+					outputStream.flush();
+					ultimo_paquete = paquete;
+					tiempo_ultimo_paquete = System.currentTimeMillis();
+					Consola.println("Enviado >> " + paquete);
 				}
 			}
-			else
-			{
-				cerrar_Conexion();
-				return;
-			}
+		}
+		else
+		{
+			cerrar_Conexion();
+			return;
 		}
 	}
 
-	public void cerrar_Conexion()
+	public synchronized void cerrar_Conexion()
 	{
-		synchronized(this) 
+		try
 		{
-			try
+			if(outputStream != null)
+				outputStream.close();
+			if(buffered_reader != null)
+				buffered_reader.close();
+			if (socket != null && socket.isClosed())
 			{
-				if(outputStream != null)
-					outputStream.close();
-				if(buffered_reader != null)
-					buffered_reader.close();
-				if (socket != null && socket.isClosed())
+				if(cuenta != null)
 				{
-					if(cuenta != null)
+					if(cuenta.get_Juego_socket() == this)
+						cuenta.set_Juego_socket(null);
+					if(Configuracion.ACTIVAR_FILA_DE_ESPERA)
 					{
-						if(cuenta.get_Juego_socket() == this)
-							cuenta.set_Juego_socket(null);
-						if(Configuracion.ACTIVAR_FILA_DE_ESPERA)
-						{
-							if(cuenta.get_Fila_espera() && cuenta.get_Nodo_fila() != null)
-								fila.set_eliminar_Cuenta(cuenta.get_Nodo_fila());
-						}
+						if(cuenta.get_Fila_espera() && cuenta.get_Nodo_fila() != null)
+							fila.set_eliminar_Cuenta(cuenta.get_Nodo_fila());
 					}
-					socket.close();
 				}
-				JuegoServer.get_Eliminar_Cliente(this);
-				JuegoServer.get_Agregar_Cuenta_Esperando(cuenta);
-				cuenta = null;
-				personaje = null;
-				ejecutor.shutdown();
-				ejecutor = null;
+				socket.close();
 			}
-			catch (final IOException e)
-			{
-				Consola.println("Error el kickear a la cuenta (apodo): " + cuenta.get_Apodo() + " causa: " + e.getMessage());
-				return;
-			}
+			JuegoServer.get_Eliminar_Cliente(this);
+			JuegoServer.get_Agregar_Cuenta_Esperando(cuenta);
+			cuenta = null;
+			personaje = null;
+		}
+		catch (final IOException e)
+		{
+			Consola.println("Error el kickear a la cuenta (apodo): " + cuenta.get_Apodo() + " causa: " + e.getMessage());
+			return;
 		}
 	}
 

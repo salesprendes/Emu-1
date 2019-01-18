@@ -64,12 +64,12 @@ public class Stats
 			stats.put(statID, valor);
 	}
 
-	public void get_Agregar_Stat_Id(final int statID, final int valor)
+	public void get_Agregar_Stat_Id(final int stat_id, final int valor)
 	{
-		if (stats.get(statID) != null)
-			fijarStat(statID, stats.get(statID) + valor);
+		if (stats.get(stat_id) != null)
+			fijarStat(stat_id, stats.get(stat_id) + valor);
 		else
-			fijarStat(statID, valor);
+			fijarStat(stat_id, valor);
 	}
 	
 	public int get_Mostrar_Stat(final int statID) 
@@ -88,8 +88,27 @@ public class Stats
 				if (stats.get(TipoStats.RETIRAR_PA_FIJO_NO_ESQUIVABLE) != null)
 					valor -= stats.get(TipoStats.RETIRAR_PA_FIJO_NO_ESQUIVABLE);
 			break;
+			
+			case TipoStats.AGREGAR_PM :// PM
+				if (stats.get(TipoStats.AGREGAR_PM2) != null)
+					valor += stats.get(TipoStats.AGREGAR_PM2);
+				if (stats.get(TipoStats.RETIRAR_PM) != null) 
+					valor -= stats.get(TipoStats.RETIRAR_PM);
+				if (stats.get(TipoStats.RETIRAR_PM_FIJO) != null)
+					valor -= stats.get(TipoStats.RETIRAR_PM_FIJO);
+			break;
+			
+			case TipoStats.AGREGAR_ALCANCE :// alcance
+				if (stats.get(TipoStats.RETIRAR_ALCANCE) != null)
+					valor -= stats.get(TipoStats.RETIRAR_ALCANCE);
+			break;
 		}
 		
 		return valor;
+	}
+	
+	public Map<Integer, Integer> get_Stats()
+	{
+		return stats;
 	}
 }

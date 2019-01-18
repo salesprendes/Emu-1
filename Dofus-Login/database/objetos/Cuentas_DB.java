@@ -9,7 +9,6 @@ import java.util.Map;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
-import objetos.Comunidades;
 import objetos.Cuentas;
 import objetos.Servidores;
 
@@ -30,7 +29,7 @@ public class Cuentas_DB extends DatabaseManager
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
 			if(query.get_Rs().next())
-				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), Comunidades.get_Comunidades().get(query.get_Rs().getByte(8)), query.get_Rs().getBoolean(9));
+				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), query.get_Rs().getByte(8), query.get_Rs().getBoolean(9));
 			cerrar(query);
 		}
 		catch (final Exception e){}
@@ -148,7 +147,7 @@ public class Cuentas_DB extends DatabaseManager
 			while(query.get_Rs().next())
 			{
 				//id, apodo, ip, rango_cuenta, tiempo_abono, comunidad, baneado.
-				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), Comunidades.get_Comunidades().get(query.get_Rs().getByte(8)), query.get_Rs().getBoolean(9));
+				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), query.get_Rs().getByte(8), query.get_Rs().getBoolean(9));
 			}
 			cerrar(query);
 		}

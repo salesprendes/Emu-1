@@ -8,8 +8,11 @@ import main.consola.Consola;
 import objetos.Experiencia;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.alineamientos.AlineamientosModelo;
+import objetos.entidades.alineamientos.Dones;
+import objetos.entidades.alineamientos.Especialidades;
 import objetos.entidades.personajes.Personajes;
 import objetos.entidades.personajes.Razas;
+import objetos.items.ItemsModelo;
 import objetos.mapas.Areas;
 import objetos.mapas.Mapas;
 import objetos.mapas.SubAreas;
@@ -115,13 +118,26 @@ public class Main
 		database.get_Alineamientos().get_Cargar_Todos_Alineamientos();
 		Consola.println(AlineamientosModelo.get_Alineamientos_Cargados().size() + " alineamientos cargados");
 		
+		Consola.print("Cargando especialidades: ");
+		database.get_Alineamientos().get_Cargar_Todas_Especialidades();
+		Consola.println(Especialidades.get_Especialidades().size() + " especialidades cargadas");
+		
+		Consola.print("Cargando dones: ");
+		database.get_Alineamientos().get_Cargar_Todos_Dones();
+		Consola.println(Dones.get_Dones().size() + " dones cargados");
+		
 		Consola.print("Cargando razas: ");
 		database.get_Razas().get_Cargar_Todas_Razas();
 		Consola.println(Razas.get_Razas_Cargadas().size() + " razas cargadas");
 		
+		Consola.print("Cargando items modelo: ");
+		database.get_Items().get_Cargar_Todos_Items();
+		Consola.println(ItemsModelo.get_Items_Cargados().size() + " items modelo cargados");
+		
 		Consola.print("Cargando personajes: ");
 		database.get_Personajes().get_Cargar_Todos_Personajes();
 		database.get_Personajes().get_Cargar_Alineaciones_Personajes();
+		database.get_Personajes().get_Cargar_Items_Personajes();
 		Consola.println(Personajes.get_Personajes_Cargados().size() + " personajes cargados");
 	}
 	

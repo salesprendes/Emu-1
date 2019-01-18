@@ -24,19 +24,17 @@ public class VerificarCreacionApodo
 				}
 				else
 				{
-					jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_APODO_ERROR).toString());
-					return;
+					jugador.enviar_Paquete(ErroresLogin.CUENTA_APODO_ERROR.toString());
 				}
 			}
 			else
 			{
-				jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CUENTA_SIN_APODO).toString());
-				return;
+				jugador.enviar_Paquete(ErroresLogin.CUENTA_SIN_APODO.toString());
 			}
 		}
 		else
 		{
-			jugador.enviar_Paquete(new ErroresLogin(ErroresLogin.CONEXION_NO_TERMINADA).toString());
+			jugador.enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 			jugador.cerrar_Conexion();
 		}
 	}

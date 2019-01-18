@@ -1,5 +1,6 @@
 package objetos;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 import login.comunicador.ComunicadorSocket;
@@ -16,10 +17,10 @@ final public class Servidores
 	private Poblacion poblacion;
 	private static final ConcurrentHashMap<Integer, Servidores> servidores_cargados = new ConcurrentHashMap<Integer, Servidores>();
 	
-	public Servidores(int _id, Comunidades _comunidad, byte _poblacion, final boolean _vip_necesario, final String _ip, final int _puerto)
+	public Servidores(int _id, byte _comunidad, byte _poblacion, final boolean _vip_necesario, final String _ip, final int _puerto)
 	{
 		id = _id;
-		comunidad = _comunidad;
+		comunidad = Comunidades.get_Comunidades().get(_comunidad);
 		estado = Estados_Servidor.APAGADO;
 		servidor_vip = _vip_necesario;
 		poblacion = Poblacion.values()[_poblacion];
@@ -84,7 +85,12 @@ final public class Servidores
         return poblacion;
     }
 	
-	public static String get_Obtener_Servidores()
+	public void set_Poblacion(final int plazas_libres) 
+	{
+		poblacion = Arrays.stream(Poblacion.values()).filter(poblacion -> poblacion.get_Plazas_Libres() >= plazas_libres).findFirst().orElse(Poblacion.COMPLETO);
+    }
+	
+	public static String get_Obtener_Servidores(Cuentas cuenta)
 	{
         final StringBuilder paquete_servidores = new StringBuilder(servidores_cargados.size() * 10).append("AH");
         servidores_cargados.values().forEach(servidor ->
@@ -92,8 +98,8 @@ final public class Servidores
         	paquete_servidores.append(paquete_servidores.length() > 2 ? '|' : "");
         	paquete_servidores.append(servidor.get_Id()).append(';');
         	paquete_servidores.append(servidor.get_Estado().ordinal()).append(';');
-        	paquete_servidores.append(servidor.get_Poblacion().get_Id()).append(';');
-        	paquete_servidores.append(servidor.es_Servidor_Vip()? 1 : 0);
+        	paquete_servidores.append(servidor.get_Poblacion().ordinal()).append(';');
+        	paquete_servidores.append(servidor.es_Servidor_Vip() ? (cuenta.es_Cuenta_Abonada() ? 1 : 0) : 1);
         });
         return paquete_servidores.toString();
     }
@@ -122,26 +128,20 @@ final public class Servidores
 	
 	public enum Poblacion 
 	{
-		RECOMENDADO((byte) 1, 1000),
-        MEDIA((byte) 2, 500),
-        ELEVADA((byte) 3, 300),
-        COMPLETO((byte) 4, 20);
+		RECOMENDADO(1000),
+        PROMEDIO(500),
+        ALTA(300),
+        BAJA(200),
+        COMPLETO(20);
 
-        private final byte id;
         private final int plazas_libres;
 
-        private Poblacion(byte _id, int _plazas_libres)
+        private Poblacion(final int _plazas_libres)
         {
-        	id = _id;
         	plazas_libres = _plazas_libres;
         }
 
-		public byte get_Id() 
-		{
-			return id;
-		}
-
-		public int get_Plazas_Libres() 
+		public int get_Plazas_Libres()
 		{
 			return plazas_libres;
 		}

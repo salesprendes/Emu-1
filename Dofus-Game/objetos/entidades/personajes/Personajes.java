@@ -12,6 +12,7 @@ import objetos.Experiencia;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.Entidades;
 import objetos.entidades.alineamientos.Alineamientos;
+import objetos.entidades.alineamientos.Especialidades;
 import objetos.mapas.Celdas;
 import objetos.mapas.Mapas;
 
@@ -35,6 +36,9 @@ public class Personajes implements Entidades
 	private String canales;
 	private Alineamientos alineamiento;
 	private Stats stats_principales;
+	
+	
+	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
 
 	/** Caches **/
 	private String cache_gm = "";
@@ -314,6 +318,11 @@ public class Personajes implements Entidades
 		return stats_principales;
 	}
 
+	public Map<Integer, Items> get_objetos()
+	{
+		return items;
+	}
+
 	public final void get_Limpiar_Cache_Gm()
 	{
 		cache_gm = "";
@@ -332,13 +341,18 @@ public class Personajes implements Entidades
 			}
 
 			cuenta.set_Personaje_jugando(this);
-			cuenta.get_Juego_socket().enviar_Paquete(get_Paquete_ASK());
+			cuenta.get_Juego_socket().enviar_Paquete(get_Paquete_Ask());
+			
+			Especialidades especialidad = Especialidades.get_Especialidad(get_Alineamiento_Orden(), get_Alineamiento_Orden_Nivel());
+			if (especialidad != null)
+				cuenta.get_Juego_socket().enviar_Paquete("ZS" + especialidad.get_Id());
+			
 			cuenta.get_Juego_socket().enviar_Paquete("cC+" + canales + (nivel <= 16 ? TipoCanales.INCARNAM.get_Identificador() : "") + (cuenta.get_Rango_cuenta() > 0 ? TipoCanales.ADMINISTRADOR.get_Identificador() + TipoCanales.MEETIC.get_Identificador() : ""));
 			cuenta.get_Juego_socket().enviar_Paquete("AR" + derechos.get_Derechos());
 			cuenta.get_Juego_socket().enviar_Paquete("eL" + emotes.get());//Lista emotes
 			cuenta.get_Juego_socket().enviar_Paquete("Im189");// Im bienvenida dofus
 			cuenta.get_Juego_socket().enviar_Paquete("Im0153;" + cuenta.get_Ip());
-
+			get_Enviar_Paquete_Gm_Mapa();
 			cuenta.get_Juego_socket().get_Detener_Buffering();
 		}
 		else
@@ -353,12 +367,12 @@ public class Personajes implements Entidades
 		cuenta.get_Juego_socket().enviar_Paquete("GCK|1|" + get_Nombre());
 		cuenta.get_Juego_socket().enviar_Paquete("GDM|" + mapa.get_Id() + '|' + mapa.get_Fecha() + '|' + mapa.get_Key());
 		cuenta.get_Juego_socket().enviar_Paquete(get_Paquete_As());
-		mapa.get_Personajes().stream().filter(personaje -> personaje != null && personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
+		
 		celda.get_Agregar_Jugador(this, true);
 	}
 
 	/** Constructores Paquetes **/
-	public final String get_Paquete_ASK()
+	public final String get_Paquete_Ask()
 	{
 		final StringJoiner paquete = new StringJoiner("|").add("ASK");
 
@@ -371,7 +385,7 @@ public class Personajes implements Entidades
 		paquete.add((color_1 == -1 ? "-1" : Integer.toHexString(color_1)));
 		paquete.add((color_2 == -1 ? "-1" : Integer.toHexString(color_2)));
 		paquete.add((color_3 == -1 ? "-1" : Integer.toHexString(color_3)));
-		//paquete.append(perso.parseItemToASK());
+		paquete.add(get_Obtener_Items_Ask());
 
 		return paquete.toString();
 	}
@@ -407,7 +421,7 @@ public class Personajes implements Entidades
 			personaje.append(id).append(';').append(get_Nombre()).append(';').append(raza.get_Id());
 			personaje.append((titulo > 0 ? ("," + titulo + ";") : (';')));
 			personaje.append(gfx).append('^').append(tamano).append(';');
-			personaje.append(sexo).append(';').append(1).append(',');//Sexo + Alineacion
+			personaje.append(sexo).append(';').append(get_Alineamiento_Id()).append(',');//Sexo + Alineacion
 			personaje.append(get_Alineamiento_Orden_Nivel()).append(",").append(get_Alineamiento_Alas_Activadas_Nivel()).append(',');
 			personaje.append(nivel + id).append(',');
 			personaje.append(alineamiento != null ? (alineamiento.get_Deshonor() > 0 ? 1 : 0) : 0).append(';');
@@ -434,7 +448,7 @@ public class Personajes implements Entidades
 			paquete.append(puntos_vida).append(',').append(puntos_vida_maxima).append('|');
 			paquete.append(10000).append(',').append(servidor == 22 ? 1 : 10000).append('|');//energia
 			paquete.append(get_Iniciativa()).append('|');//iniciativa
-			paquete.append(0 + "|");//prospeccion
+			paquete.append(0).append('|');//prospeccion
 			
 			final int[] array_stats =
 			{
@@ -461,6 +475,24 @@ public class Personajes implements Entidades
 		return cache_as;
 	}
 	
+	private void get_Enviar_Paquete_Gm_Mapa()
+	{
+		synchronized(mapa.get_Personajes())
+		{
+			mapa.get_Personajes().stream().filter(personaje -> personaje != null && personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
+		}
+	}
+	
+	private String get_Obtener_Items_Ask()
+	{
+		StringBuilder str = new StringBuilder();
+		for (Items obj : items.values()) 
+		{
+			str.append(obj.get_String_Item());
+		}
+		return str.toString();
+	}
+	
 	public int get_Iniciativa() 
 	{
 		float fact = 4;
@@ -483,7 +515,7 @@ public class Personajes implements Entidades
 
 	public int get_Grado_Alas()
 	{
-		if(alineamiento.get_Alineamiento().get_Id() != 0)
+		if(get_Alineamiento_Id() != 0)
 		{
 			if(alineamiento.get_Honor() >= 18000)
 				return 10;
@@ -495,6 +527,31 @@ public class Personajes implements Entidades
 		}
 		return 0;
 	}
+	
+	public void get_Teleport(final short mapa_destino_id, final short celda_destino_id)
+	{
+		Mapas mapa_destino = Mapas.get_Mapas_Cargados(mapa_destino_id);
+		if(mapa_destino != null)
+		{
+			Celdas celda = mapa_destino.get_Celda(celda_destino_id);
+			if(celda != null)
+			{
+				if(mapa_destino.get_Sub_area().get_Area().get_Necesita_Abono() && !cuenta.es_Cuenta_Abonada())
+				{
+					cuenta.get_Juego_socket().enviar_Paquete("BP+10");
+					cuenta.get_Juego_socket().enviar_Paquete("Im131");
+					return;
+				}
+				mapa.get_Personajes().stream().filter(personaje -> personaje != null && personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|-" + id));
+				mapa = mapa_destino;
+				set_Celda(mapa.get_Celda(celda_destino_id));
+				
+				cuenta.get_Juego_socket().enviar_Paquete("GA;2;" + id + ';');
+				cuenta.get_Juego_socket().enviar_Paquete("GDM|" + mapa.get_Id() + '|' + mapa.get_Fecha() + '|' + mapa.get_Key());
+				get_Enviar_Paquete_Gm_Mapa();
+			}
+		}
+	}
 
 	public String get_Obtener_Experiencia_Personaje(final String separador) 
 	{
@@ -503,27 +560,21 @@ public class Personajes implements Entidades
 
 	public final void get_Agregar_Canal(final TipoCanales canal)
 	{
-		if(TipoCanales.get_Canal().containsValue(canal))
+		if (canales.contains(canal.get_Identificador()))
 		{
-			if (canales.contains(canal.get_Identificador()))
-			{
-				cuenta.get_Juego_socket().enviar_Paquete("cC-" + canal.get_Identificador());
-			}
-			else
-			{
-				canales += canal.get_Identificador();
-				cuenta.get_Juego_socket().enviar_Paquete("cC+" + canal.get_Identificador());
-			}
+			cuenta.get_Juego_socket().enviar_Paquete("cC-" + canal.get_Identificador());
+		}
+		else
+		{
+			canales += canal.get_Identificador();
+			cuenta.get_Juego_socket().enviar_Paquete("cC+" + canal.get_Identificador());
 		}
 	}
 
 	public void get_Eliminar_Canal(final TipoCanales canal) 
 	{
-		if(TipoCanales.get_Canal().containsValue(canal))
-		{
-			canales = canales.replace(canal.get_Identificador(), "");
-			cuenta.get_Juego_socket().enviar_Paquete("cC-" + canal.get_Identificador());
-		}
+		canales = canales.replace(canal.get_Identificador(), "");
+		cuenta.get_Juego_socket().enviar_Paquete("cC-" + canal.get_Identificador());
 	}
 
 	public static ConcurrentHashMap<Integer, Personajes> get_Personajes_Cargados()

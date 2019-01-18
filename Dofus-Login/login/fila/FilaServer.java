@@ -50,7 +50,7 @@ final public class FilaServer extends Thread implements Runnable
 	{
 		final StringBuilder paquete = new StringBuilder("Ad").append(_cuenta.get_Apodo()).append((char)0);
 		paquete.append("Ac").append(_cuenta.get_Comunidad().get_Id()).append((char)0);
-		paquete.append(Servidores.get_Obtener_Servidores()).append((char)0);
+		paquete.append(Servidores.get_Obtener_Servidores(_cuenta)).append((char)0);
 		paquete.append("AlK").append(_cuenta.get_Rango_cuenta() > 0 ? 1 : 0).append((char)0);
 		paquete.append("AQ").append("Ninguna");
 		

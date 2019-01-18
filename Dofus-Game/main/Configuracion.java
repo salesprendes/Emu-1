@@ -28,7 +28,8 @@ public class Configuracion
 	
 	/** ACCESO SERVIDOR **/
 	public static boolean ACTIVAR_FILA_DE_ESPERA = true;
-	public static int MAXIMOS_LOGINS_FILA_ESPERA = 100;
+	public static int MAXIMOS_FILA_ESPERA = 100;
+	public static short PLAZAS_SERVIDOR = 1000;
 	
 	/** ACCESO DATABASE LOGIN **/
 	public static String DATABASE_IP_LOGIN = "127.0.0.1";
@@ -72,7 +73,8 @@ public class Configuracion
 				DATABASE_NOMBRE_GAME	=	propiedades.getProperty("DATABASE_NOMBRE_GAME");
 				
 				ACTIVAR_FILA_DE_ESPERA = Boolean.parseBoolean((propiedades.getProperty("ACTIVAR_FILA_DE_ESPERA")));
-				MAXIMOS_LOGINS_FILA_ESPERA = Integer.valueOf(propiedades.getProperty("MAXIMOS_LOGINS_FILA_ESPERA"));
+				MAXIMOS_FILA_ESPERA = Integer.valueOf(propiedades.getProperty("MAXIMOS_FILA_ESPERA"));
+				PLAZAS_SERVIDOR = Short.valueOf(propiedades.getProperty("PLAZAS_SERVIDOR"));
 				
 				propiedades.clear();
 				propiedades = null;
@@ -113,7 +115,8 @@ public class Configuracion
 		propiedades.setProperty("DATABASE_NOMBRE_GAME", DATABASE_NOMBRE_GAME);
 		
 		propiedades.setProperty("ACTIVAR_FILA_DE_ESPERA", Boolean.toString(ACTIVAR_FILA_DE_ESPERA));
-		propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
+		propiedades.setProperty("MAXIMOS_FILA_ESPERA", Integer.toString(MAXIMOS_FILA_ESPERA));
+		propiedades.setProperty("PLAZAS_SERVIDOR", Short.toString(PLAZAS_SERVIDOR));
 		
 		propiedades.store(new FileOutputStream(new File("conf-game.txt")), "Archivo de configuración");
 		propiedades.clear();

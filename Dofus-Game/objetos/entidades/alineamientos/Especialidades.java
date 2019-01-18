@@ -11,7 +11,7 @@ public class Especialidades
 	private final byte orden, nivel;
 	private final ArrayList<Dones> dones = new ArrayList<Dones>();
 
-	public static Map<Integer, Especialidades> ESPECIALIDADES = new TreeMap<Integer, Especialidades>();
+	private static Map<Integer, Especialidades> especialidades_cargadas = new TreeMap<Integer, Especialidades>();
 	
 	public Especialidades(final int _id, final byte _orden, final byte _nivel, final String _dones) 
 	{
@@ -25,18 +25,19 @@ public class Especialidades
 				try 
 				{
 					String[] args = s.split(",");
-					int donID = Integer.parseInt(args[0]);
-					int donNivel = Integer.parseInt(args[1]);
-					//int donStat = Mundo.getDonStat(donID);
+					byte don_Id = Byte.parseByte(args[0]);
+					short don_nivel = Short.parseShort(args[1]);
+					short don_stat = Dones.get_Don_Stat(don_Id);
 					int valor = 0;
 					if (args.length > 2)
 						valor = Integer.parseInt(args[2]);
 
-					//dones.add(new Dones(donID, donNivel, donStat, valor));
+					dones.add(new Dones(don_Id, don_nivel, don_stat, valor));
 				} 
 				catch (Exception e) {}
 			}
 		}
+		especialidades_cargadas.put(id, this);
 	}
 	
 	public int get_Id()
@@ -57,5 +58,31 @@ public class Especialidades
 	public ArrayList<Dones> get_Dones()
 	{
 		return dones;
+	}
+	
+	public static Map<Integer, Especialidades> get_Especialidades()
+	{
+		return especialidades_cargadas;
+	}
+
+	public static Especialidades get_Especialidad(int especialidad) 
+	{
+		return especialidades_cargadas.get(especialidad);
+	}
+	
+	public static Especialidades get_Especialidad(final int orden, final int nivel) 
+	{
+		Especialidades esp = null;
+		for (Especialidades e : especialidades_cargadas.values()) 
+		{
+			if (e.get_Orden() == orden) 
+			{
+				if (esp == null || e.get_Nivel() <= nivel && e.get_Nivel() > esp.get_Nivel()) 
+				{
+					esp = e;
+				}
+			}
+		}
+		return esp;
 	}
 }

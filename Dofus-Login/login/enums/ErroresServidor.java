@@ -7,7 +7,8 @@ public enum ErroresServidor
 	SERVIDORES_LIBRES('f');
 	
 	final private char tipo_error;
-	private ErroresServidor(char _tipo_error) 
+	
+	private ErroresServidor(final char _tipo_error) 
 	{
 		tipo_error = _tipo_error;
 	}

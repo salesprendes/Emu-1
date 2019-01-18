@@ -54,7 +54,7 @@ final public class JuegoVinculador extends Thread implements Runnable
 		{
 			try 
 			{
-				enviar_Paquete("S|" + Configuracion.SERVIDOR_ID);
+				enviar_Paquete("S|C|" + Configuracion.SERVIDOR_ID);
 				final StringBuilder paquete = new StringBuilder();
 				
 				while(paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && !isInterrupted() && socket.isConnected())
@@ -93,7 +93,7 @@ final public class JuegoVinculador extends Thread implements Runnable
 			break;
 			
 			case 'C': //C|
-				int id_cuenta = Integer.parseInt(paquete.substring(4));
+				int id_cuenta = Integer.parseInt(paquete.substring(4).split(";")[0]);
 				Cuentas cuenta = Cuentas.get_Cuenta_Cargada(id_cuenta);
 				
 				switch (paquete.charAt(2))
@@ -108,6 +108,8 @@ final public class JuegoVinculador extends Thread implements Runnable
 						if(cuenta != null)
 						{
 							JuegoServer.get_Agregar_Cuenta_Esperando(cuenta);
+							JuegoServer.get_Agregar_Ip_Esperando(paquete.substring(4).split(";")[1]);
+							enviar_Paquete("S|P|"  + (Configuracion.PLAZAS_SERVIDOR - Main.juego_servidor.get_Clientes().size()));
 						}
 					break;
 					

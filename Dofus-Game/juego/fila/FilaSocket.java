@@ -23,7 +23,7 @@ final public class FilaSocket
 	{
 		synchronized(fila)
 		{
-			if(Configuracion.MAXIMOS_LOGINS_FILA_ESPERA >= fila.size())
+			if(Configuracion.MAXIMOS_FILA_ESPERA >= fila.size())
 			{
 				int posicion = fila.size() + 1;
 				Nodo nodo = new Nodo(cuenta, posicion);

@@ -9,6 +9,7 @@ import database.objetos.Alineamientos_DB;
 import database.objetos.Areas_DB;
 import database.objetos.Cuentas_DB;
 import database.objetos.Experiencia_DB;
+import database.objetos.Items_DB;
 import database.objetos.Mapas_DB;
 import database.objetos.Personajes_DB;
 import database.objetos.Razas_DB;
@@ -31,6 +32,7 @@ public class ConexionPool
 	private Razas_DB razas;
 	private Alineamientos_DB alineamientos;
 	private Experiencia_DB experiencia;
+	private Items_DB items;
 	
 	public void iniciar_Database() 
 	{
@@ -43,6 +45,7 @@ public class ConexionPool
 		razas = new Razas_DB(game_database);
 		alineamientos = new Alineamientos_DB(game_database);
 		experiencia = new Experiencia_DB(game_database);
+		items = new Items_DB(game_database);
 	}
 	
 	public Cuentas_DB get_Cuentas()
@@ -88,6 +91,11 @@ public class ConexionPool
 	public Experiencia_DB get_Experiencia()
 	{
 		return experiencia;
+	}
+	
+	public Items_DB get_Items()
+	{
+		return items;
 	}
 
 	public void cargar_Configuracion() 

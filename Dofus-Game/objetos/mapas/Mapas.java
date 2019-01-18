@@ -170,6 +170,16 @@ public class Mapas
 	{
 		return (capacidades >> 3 & 1) == 0;
 	}
+	
+	public static Mapas get_Mapa_Coordenadas_SubArea(final int X, final int Y, final int super_area_id) 
+	{
+		for (final Mapas mapa : mapas_cargados.values()) 
+		{
+			if (mapa.get_X() == X && mapa.get_Y() == Y && mapa.get_Sub_area().get_Area().get_Super_area().get_Id() == super_area_id)
+				return mapa;
+		}
+		return null;
+	}
 
 	public static ConcurrentHashMap<Short, Mapas> get_Mapas_Cargados()
 	{
