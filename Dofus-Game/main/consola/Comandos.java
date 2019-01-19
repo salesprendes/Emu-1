@@ -26,7 +26,7 @@ public class Comandos
 		 	break;
 		 	
 		 	case "cpu":
-		 		System.out.println(ver_Uso_Cpu() * 100 + "%");
+		 		Consola.println(ver_Uso_Cpu() * 100 + "%");
 		 	break;
 		 	
 		 	case "limpiar":
@@ -39,7 +39,7 @@ public class Comandos
 		 	break;
 			
 			default:
-				System.out.println("Comando no encontrado");
+				Consola.println("Comando no encontrado");
 			break;
 		 }
 	 }
@@ -53,27 +53,27 @@ public class Comandos
 		 
 		 int mb = 1024*1024;
 		 Runtime runtime = Runtime.getRuntime();
-		 System.out.println("Memoria utilizada: " + (runtime.totalMemory() - runtime.freeMemory()) / mb + " mb");
-		 System.out.println("Memoria libre: " + runtime.freeMemory() / mb + " mb");
-		 System.out.println("Memoria total: " + runtime.totalMemory() / mb + " mb");
-		 System.out.println("Memoria máxima: " + runtime.maxMemory() / mb + " mb");
+		 Consola.println("Memoria utilizada: " + (runtime.totalMemory() - runtime.freeMemory()) / mb + " mb");
+		 Consola.println("Memoria libre: " + runtime.freeMemory() / mb + " mb");
+		 Consola.println("Memoria total: " + runtime.totalMemory() / mb + " mb");
+		 Consola.println("Memoria máxima: " + runtime.maxMemory() / mb + " mb");
 	 }
 	 
 	 protected static void ver_Threads_Activos()
 	 {
 		 Thread.getAllStackTraces().keySet().forEach(t ->
 		 {
-			 System.out.println(t.getName() + " es Daemon: " + t.isDaemon() + " esta activo: " + t.isAlive());
+			 Consola.println(t.getName() + " es Daemon: " + t.isDaemon() + " esta activo: " + t.isAlive());
 		 });
 	 }
 	 
 	 protected static void lista_Comandos()
 	 {
-		 System.out.println("threads: ver los threads activos");
-		 System.out.println("memoria: permite ver el estado de la memoria del heap Parametro: limpia (invoca el garbage)");
-		 System.out.println("limpiar/clear: limpia la consola");
-		 System.out.println("debug: (on, off) permite activar/desactivar para ver los mensajes debug");
-		 System.out.println("?: permite ver los comandos"); 
+		 Consola.println("threads: ver los threads activos");
+		 Consola.println("memoria: permite ver el estado de la memoria del heap Parametro: limpia (invoca el garbage)");
+		 Consola.println("limpiar/clear: limpia la consola");
+		 Consola.println("debug: (on, off) permite activar/desactivar para ver los mensajes debug");
+		 Consola.println("?: permite ver los comandos"); 
 	 }
 	 
 	 protected static Float ver_Uso_Cpu()
@@ -120,22 +120,22 @@ public class Comandos
 			{
 				case "on":
 					Main.modo_debug = true;
-					System.out.println("Modo debug activado");
+					Consola.println("Modo debug activado");
 				break;
 				
 				case "off":
 					Main.modo_debug = false;
-					System.out.println("Modo debug desactivado");
+					Consola.println("Modo debug desactivado");
 				break;
 				
 				default:
-					System.out.println("opción no valida");
+					Consola.println("opción no valida");
 				break;
 			}
 		 }
 		 else
 		 {
-			 System.out.println("Numero de argumentos no valido");
+			 Consola.println("Numero de argumentos no valido");
 			 return;
 		 }
 	 }

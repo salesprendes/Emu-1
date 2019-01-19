@@ -3,6 +3,7 @@ package database.objetos;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
+import main.consola.Consola;
 import objetos.mapas.Mapas;
 
 public class Mapas_DB extends DatabaseManager
@@ -28,7 +29,7 @@ public class Mapas_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			System.out.println("ERROR SQL: " + e.toString());
+			Consola.println("ERROR SQL: " + e.toString());
 		}
 	}
 }

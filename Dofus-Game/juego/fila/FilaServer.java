@@ -25,12 +25,16 @@ final public class FilaServer extends Thread implements Runnable
 	{
 		synchronized(fila)
 		{
-			try
+			while(Main.estado_emulador != Estados.APAGADO && !isInterrupted())
 			{
-				while(Main.estado_emulador != Estados.APAGADO && !isInterrupted())
+				nodo_fila = fila.eliminar_Cuenta_Fila_Espera();
+				try
 				{
-					nodo_fila = fila.eliminar_Cuenta_Fila_Espera();
 					fila.wait(1100 * fila.get_Fila().size());//1 segundo * tamaño fila
+				}
+				catch (InterruptedException e) {}
+				finally 
+				{
 					if(nodo_fila != null)
 					{
 						fila.set_eliminar_Cuenta(nodo_fila);
@@ -66,7 +70,6 @@ final public class FilaServer extends Thread implements Runnable
 					fila.actualizar_A_Nuevas_Posiciones();
 				}
 			}
-			catch (InterruptedException e) {}
 		}
 	}
 	

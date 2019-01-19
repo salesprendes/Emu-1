@@ -3,6 +3,7 @@ package database.objetos;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
+import main.consola.Consola;
 import objetos.Experiencia;
 
 public class Experiencia_DB extends DatabaseManager
@@ -27,7 +28,7 @@ public class Experiencia_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			System.out.println("ERROR SQL: " + e.toString());
+			Consola.println("ERROR SQL: " + e.toString());
 		}
 	}
 }

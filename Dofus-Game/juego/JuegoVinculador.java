@@ -68,12 +68,14 @@ final public class JuegoVinculador extends Thread implements Runnable
 			catch (final IOException e) 
 			{
 				Main.esta_vinculado = false;
+				cerrar_Conexion();
 				Main.Vincular_Login();
 			}
 			finally
 			{
 				Main.estado_emulador = Estados.VINCULANDO;
 				Main.esta_vinculado = false;
+				cerrar_Conexion();
 				Main.Vincular_Login();
 			}
 		}
@@ -124,12 +126,12 @@ final public class JuegoVinculador extends Thread implements Runnable
 			break;
 			
 			case 'M'://Migracion
+				String[] split_migracion = paquete.substring(2).split("\\|");
+				
 				switch(paquete.charAt(1)) 
 				{
 					case 'G'://Obtener
-						String[] split_migracion = paquete.substring(2).split("\\|");
 						StringBuilder alks = new StringBuilder("C|M|T|" + split_migracion[0] + "|" + split_migracion[1]);
-						
 						for(String id : split_migracion[2].split("\\,")) 
 						{
 							alks.append(Personajes.get_Personaje_Cargado(Integer.parseInt(id)).get_Paquete_Alk());
@@ -138,7 +140,6 @@ final public class JuegoVinculador extends Thread implements Runnable
 					break;
 					
 					case 'F':
-						split_migracion = paquete.substring(2).split("\\|");
 						int id_migracion = Integer.parseInt(split_migracion[0]);
 						int servidor = Integer.parseInt(split_migracion[1]);
 						String personajes = paquete.substring(paquete.indexOf('|' , paquete.indexOf('|') + 1) + 3);

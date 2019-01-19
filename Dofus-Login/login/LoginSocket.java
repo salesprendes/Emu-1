@@ -6,9 +6,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import login.enums.EstadosLogin;
 import login.fila.Fila;
@@ -33,7 +32,6 @@ final public class LoginSocket implements Runnable
 	private Cuentas cuenta;
 	private String hash_key, cuenta_paquete, ip;
 	private EstadosLogin estado_login = EstadosLogin.VERSION;
-	private ExecutorService ejecutor;
 	private Fila fila = Main.fila_espera_login.get_Fila();
 
 	public LoginSocket(final Socket _socket, final String _ip)
@@ -43,11 +41,10 @@ final public class LoginSocket implements Runnable
 			try
 			{
 				socket = _socket;
+				socket.setSoTimeout(10*60*1000);//10 minutos
+				ip = _ip;
 				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 				outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-				ejecutor = Executors.newCachedThreadPool();
-				ejecutor.submit(this);
-				ip = _ip;
 			}
 			catch (final IOException e) 
 			{
@@ -64,13 +61,18 @@ final public class LoginSocket implements Runnable
 			hash_key = Formulas.generar_Key();
 			enviar_Paquete(new BienvenidaConexion(hash_key).toString());
 
-			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && !ejecutor.isShutdown() && socket.isConnected())
+			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && socket.isConnected())
 			{
 				if(Main.modo_debug)
 					Consola.println("Recibido-login: " + paquete.toString());
 				controlador_Paquetes(paquete.toString());
 				paquete.setLength(0);
 			}
+		}
+		catch (final SocketTimeoutException s) 
+		{
+			enviar_Paquete("M01");
+			cerrar_Conexion();
 		}
 		catch (final IOException e)
 		{
@@ -143,28 +145,29 @@ final public class LoginSocket implements Runnable
 				outputStream.close();
 			if(buffered_reader != null)
 				buffered_reader.close();
+			if(this != null)
+				LoginServer.get_Eliminar_Cliente(this);
 			if (socket != null && socket.isClosed())
 			{
 				if(cuenta != null)
 				{
-					LoginServer.get_Eliminar_Cliente(this);
 					if(cuenta.get_Login_respuesta() == this)
 						cuenta.set_Login_respuesta(null);
 					if(cuenta.get_Fila_espera() && cuenta.get_Nodo_fila() != null)
 						fila.set_eliminar_Cuenta(cuenta.get_Nodo_fila());
+					cuenta = null;
 				}
 				socket.close();
+				socket = null;
 			}
 			LoginServer.get_Eliminar_Cliente(this);
-			hash_key = null;
-			estado_login = null;
-			cuenta = null;
-			ejecutor.shutdown();
+			if(hash_key != null)
+				hash_key = null;
+			estado_login = EstadosLogin.VERSION;
 		}
 		catch (final IOException e)
 		{
 			Consola.println("Error el kickear a la cuenta: " + cuenta.get_Usuario() + " causa: " + e.getMessage());
-			return;
 		}
 	}
 	
@@ -183,7 +186,6 @@ final public class LoginSocket implements Runnable
 		else
 		{
 			cerrar_Conexion();
-			return;
 		}
 	}
 

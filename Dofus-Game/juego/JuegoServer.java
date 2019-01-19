@@ -16,29 +16,23 @@ import objetos.cuentas.Cuentas;
 public class JuegoServer extends Thread implements Runnable
 {
 	protected ServerSocket juego_servidor;
-	private ExecutorService threadPool;
+	private ExecutorService threadPool = null;
 	private static final CopyOnWriteArrayList<JuegoSocket> clientes = new CopyOnWriteArrayList<JuegoSocket>();
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_esperando = new ConcurrentHashMap<Integer, Cuentas>();
 	private static final CopyOnWriteArrayList<String> ip_esperando = new CopyOnWriteArrayList<String>();
 	
 	public JuegoServer()
 	{
-		try
-		{
-			setName("Server-Juego");
-			juego_servidor = new ServerSocket(Configuracion.PUERTO_GAME);
-			threadPool = Executors.newFixedThreadPool(Configuracion.PLAZAS_SERVIDOR);
-			start();
-			Consola.println(">> Juego del servidor iniciado en el puerto: " + Configuracion.PUERTO_GAME);
-		} 
-		catch (IOException e)
-		{
-			throw new RuntimeException(e.getMessage());
-		}
-    }
+		threadPool = Executors.newFixedThreadPool(Configuracion.PLAZAS_SERVIDOR);
+		setName("Server-Juego");
+		start();
+		Consola.println(">> Juego del servidor iniciado en el puerto: " + Configuracion.PUERTO_GAME);
+	}
 	
 	public void run()
 	{
+		get_Abrir_Server_Socket();
+		
 		while(Main.estado_emulador != Estados.APAGADO && !juego_servidor.isClosed() && !isInterrupted())
 		{
 			try
@@ -53,7 +47,21 @@ public class JuegoServer extends Thread implements Runnable
 				throw new RuntimeException(e.getMessage());
 			}
 		}
-		threadPool.shutdown();
+		
+		detener_Server_Socket();
+	}
+	
+	public synchronized void get_Abrir_Server_Socket()
+	{
+		try 
+		{
+			juego_servidor = new ServerSocket(Configuracion.PUERTO_GAME);
+			Consola.println(">> Juego del servidor iniciado en el puerto: " + Configuracion.PUERTO_GAME);
+		} 
+		catch (final IOException e)
+		{
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	public synchronized void detener_Server_Socket()
@@ -101,7 +109,7 @@ public class JuegoServer extends Thread implements Runnable
 		return cuentas_esperando.get(id_cuenta);
 	}
 	
-	public static void get_Agregar_Cuenta_Esperando(final Cuentas cuenta) 
+	public synchronized static void get_Agregar_Cuenta_Esperando(final Cuentas cuenta) 
 	{
 		if (!cuentas_esperando.contains(cuenta) && cuenta != null)
 		{
@@ -109,7 +117,7 @@ public class JuegoServer extends Thread implements Runnable
 		}
 	}
 	
-	public static void get_Eliminar_Cuenta_Esperando(final Cuentas cuenta) 
+	public synchronized static void get_Eliminar_Cuenta_Esperando(final Cuentas cuenta) 
 	{
 		if (cuentas_esperando.contains(cuenta))
 		{
@@ -117,12 +125,12 @@ public class JuegoServer extends Thread implements Runnable
 		}
 	}
 	
-	public static boolean get_Borrar_Ip_Esperando(final String ip) 
+	public synchronized static boolean get_Borrar_Ip_Esperando(final String ip) 
 	{
 		return ip_esperando.remove(ip);
 	}
 	
-	public static void get_Agregar_Ip_Esperando(final String ip)
+	public synchronized static void get_Agregar_Ip_Esperando(final String ip)
 	{
 		ip_esperando.add(ip);
 	}

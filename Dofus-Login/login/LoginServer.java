@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import main.Configuracion;
 import main.Estados;
@@ -14,25 +16,20 @@ import main.consola.Consola;
 final public class LoginServer extends Thread implements Runnable
 {
 	protected ServerSocket login_servidor;
+	private ExecutorService threadPool = null;
 	private static final Map<String, ConexionesCliente> conexiones_clientes = new TreeMap<String, ConexionesCliente>();
 	
 	public LoginServer()
 	{
-		try
-		{
-			login_servidor = new ServerSocket(Configuracion.PUERTO_LOGIN);
-			setName("Server-Login");
-			start();
-			Consola.println(">> Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
-		} 
-		catch (final IOException e)
-		{
-			throw new RuntimeException(e.getMessage());
-		}
+		threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		setName("Server-Login");
+		start();
     }
 	
 	public void run()
 	{
+		get_Abrir_Server_Socket();
+		
 		while(Main.estado_emulador != Estados.APAGADO && !login_servidor.isClosed() && !isInterrupted())
 		{
 			try 
@@ -46,24 +43,41 @@ final public class LoginServer extends Thread implements Runnable
 					Consola.println("possible ddos desde la ip: " + nueva_conexion.get_Ip_Cliente());
 					nueva_conexion.refrescar_Tiempo_Ultima_Conexion();
 					socket.close();
-					return;
-				}
-				
-				LoginSocket nuevo_cliente = new LoginSocket(socket, ip);
-				if (!conexiones_clientes.containsKey(ip))
-				{
-					nueva_conexion = new ConexionesCliente(ip , nuevo_cliente);
-					conexiones_clientes.put(ip, nueva_conexion);
 				}
 				else
 				{
-					conexiones_clientes.get(ip).agregar_Cliente(nuevo_cliente);
+					LoginSocket nuevo_cliente = new LoginSocket(socket, ip);
+					if (!conexiones_clientes.containsKey(ip))
+					{
+						nueva_conexion = new ConexionesCliente(ip, nuevo_cliente);
+						conexiones_clientes.put(ip, nueva_conexion);
+					}
+					else
+					{
+						conexiones_clientes.get(ip).agregar_Cliente(nuevo_cliente);
+					}
+					threadPool.execute(nuevo_cliente);
 				}
 			} 
 			catch (Exception e)
 			{
 				detener_Server_Socket();
 			}
+		}
+		
+		detener_Server_Socket();
+	}
+	
+	public synchronized void get_Abrir_Server_Socket()
+	{
+		try 
+		{
+			login_servidor = new ServerSocket(Configuracion.PUERTO_LOGIN);
+			Consola.println(">> Login del servidor iniciado en el puerto: " + Configuracion.PUERTO_LOGIN);
+		} 
+		catch (final IOException e)
+		{
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 	
@@ -74,8 +88,12 @@ final public class LoginServer extends Thread implements Runnable
 			try 
 	        {
 				get_Expulsar_Todos_Clientes();
-	            login_servidor.close();
-	            interrupt();
+				if(!login_servidor.isClosed())
+					login_servidor.close();
+	            if(!isInterrupted())
+	            	interrupt();
+	            if(!threadPool.isShutdown())
+	            	threadPool.shutdown();
 	            Consola.println("ServerSocket login cerrado");
 	        } 
 	        catch (IOException e)

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,30 +34,32 @@ public class JuegoSocket implements Runnable
 	/** Buffer paquetes **/
 	private Map<Integer, String> buffer_paquetes = new TreeMap<Integer, String>();
 	private String ultimo_paquete, ip;
-	private long tiempo_ultimo_paquete = 0;
-
 
 	public JuegoSocket(final Socket _socket)
 	{
-		try
+		if(!_socket.isClosed() && _socket.isBound())
 		{
-			socket = _socket;
-			ip = socket.getInetAddress().getHostAddress();
-			buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);
-			outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-
-			if(Configuracion.ACTIVAR_FILA_DE_ESPERA)
-				fila = Main.fila_espera.get_Fila();
-			
-			if(!JuegoServer.get_Borrar_Ip_Esperando(ip))
+			try
 			{
-				enviar_Paquete("M029");
+				socket = _socket;
+				socket.setSoTimeout(30*60*1000);//30 minutos
+				ip = socket.getInetAddress().getHostAddress();
+				buffered_reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8), 1);
+				outputStream = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+
+				if(Configuracion.ACTIVAR_FILA_DE_ESPERA)
+					fila = Main.fila_espera.get_Fila();
+				
+				if(!JuegoServer.get_Borrar_Ip_Esperando(ip))
+				{
+					enviar_Paquete("M029");
+					cerrar_Conexion();
+				}
+			}
+			catch (final IOException e) 
+			{
 				cerrar_Conexion();
 			}
-		}
-		catch (final IOException e) 
-		{
-			cerrar_Conexion();
 		}
 	}
 
@@ -74,7 +77,11 @@ public class JuegoSocket implements Runnable
 				controlador_Paquetes(paquete.toString());
 				paquete.setLength(0);
 			}
-			
+		}
+		catch (final SocketTimeoutException s) 
+		{
+			enviar_Paquete("M01");
+			cerrar_Conexion();
 		}
 		catch (final IOException e)
 		{
@@ -141,12 +148,11 @@ public class JuegoSocket implements Runnable
 					final String paquete_bufferizado = buffer_paquetes.get(outputStream.hashCode()) + (char)0x00;
 					buffer_paquetes.put(outputStream.hashCode(), paquete_bufferizado + paquete);
 				}
-				else if(!(paquete.equalsIgnoreCase(ultimo_paquete) && (System.currentTimeMillis() - tiempo_ultimo_paquete) < 500))
+				else if(!paquete.equalsIgnoreCase(ultimo_paquete))
 				{
 					outputStream.print(paquete + (char)0x00);
 					outputStream.flush();
 					ultimo_paquete = paquete;
-					tiempo_ultimo_paquete = System.currentTimeMillis();
 					Consola.println("Enviado >> " + paquete);
 				}
 			}

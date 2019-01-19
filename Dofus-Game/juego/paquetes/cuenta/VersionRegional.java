@@ -7,8 +7,9 @@ import juego.paquetes.Paquete;
 @Paquete("AV")
 public class VersionRegional implements GestorPaquetes
 {
-	public void analizar(JuegoSocket jugador, String paquete) 
+	public void analizar(JuegoSocket socket, String paquete) 
 	{
-		jugador.enviar_Paquete("AV0");
+		if (socket.get_Personaje() == null)
+			socket.enviar_Paquete("AV0");
 	}
 }
