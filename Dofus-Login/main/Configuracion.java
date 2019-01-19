@@ -20,11 +20,11 @@ public class Configuracion
 	private static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
 	
 	/** Puertos **/
-	public static int PUERTO_LOGIN = 443;
-	public static int PUERTO_COMUNICADOR = 489;
+	public static int PUERTO_LOGIN = 443, PUERTO_COMUNICADOR = 489;
 	
 	/** ACCESO LOGIN **/
 	public static int MAXIMOS_LOGINS_FILA_ESPERA = 100;
+	public static short POBLACION_RECOMENDADA = 1000, POBLACION_MEDIA_ALTA = 500, POBLACION_ALTA = 300, POBLACION_BAJA = 200, POBLACION_COMPLETA = 20;
 	
 	/** ACCESO DATABASE **/
 	public static String DATABASE_IP_LOGIN = "127.0.0.1";
@@ -55,7 +55,12 @@ public class Configuracion
 				
 				//Otros
 				MAXIMOS_LOGINS_FILA_ESPERA = Integer.valueOf(propiedades.getProperty("MAXIMOS_LOGINS_FILA_ESPERA"));
-
+				POBLACION_RECOMENDADA = Short.valueOf(propiedades.getProperty("POBLACION_RECOMENDADA"));
+				POBLACION_MEDIA_ALTA = Short.valueOf(propiedades.getProperty("POBLACION_MEDIA_ALTA"));
+				POBLACION_ALTA = Short.valueOf(propiedades.getProperty("POBLACION_ALTA"));
+				POBLACION_BAJA = Short.valueOf(propiedades.getProperty("POBLACION_BAJA"));
+				POBLACION_COMPLETA = Short.valueOf(propiedades.getProperty("POBLACION_COMPLETA"));
+				
 				propiedades.clear();
 				propiedades = null;
 			}
@@ -87,6 +92,12 @@ public class Configuracion
 		propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
 		
 		propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
+		
+		propiedades.setProperty("POBLACION_RECOMENDADA", Short.toString(POBLACION_RECOMENDADA));
+		propiedades.setProperty("POBLACION_MEDIA_ALTA", Short.toString(POBLACION_MEDIA_ALTA));
+		propiedades.setProperty("POBLACION_ALTA", Short.toString(POBLACION_ALTA));
+		propiedades.setProperty("POBLACION_BAJA", Short.toString(POBLACION_BAJA));
+		propiedades.setProperty("POBLACION_COMPLETA", Short.toString(POBLACION_COMPLETA));
 		
 		propiedades.store(new FileOutputStream(new File("conf-login.txt")), "Archivo de configuración");
 		propiedades.clear();

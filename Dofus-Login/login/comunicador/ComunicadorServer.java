@@ -43,13 +43,9 @@ final public class ComunicadorServer extends Thread implements Runnable
 			{
 				Socket cliente = server_socket.accept();
 				if(ips_servidores.contains(cliente.getInetAddress().getHostAddress()))
-				{
 					new ComunicadorSocket(cliente);
-				}
-				else 
-				{
+				else
 					cliente.close();
-				}
 			}
 			catch (IOException e)
 			{

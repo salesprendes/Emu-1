@@ -27,7 +27,6 @@ final public class Tiquet implements GestorPaquetes
 		{
 			socket.enviar_Paquete("ATE");
 			socket.cerrar_Conexion();
-			return;
 		}
 	}
 }

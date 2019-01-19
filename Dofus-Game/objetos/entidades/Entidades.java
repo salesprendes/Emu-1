@@ -18,7 +18,7 @@ public interface Entidades
         MUTANTE ((byte)-8),
         CERCADO ((byte)-9),
         PRISMA ((byte)-10),
-		MONTURA ((byte)-11);
+		DRAGOPAVO ((byte)-11);
         
         private byte tipo_entidad = 0;
         

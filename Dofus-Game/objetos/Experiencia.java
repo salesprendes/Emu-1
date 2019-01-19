@@ -79,7 +79,7 @@ public class Experiencia
 	
 	public static int get_Experiencia_Alineamientos(int nivel) 
 	{
-		if (nivel > 10) 
+		if (nivel >= 10) 
 			nivel = 10;
 		else if (nivel < 1)
 			nivel = 1;

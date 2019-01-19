@@ -1,5 +1,7 @@
 package objetos.entidades.alineamientos;
 
+import juego.enums.TipoAlineamientos;
+
 public class Alineamientos
 {
 	private AlineamientosModelo alineamiento;
@@ -14,15 +16,15 @@ public class Alineamientos
 			orden_nivel = 0;
 			switch (alineamiento.get_Id())
 			{
-				case 1://bonta
+				case TipoAlineamientos.BONTA:
 					orden = 1;
 				break;
 				
-				case 2://brakmar
+				case TipoAlineamientos.BRAKMAR:
 					orden = 5;
 				break;
 				
-				case 3://mercenario
+				case TipoAlineamientos.MERCENARIO:
 					orden = 9;
 				break;
 				

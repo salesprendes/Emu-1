@@ -25,14 +25,14 @@ public class Especialidades
 				try 
 				{
 					String[] args = s.split(",");
-					byte don_Id = Byte.parseByte(args[0]);
+					byte don_id = Byte.parseByte(args[0]);
 					short don_nivel = Short.parseShort(args[1]);
-					short don_stat = Dones.get_Don_Stat(don_Id);
+					short don_stat = Dones.get_Don_Stat(don_id);
 					int valor = 0;
 					if (args.length > 2)
 						valor = Integer.parseInt(args[2]);
 
-					dones.add(new Dones(don_Id, don_nivel, don_stat, valor));
+					dones.add(new Dones(don_id, don_nivel, don_stat, valor));
 				} 
 				catch (Exception e) {}
 			}

@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 18/01/2019 15:08:49
+ Date: 19/01/2019 01:11:35
 */
 
 SET NAMES utf8mb4;
@@ -50,11 +50,12 @@ CREATE TABLE `cuentas`  (
   `id` int(4) NOT NULL AUTO_INCREMENT COMMENT 'Id de la cuenta',
   `usuario` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Usuario para hacer login',
   `password` varchar(35) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'Contraseña para hacer login',
-  `apodo` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NULL DEFAULT '' COMMENT 'Apodo visible para la cuenta',
-  `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NULL DEFAULT NULL,
+  `apodo` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '' COMMENT 'Apodo visible para la cuenta',
+  `uid` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `rango_cuenta` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0: Usuario\r\n1: Mod\r\n2: GM\r\n3: Admin',
   `tiempo_abono` datetime(0) NOT NULL COMMENT 'Abono con fecha y tiempo para la cuenta',
-  `comunidad` tinyint(2) NULL DEFAULT 4 COMMENT 'id de la comunidad',
+  `comunidad` tinyint(2) NOT NULL DEFAULT 4 COMMENT 'id de la comunidad',
   `baneado` bit(1) NOT NULL DEFAULT b'0' COMMENT '0: No baneado\r\n1: Baneado',
   `migracion` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
@@ -66,10 +67,10 @@ CREATE TABLE `cuentas`  (
 -- ----------------------------
 -- Records of cuentas
 -- ----------------------------
-INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '127.0.0.1', 4, '2030-03-28 17:45:50', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', NULL, 4, '2018-03-28 17:46:37', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2030-03-28 17:45:50', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', '', '127.0.0.1', 4, '2018-03-28 17:46:37', 4, b'0', 0);
 
 -- ----------------------------
 -- Table structure for personajes

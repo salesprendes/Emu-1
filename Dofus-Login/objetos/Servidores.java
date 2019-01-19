@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import login.comunicador.ComunicadorSocket;
 import login.enums.ErroresServidor;
+import main.Configuracion;
 
 final public class Servidores 
 {
@@ -85,9 +86,9 @@ final public class Servidores
         return poblacion;
     }
 	
-	public void set_Poblacion(final int plazas_libres) 
+	public void set_Poblacion(final short plazas_libres) 
 	{
-		poblacion = Arrays.stream(Poblacion.values()).filter(poblacion -> poblacion.get_Plazas_Libres() >= plazas_libres).findFirst().orElse(Poblacion.COMPLETO);
+		poblacion = Arrays.stream(Poblacion.values()).filter(poblacion -> poblacion.get_Plazas_Libres() >= plazas_libres).findFirst().orElse(Poblacion.COMPLETA);
     }
 	
 	public static String get_Obtener_Servidores(Cuentas cuenta)
@@ -98,8 +99,8 @@ final public class Servidores
         	paquete_servidores.append(paquete_servidores.length() > 2 ? '|' : "");
         	paquete_servidores.append(servidor.get_Id()).append(';');
         	paquete_servidores.append(servidor.get_Estado().ordinal()).append(';');
-        	paquete_servidores.append(servidor.get_Poblacion().ordinal()).append(';');
-        	paquete_servidores.append(servidor.es_Servidor_Vip() ? (cuenta.es_Cuenta_Abonada() ? 1 : 0) : 1);
+        	paquete_servidores.append(cuenta.get_Rango_cuenta() > 0 ? Poblacion.RECOMENDADA.ordinal() : servidor.get_Poblacion().ordinal()).append(';');
+        	paquete_servidores.append(cuenta.get_Rango_cuenta() > 0 ? 1 : servidor.es_Servidor_Vip() ? (cuenta.es_Cuenta_Abonada() ? 1 : 0) : 1);
         });
         return paquete_servidores.toString();
     }
@@ -107,7 +108,7 @@ final public class Servidores
 	public static String get_Obtener_Servidores_Disponibles() 
 	{
         final StringBuilder paquete = new StringBuilder(ErroresServidor.SERVIDORES_LIBRES.toString());
-        servidores_cargados.values().stream().filter(filtro -> !filtro.es_Servidor_Vip() && filtro.get_Poblacion() != Poblacion.COMPLETO).forEach(servidor -> 
+        servidores_cargados.values().stream().filter(filtro -> !filtro.es_Servidor_Vip() && filtro.get_Poblacion() != Poblacion.COMPLETA).forEach(servidor -> 
         {
         	paquete.append(servidor.get_Id()).append(paquete.length() > 0 ? '|' : "");
         });
@@ -126,13 +127,13 @@ final public class Servidores
         GUARDANDO;
     }
 	
-	public enum Poblacion 
+	public enum Poblacion
 	{
-		RECOMENDADO(1000),
-        PROMEDIO(500),
-        ALTA(300),
-        BAJA(200),
-        COMPLETO(20);
+		RECOMENDADA(Configuracion.POBLACION_RECOMENDADA),
+		MEDIA_ALTA(Configuracion.POBLACION_MEDIA_ALTA),
+        ALTA(Configuracion.POBLACION_ALTA),
+        BAJA(Configuracion.POBLACION_BAJA),
+        COMPLETA(Configuracion.POBLACION_COMPLETA);
 
         private final int plazas_libres;
 

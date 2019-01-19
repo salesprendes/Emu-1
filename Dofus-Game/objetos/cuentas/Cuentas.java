@@ -12,7 +12,7 @@ import objetos.entidades.personajes.Personajes;
 final public class Cuentas 
 {
 	private final int id;
-	private String apodo, ip, key;
+	private String apodo, ip, uid, idioma_cliente;
 	private long tiempo_abono;
 	private final byte rango_cuenta, comunidad;
 	private JuegoSocket juego_socket;
@@ -23,10 +23,11 @@ final public class Cuentas
 	
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_cargadas = new ConcurrentHashMap<Integer, Cuentas>();
 
-	public Cuentas(final int _id, final String _apodo, final String _ip, final byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
+	public Cuentas(final int _id, final String _apodo, final String _uid, final String _ip, final byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
 	{
 		id = _id;
 		apodo = _apodo;
+		uid = _uid;
 		ip = _ip;
 		rango_cuenta = _rango_cuenta;
 		tiempo_abono = _tiempo_abono;
@@ -106,14 +107,14 @@ final public class Cuentas
 		juego_socket = _juego_socket;
 	}
 
-	public String get_Key() 
+	public String get_Uid() 
 	{
-		return key;
+		return uid;
 	}
 
-	public void set_Key(String _key) 
+	public void set_Uid(String _uid) 
 	{
-		key = _key;
+		uid = _uid;
 	}
 	
 	public boolean get_Fila_espera() 
@@ -154,6 +155,16 @@ final public class Cuentas
 	public void set_Personaje_jugando(final Personajes _personaje_jugando) 
 	{
 		personaje_jugando = _personaje_jugando;
+	}
+	
+	public String get_Idioma_cliente()
+	{
+		return idioma_cliente;
+	}
+
+	public void set_Idioma_cliente(String _idioma_cliente)
+	{
+		idioma_cliente = _idioma_cliente;
 	}
 
 	public void agregar_Personaje(final Personajes personaje)

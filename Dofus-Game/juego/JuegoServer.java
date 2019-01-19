@@ -89,7 +89,7 @@ public class JuegoServer extends Thread implements Runnable
 	
 	public static void get_Eliminar_Cliente(final JuegoSocket _socket)
 	{
-		if (clientes.contains(_socket) && _socket != null)
+		if (clientes.contains(_socket))
 		{
 			clientes.remove(_socket);
 		}
@@ -111,7 +111,7 @@ public class JuegoServer extends Thread implements Runnable
 	
 	public static void get_Eliminar_Cuenta_Esperando(final Cuentas cuenta) 
 	{
-		if (cuentas_esperando.contains(cuenta) && cuenta != null)
+		if (cuentas_esperando.contains(cuenta))
 		{
 			cuentas_esperando.remove(cuenta.get_Id());
 		}

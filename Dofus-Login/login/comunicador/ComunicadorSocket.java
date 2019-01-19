@@ -153,11 +153,19 @@ final public class ComunicadorSocket extends Thread implements Runnable
 						}
 					break;
 					
-					case 'P'://plazas libres|plazas_libres_restantes
+					case 'P'://plazas libres|numero_plazas_libres_restantes
 						final short plazas_libres = Short.valueOf(paquete.substring(4));
 						servidor_juego.set_Poblacion(plazas_libres);
 					break;
+					
+					default:
+						System.out.println("El paquete " + paquete + " no existe");
+					break;
 				}
+			break;
+			
+			default:
+				System.out.println("El paquete " + paquete + " no existe");
 			break;
 		}
 	}

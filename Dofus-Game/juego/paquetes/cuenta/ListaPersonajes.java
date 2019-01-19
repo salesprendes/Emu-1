@@ -18,7 +18,12 @@ public class ListaPersonajes implements GestorPaquetes
 
 		if(cuenta != null && socket.get_Estado_Juego() != EstadosJuego.SELECCION_PERSONAJE)
 		{
-			if(!Configuracion.ACTIVAR_FILA_DE_ESPERA || socket.get_Estado_Juego() == EstadosJuego.MIGRACION)
+			if(Configuracion.TIPO_COMUNIDAD != get_Comunidad_Idioma(cuenta.get_Idioma_cliente()))
+			{
+				socket.enviar_Paquete("M019");
+				socket.cerrar_Conexion();
+			}
+			else if(!Configuracion.ACTIVAR_FILA_DE_ESPERA || socket.get_Estado_Juego() == EstadosJuego.MIGRACION)
 			{
 				if(Main.get_Database().get_Cuentas().get_Puede_Migrar(cuenta.get_Id())) 
 				{
@@ -49,6 +54,57 @@ public class ListaPersonajes implements GestorPaquetes
 		{
 			socket.enviar_Paquete("AlEn");
 			socket.cerrar_Conexion();
+		}
+	}
+	
+	public static byte get_Comunidad_Idioma(String idioma) 
+	{
+		switch (idioma.toLowerCase())
+		{
+			case "fr" :
+			case "ch" :
+			case "be" :
+			case "lu" :
+				return 0;
+				
+			case "uk" :
+			case "ie" :
+			case "gb" :
+				return 1;
+				
+			case "xx" :
+				return 2;
+				
+			case "de" :
+			case "at" :
+			case "li" :
+				return 3;
+				
+			case "es" :
+			case "ad" :
+			case "ar" :
+			case "ck" :
+			case "mx" :
+				return 4;
+				
+			case "ru" :
+				return 5;
+				
+			case "pt" :
+			case "br" :
+				return 6;
+				
+			case "nl" :
+				return 7;
+				
+			case "it" :
+				return 9;
+				
+			case "jp" :
+				return 10;
+				
+			default :
+				return 99;
 		}
 	}
 }

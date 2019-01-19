@@ -54,7 +54,7 @@ public class Stats
 		if (valor < 0)
 		{
 			int exStatID = statID;
-			statID = TipoStats.get_Stat_Opuesto(statID);
+			statID = TipoStats.get_Obtener_Stat_Opuesto(statID);
 			if (statID != exStatID)
 				valor = -valor;
 		}

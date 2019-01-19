@@ -29,7 +29,7 @@ public class Cuentas_DB extends DatabaseManager
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
 			if(query.get_Rs().next())
-				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), query.get_Rs().getByte(8), query.get_Rs().getBoolean(9));
+				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(7), formato_fecha.parse(query.get_Rs().getString(8)).getTime(), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
 			cerrar(query);
 		}
 		catch (final Exception e){}
@@ -146,8 +146,8 @@ public class Cuentas_DB extends DatabaseManager
 			
 			while(query.get_Rs().next())
 			{
-				//id, apodo, ip, rango_cuenta, tiempo_abono, comunidad, baneado.
-				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), query.get_Rs().getByte(8), query.get_Rs().getBoolean(9));
+				//id(1), usuario(2), contraseña(3), apodo(4), uid(5), ip(6), rango_cuenta(7), tiempo_abono(8), comunidad(9), baneado(10)
+				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(7), formato_fecha.parse(query.get_Rs().getString(8)).getTime(), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
 			}
 			cerrar(query);
 		}

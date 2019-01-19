@@ -68,12 +68,13 @@ public class JuegoSocket implements Runnable
 		{
 			enviar_Paquete("HG");//envia la bienvenida al papasito
 
-			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && (Main.estado_emulador == Estados.ENCENDIDO || Main.estado_emulador == Estados.VINCULANDO) && socket.isConnected())
+			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && socket.isConnected())
 			{
 				Consola.println("Recibido-Game: " + paquete.toString());
 				controlador_Paquetes(paquete.toString());
 				paquete.setLength(0);
 			}
+			
 		}
 		catch (final IOException e)
 		{
@@ -110,7 +111,6 @@ public class JuegoSocket implements Runnable
 		{
 			enviar_Paquete("ATE");
 			cerrar_Conexion();
-			return;
 		}
 	}
 
@@ -154,7 +154,6 @@ public class JuegoSocket implements Runnable
 		else
 		{
 			cerrar_Conexion();
-			return;
 		}
 	}
 
@@ -170,25 +169,27 @@ public class JuegoSocket implements Runnable
 			{
 				if(cuenta != null)
 				{
-					if(cuenta.get_Juego_socket() == this)
-						cuenta.set_Juego_socket(null);
 					if(Configuracion.ACTIVAR_FILA_DE_ESPERA)
 					{
 						if(cuenta.get_Fila_espera() && cuenta.get_Nodo_fila() != null)
 							fila.set_eliminar_Cuenta(cuenta.get_Nodo_fila());
 					}
+					if(cuenta.get_Juego_socket() == this)
+						cuenta.set_Juego_socket(null);
+					JuegoServer.get_Eliminar_Cuenta_Esperando(cuenta);
+					cuenta = null;
 				}
 				socket.close();
+				socket = null;
 			}
-			JuegoServer.get_Eliminar_Cliente(this);
-			JuegoServer.get_Agregar_Cuenta_Esperando(cuenta);
-			cuenta = null;
-			personaje = null;
+			if(this != null)
+				JuegoServer.get_Eliminar_Cliente(this);
+			if(personaje != null)
+				personaje = null;
 		}
 		catch (final IOException e)
 		{
 			Consola.println("Error el kickear a la cuenta (apodo): " + cuenta.get_Apodo() + " causa: " + e.getMessage());
-			return;
 		}
 	}
 

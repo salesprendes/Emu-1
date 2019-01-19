@@ -25,8 +25,8 @@ public class Cuentas_DB extends DatabaseManager
 
 			while(query.get_Rs().next())
 			{
-				//id, apodo, ip, rango_cuenta, tiempo_abono, comunidad, baneado.
-				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(4), query.get_Rs().getString(5), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), query.get_Rs().getByte(8), query.get_Rs().getBoolean(9));
+				//id(1), apodo(4), uid(5), ip(6), rango_cuenta(7), tiempo_abono(8), comunidad(9), baneado(10)
+				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(4), query.get_Rs().getString(5), query.get_Rs().getString(6), query.get_Rs().getByte(7), formato_fecha.parse(query.get_Rs().getString(8)).getTime(), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
 			}
 			cerrar(query);
 		}
@@ -41,7 +41,8 @@ public class Cuentas_DB extends DatabaseManager
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM cuentas WHERE id = " + id_cuenta + ";");
 			if(query.get_Rs().next())
 			{
-				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(4), query.get_Rs().getString(5), query.get_Rs().getByte(6), formato_fecha.parse(query.get_Rs().getString(7)).getTime(), query.get_Rs().getByte(8), query.get_Rs().getBoolean(9));
+				//id(1), apodo(4), uid(5), ip(6), rango_cuenta(7), tiempo_abono(8), comunidad(9), baneado(10)
+				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(4), query.get_Rs().getString(5), query.get_Rs().getString(6), query.get_Rs().getByte(7), formato_fecha.parse(query.get_Rs().getString(8)).getTime(), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
 			}
 			cerrar(query);
 		}
@@ -51,7 +52,7 @@ public class Cuentas_DB extends DatabaseManager
 	
 	public void get_Actualizar_Campo(final String campo, final String valor, final int cuenta_id)
 	{
-		ejecutar_Update_Insert("UPDATE cuentas SET "  + campo + "= '" + valor + "' WHERE id = " + cuenta_id + ";");
+		ejecutar_Update_Insert("UPDATE cuentas SET "  + campo + " = '" + valor + "' WHERE id = " + cuenta_id + ";");
 	}
 
 	public boolean get_Puede_Migrar(final int id_cuenta) 

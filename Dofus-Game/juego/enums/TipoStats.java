@@ -62,7 +62,7 @@ final public class TipoStats
 	public static final int AGREGAR_RES_FIJA_PVP_FUEGO = 263;
 	public static final int AGREGAR_RES_FIJA_PVP_NEUTRAL = 264;
 	
-	public static final int get_Stat_Opuesto(final int stat_id) 
+	public static final int get_Obtener_Stat_Opuesto(final int stat_id) 
 	{
 		switch(stat_id)
 		{
