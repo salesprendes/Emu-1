@@ -24,6 +24,21 @@ public class Crypt
 		return HASH[i];
 	}
 	
+	public static short get_Hash_A_Celda_Id(final String celdaCodigo) 
+	{
+		final char char1 = celdaCodigo.charAt(0), char2 = celdaCodigo.charAt(1);
+		short code1 = 0, code2 = 0, a = 0;
+		while (a < HASH.length) 
+		{
+			if (HASH[a] == char1) 
+				code1 = (short) (a * 64);
+			if (HASH[a] == char2)
+				code2 = a;
+			a++;
+		}
+		return (short) (code1 + code2);
+	}
+	
 	public static int get_ordinal(char c) 
 	{
 		if (c >= 'a' && c <= 'z') 
