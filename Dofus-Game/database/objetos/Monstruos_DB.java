@@ -5,7 +5,7 @@ import java.util.TreeMap;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
-import objetos.entidades.monstruos.MonstruosModelos;
+import objetos.entidades.monstruos.MonstruosModelo;
 import objetos.entidades.monstruos.MonstruosRaza;
 import objetos.entidades.monstruos.MonstruosSuperRaza;
 
@@ -48,7 +48,7 @@ public class Monstruos_DB extends DatabaseManager
 					grados.put((byte) 10, query.get_Rs().getString(15));
 				
 				//id(1), nombre(2), gfx(3), raza(4), alineacion(5), grado_1(6), grado_2(7), grado_3(8), grado_4(9), grado_5(10), grado_6(11), grado_7(12), grado_8(13), grado_9(14), grado_10(15), colores(16)
-				new MonstruosModelos(query.get_Rs().getInt(1), query.get_Rs().getInt(3), query.get_Rs().getByte(4), query.get_Rs().getByte(5), grados, query.get_Rs().getString(16));
+				new MonstruosModelo(query.get_Rs().getInt(1), query.get_Rs().getInt(3), query.get_Rs().getByte(4), query.get_Rs().getByte(5), grados, query.get_Rs().getString(16));
 			}
 			cerrar(query);
 		}

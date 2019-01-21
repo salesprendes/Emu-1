@@ -35,13 +35,11 @@ final public class Nodo implements Comparable<Nodo>
 
 	public int compareTo(Nodo comparacion)
 	{
-		Cuentas cuenta_comparacion = comparacion.get_Cuenta();
-		
-		if(cuenta.es_Cuenta_Abonada(cuenta.get_Id()) && !cuenta_comparacion.es_Cuenta_Abonada(cuenta_comparacion.get_Id()))
+		if(cuenta.get_Fecha_abono() > 0 && !(comparacion.get_Cuenta().get_Fecha_abono() > 0))
 		{
 			return -1;
 		}
-		else if(!cuenta.es_Cuenta_Abonada(cuenta.get_Id()) && cuenta_comparacion.es_Cuenta_Abonada(cuenta_comparacion.get_Id()))
+		else if(!(cuenta.get_Fecha_abono() > 0) && comparacion.get_Cuenta().get_Fecha_abono() > 0)
 		{
 			return 1;
 		}

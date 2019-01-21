@@ -1,5 +1,6 @@
 package objetos.cuentas;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,6 +22,7 @@ final public class Cuentas
 	private final Map<Integer, Personajes> personajes = new TreeMap<Integer, Personajes>();
 	private Nodo nodo_fila;
 	
+	final static SimpleDateFormat formato_fecha = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_cargadas = new ConcurrentHashMap<Integer, Cuentas>();
 
 	public Cuentas(final int _id, final String _apodo, final String _uid, final String _ip, final byte _rango_cuenta, final byte _comunidad, boolean _baneado)
@@ -41,15 +43,10 @@ final public class Cuentas
 		return id;
 	}
 	
-	public long get_Fecha_abono(final int cuenta_id)
+	public long get_Fecha_abono()
 	{
-		long tiempo_abono = Main.get_Database().get_Cuentas().get_Cuenta_Abono(cuenta_id);
+		long tiempo_abono = Main.get_Database().get_Cuentas().get_Abono(id);
 		return tiempo_abono <= System.currentTimeMillis() ? 0 : tiempo_abono - System.currentTimeMillis();
-	}
-	
-	public boolean es_Cuenta_Abonada(final int cuenta_id)
-	{
-		return Main.get_Database().get_Cuentas().get_Cuenta_Abono(cuenta_id) >= System.currentTimeMillis();
 	}
 	
 	public boolean get_Esta_Baneado() 

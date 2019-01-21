@@ -29,7 +29,7 @@ final public class Fila
 				NodoFila nodo = new NodoFila(cuenta, posicion);
 				fila.add(nodo);
 				cuenta.set_Nodo_fila(nodo);
-				if(cuenta.es_Cuenta_Abonada())
+				if(cuenta.get_Tiempo_Abono() > 0)
 				{
 					total_abonados++;
 				}
@@ -71,14 +71,11 @@ final public class Fila
 					fila.wait();
 				}
 				nodo = fila.peek();
-				if(nodo.get_Cuenta().es_Cuenta_Abonada())
-				{
+				Cuentas cuenta = nodo.get_Cuenta();
+				if(cuenta.get_Tiempo_Abono() > 0)
 					total_abonados--;
-				}
 				else
-				{
 					total_no_abonados--;
-				}
 				nodo.get_Cuenta().set_Nodo_fila(null);
 			}
 			catch (InterruptedException e){}
@@ -106,7 +103,7 @@ final public class Fila
 		{
 			fila.forEach(f -> 
 			{
-				f.get_Cuenta().get_Login_respuesta().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+				f.get_Cuenta().get_Login_respuesta().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().get_Tiempo_Abono() > 0));
 			});
 		}
 	}
@@ -118,7 +115,7 @@ final public class Fila
 			fila.forEach(f ->
 			{
 				f.set_Posicion(f.get_Posicion() - 1);
-				f.get_Cuenta().get_Login_respuesta().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada()));
+				f.get_Cuenta().get_Login_respuesta().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().get_Tiempo_Abono() > 0));
 			});
 		}
 	}

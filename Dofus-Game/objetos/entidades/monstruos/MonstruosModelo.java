@@ -5,7 +5,7 @@ import java.util.Map;
 
 import objetos.entidades.alineamientos.AlineamientosModelo;
 
-public class MonstruosModelos
+public class MonstruosModelo
 {
 	private final int id, gfx;
 	private final MonstruosRaza raza;
@@ -13,9 +13,9 @@ public class MonstruosModelos
 	private final MonstruoGradoModelo[] grados;
 	private final String colores;
 
-	public static Map<Integer, MonstruosModelos> monstruos_modelo_cargados = new HashMap<Integer, MonstruosModelos>();
+	public static Map<Integer, MonstruosModelo> monstruos_modelo_cargados = new HashMap<Integer, MonstruosModelo>();
 
-	public MonstruosModelos(final int _id, final int _gfx, final byte _raza, final byte _alineamiento, final Map<Byte, String> _grados, final String _colores)
+	public MonstruosModelo(final int _id, final int _gfx, final byte _raza, final byte _alineamiento, final Map<Byte, String> _grados, final String _colores)
 	{
 		id = _id;
 		gfx = _gfx;
@@ -71,12 +71,12 @@ public class MonstruosModelos
 		return colores;
 	}
 
-	public static Map<Integer, MonstruosModelos> get_Monstruos_Modelo_Cargados()
+	public static Map<Integer, MonstruosModelo> get_Monstruos_Modelo_Cargados()
 	{
 		return monstruos_modelo_cargados;
 	}
 
-	public static MonstruosModelos get_Monstruos_Modelo_Cargados(final int monstro_modelo_id)
+	public static MonstruosModelo get_Monstruos_Modelo_Cargados(final int monstro_modelo_id)
 	{
 		return monstruos_modelo_cargados.get(monstro_modelo_id);
 	}

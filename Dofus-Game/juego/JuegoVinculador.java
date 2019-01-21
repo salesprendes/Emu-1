@@ -103,7 +103,7 @@ final public class JuegoVinculador extends Thread implements Runnable
 					case 'N'://C|N|idcuenta ---> nueva conexion cargar cuenta
 						if(cuenta == null)//nueva cuenta
 						{
-							database.get_Cuentas().get_Cargar_Cuenta_Id(id_cuenta);
+							database.get_Cuentas().get_Cargar_Por_Id(id_cuenta);
 							cuenta = Cuentas.get_Cuenta_Cargada(id_cuenta);
 						}
 						

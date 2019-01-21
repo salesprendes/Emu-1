@@ -76,7 +76,7 @@ final public class FilaServer extends Thread implements Runnable
 	private String get_Paquete_Lista_Personajes(Cuentas cuenta)
 	{
 		final StringBuilder paquete = new StringBuilder();
-		paquete.append("ALK" + cuenta.get_Fecha_abono(cuenta.get_Id()) + "|").append(cuenta.get_Personajes().size());
+		paquete.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size());
 		cuenta.get_Personajes().forEach(personaje -> paquete.append(personaje.get_Paquete_Alk()));
 		
 		return paquete.toString();

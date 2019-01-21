@@ -1,7 +1,6 @@
 package database.objetos;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +18,7 @@ public class Cuentas_DB extends DatabaseManager
 		super(database_conexion);
 	}
 	
-	final static SimpleDateFormat formato_fecha = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss"); 
-	
-	public Cuentas cargar_Cuenta(final String nombre_usuario)
+	public Cuentas cargar_Por_Nombre_Usuario(final String nombre_usuario)
 	{
 		Cuentas cuenta = null;
 		try
@@ -29,7 +26,7 @@ public class Cuentas_DB extends DatabaseManager
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
 			
 			if(query.get_Rs().next())
-				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(7), formato_fecha.parse(query.get_Rs().getString(8)).getTime(), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
+				cuenta = new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(7), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
 			cerrar(query);
 		}
 		catch (final Exception e){}
@@ -52,11 +49,11 @@ public class Cuentas_DB extends DatabaseManager
 		return id;
 	}
 	
-	public String get_Obtener_Cuenta_Campo_String(final String campo, final String nombre_usuario)
+	public String get_Obtener_Cuenta_Campo_String(final String campo, final int cuenta_id)
 	{
 		try
 		{
-			final Ejecucion_Query query = ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE usuario = '" + nombre_usuario + "';");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT " + campo + " FROM cuentas WHERE id = " + cuenta_id + ";");
 			
 			String valor = null;
 			if(query.get_Rs().next())
@@ -147,7 +144,7 @@ public class Cuentas_DB extends DatabaseManager
 			while(query.get_Rs().next())
 			{
 				//id(1), usuario(2), contraseña(3), apodo(4), uid(5), ip(6), rango_cuenta(7), tiempo_abono(8), comunidad(9), baneado(10)
-				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(7), formato_fecha.parse(query.get_Rs().getString(8)).getTime(), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
+				new Cuentas(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getString(3), query.get_Rs().getString(4), query.get_Rs().getByte(7), query.get_Rs().getByte(9), query.get_Rs().getBoolean(10));
 			}
 			cerrar(query);
 		}
@@ -171,10 +168,8 @@ public class Cuentas_DB extends DatabaseManager
 					array.add(id);	
 					mapeo.put(server, array);
 				} 
-				else 
-				{
+				else
 					mapeo.get(server).add(id);
-				}
 			}
 			cerrar(query);
 		} 

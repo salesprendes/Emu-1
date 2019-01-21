@@ -35,11 +35,11 @@ final public class NodoFila implements Comparable<NodoFila>
 
 	public int compareTo(NodoFila comparacion)
 	{
-		if(cuenta.es_Cuenta_Abonada() && !comparacion.get_Cuenta().es_Cuenta_Abonada())
+		if(cuenta.get_Tiempo_Abono() > 0 && !(comparacion.get_Cuenta().get_Tiempo_Abono() > 0))
 		{
 			return -1;
 		}
-		else if(!cuenta.es_Cuenta_Abonada() && comparacion.get_Cuenta().es_Cuenta_Abonada())
+		else if(!(cuenta.get_Tiempo_Abono() > 0) && comparacion.get_Cuenta().get_Tiempo_Abono() > 0)
 		{
 			return 1;
 		}

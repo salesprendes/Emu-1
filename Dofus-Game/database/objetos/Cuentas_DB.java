@@ -17,7 +17,7 @@ public class Cuentas_DB extends DatabaseManager
 		super(database_conexion);
 	}
 
-	public void get_Cargar_Todas_Cuentas()
+	public void get_Cargar_Todas()
 	{
 		try
 		{
@@ -33,7 +33,7 @@ public class Cuentas_DB extends DatabaseManager
 		catch (final Exception e){}
 	}
 
-	public Cuentas get_Cargar_Cuenta_Id(final int id_cuenta)
+	public Cuentas get_Cargar_Por_Id(final int id_cuenta)
 	{
 		Cuentas cuenta = null;
 		try
@@ -50,7 +50,7 @@ public class Cuentas_DB extends DatabaseManager
 		return cuenta;
 	}
 	
-	public long get_Cuenta_Abono(final int id_cuenta)
+	public long get_Abono(final int id_cuenta)
 	{
 		long tiempo = 0;
 		try

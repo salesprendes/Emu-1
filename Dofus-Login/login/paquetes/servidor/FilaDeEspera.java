@@ -36,7 +36,7 @@ public class FilaDeEspera implements GestorPaquetes
 			}
 			else
 			{
-				jugador.enviar_Paquete("Af0|0|0|" + (cuenta.es_Cuenta_Abonada() ? 1 : 0) +"|-1");
+				jugador.enviar_Paquete("Af0|0|0|" + (cuenta.get_Tiempo_Abono() > 0 ? 1 : 0) +"|-1");
 				System.out.println("la cuenta " + cuenta.get_Usuario() + " ha enviado af sin tener que haber entrado en la fila de espera");
 			}
 		}

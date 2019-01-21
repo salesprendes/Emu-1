@@ -38,7 +38,7 @@ public class ListaPersonajes implements GestorPaquetes
 				else
 				{
 					final StringBuilder paquete_enviado = new StringBuilder();
-					paquete_enviado.append("ALK" + cuenta.get_Fecha_abono(cuenta.get_Id()) + "|").append(cuenta.get_Personajes().size());
+					paquete_enviado.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size());
 					cuenta.get_Personajes().forEach(personaje -> paquete_enviado.append(personaje.get_Paquete_Alk()));
 
 					socket.enviar_Paquete(paquete_enviado.toString());

@@ -23,7 +23,7 @@ public class ServidorSeleccionado implements GestorPaquetes
 			{
 				if(servidor.get_Estado() == Estados_Servidor.CONECTADO)
 				{
-					if(servidor.es_Servidor_Vip() && !cuenta.es_Cuenta_Abonada())
+					if(servidor.es_Servidor_Vip() && !(cuenta.get_Tiempo_Abono() > 0))
 					{
 						socket.enviar_Paquete(Servidores.get_Obtener_Servidores_Disponibles());
 						return;

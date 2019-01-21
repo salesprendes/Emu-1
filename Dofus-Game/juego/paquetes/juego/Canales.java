@@ -23,7 +23,7 @@ public class Canales implements GestorPaquetes
 						tipo_canal = TipoCanales.get_Canal().get(canal);
 						if(!canal.isEmpty() && TipoCanales.get_Canal().containsValue(tipo_canal))
 						{
-							if((tipo_canal != TipoCanales.ADMINISTRADOR || tipo_canal != TipoCanales.MEETIC) && socket.get_Cuenta().get_Rango_cuenta() < 1)
+							if(tipo_canal != TipoCanales.ADMINISTRADOR || tipo_canal != TipoCanales.MEETIC)
 								socket.get_Personaje().get_Agregar_Canal(tipo_canal);
 						}
 						
@@ -36,7 +36,7 @@ public class Canales implements GestorPaquetes
 						tipo_canal = TipoCanales.get_Canal().get(canal);
 						if(!canal.isEmpty() && TipoCanales.get_Canal().containsValue(tipo_canal))
 						{
-							if((tipo_canal != TipoCanales.ADMINISTRADOR || tipo_canal != TipoCanales.MEETIC) && socket.get_Cuenta().get_Rango_cuenta() < 1)
+							if(tipo_canal != TipoCanales.ADMINISTRADOR || tipo_canal != TipoCanales.MEETIC)
 								socket.get_Personaje().get_Eliminar_Canal(tipo_canal);
 						}
 					}

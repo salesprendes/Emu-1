@@ -100,7 +100,7 @@ final public class Servidores
         	paquete_servidores.append(servidor.get_Id()).append(';');
         	paquete_servidores.append(servidor.get_Estado().ordinal()).append(';');
         	paquete_servidores.append(cuenta.get_Rango_cuenta() > 0 ? Poblacion.RECOMENDADA.ordinal() : servidor.get_Poblacion().ordinal()).append(';');
-        	paquete_servidores.append(cuenta.get_Rango_cuenta() > 0 ? 1 : servidor.es_Servidor_Vip() ? (cuenta.es_Cuenta_Abonada() ? 1 : 0) : 1);
+        	paquete_servidores.append(cuenta.get_Rango_cuenta() > 0 ? 1 : servidor.es_Servidor_Vip() ? (cuenta.get_Tiempo_Abono() > 0 ? 1 : 0) : 1);
         });
         return paquete_servidores.toString();
     }

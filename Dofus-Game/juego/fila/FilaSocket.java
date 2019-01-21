@@ -29,7 +29,7 @@ final public class FilaSocket
 				Nodo nodo = new Nodo(cuenta, posicion);
 				fila.add(nodo);
 				cuenta.set_Nodo_fila(nodo);
-				if(cuenta.es_Cuenta_Abonada(cuenta.get_Id()))
+				if(cuenta.get_Fecha_abono() > 0)
 					total_abonados++;
 				else
 					total_no_abonados++;
@@ -66,8 +66,7 @@ final public class FilaSocket
 					fila.wait();
 				}
 				nodo_cuenta = fila.peek();
-				Cuentas cuenta = nodo_cuenta.get_Cuenta();
-				if(cuenta.es_Cuenta_Abonada(cuenta.get_Id()))
+				if(nodo_cuenta.get_Cuenta().get_Fecha_abono() > 0)
 				{
 					total_abonados--;
 				}
@@ -99,7 +98,7 @@ final public class FilaSocket
 	{
 		synchronized(fila)
 		{
-			fila.forEach(f -> f.get_Cuenta().get_Juego_socket().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada(f.get_Cuenta().get_Id()))));
+			fila.forEach(f -> f.get_Cuenta().get_Juego_socket().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().get_Fecha_abono() > 0)));
 		}
 	}
 
@@ -110,7 +109,7 @@ final public class FilaSocket
 			fila.forEach(f ->
 			{
 				f.set_Posicion(f.get_Posicion() - 1);
-				f.get_Cuenta().get_Juego_socket().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().es_Cuenta_Abonada(f.get_Cuenta().get_Id())));
+				f.get_Cuenta().get_Juego_socket().enviar_Paquete(get_Paquete_Fila_Espera(f.get_Posicion(), f.get_Cuenta().get_Fecha_abono() > 0));
 			});
 		}
 	}

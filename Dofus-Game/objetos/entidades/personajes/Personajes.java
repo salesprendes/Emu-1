@@ -534,7 +534,7 @@ public class Personajes implements Entidades
 			Celdas celda = mapa_destino.get_Celda(celda_destino_id);
 			if(celda != null)
 			{
-				if(mapa_destino.get_Sub_area().get_Area().get_Necesita_Abono() && !cuenta.es_Cuenta_Abonada(cuenta.get_Id()))
+				if(mapa_destino.get_Sub_area().get_Area().get_Necesita_Abono() && !(cuenta.get_Fecha_abono() > 0))
 				{
 					cuenta.get_Juego_socket().enviar_Paquete("BP+10");
 					cuenta.get_Juego_socket().enviar_Paquete("Im131");

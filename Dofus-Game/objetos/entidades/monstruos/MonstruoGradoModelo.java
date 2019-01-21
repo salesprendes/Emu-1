@@ -10,7 +10,7 @@ public class MonstruoGradoModelo
 {
 	private final byte grado;
 	private short nivel;
-	private final MonstruosModelos monstruo_modelo;
+	private final MonstruosModelo monstruo_modelo;
 	private final Stats stats;
 	
 	private static int[] stats_ordenados =
@@ -21,7 +21,7 @@ public class MonstruoGradoModelo
 		TipoStats.AGREGAR_PA, TipoStats.AGREGAR_PM
 	};
 	
-	public MonstruoGradoModelo(final byte _grado, final String _stats, final MonstruosModelos _monstruo_modelo)
+	public MonstruoGradoModelo(final byte _grado, final String _stats, final MonstruosModelo _monstruo_modelo)
 	{
 		grado = _grado;
 		monstruo_modelo = _monstruo_modelo;
@@ -60,5 +60,21 @@ public class MonstruoGradoModelo
 			map_stats.put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
 
 		stats = new Stats(map_stats);
+		map_stats.clear();
+	}
+
+	public byte get_Grado()
+	{
+		return grado;
+	}
+
+	public MonstruosModelo get_Monstruo_modelo()
+	{
+		return monstruo_modelo;
+	}
+
+	public Stats get_Stats()
+	{
+		return stats;
 	}
 }

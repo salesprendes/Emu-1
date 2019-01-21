@@ -14,12 +14,12 @@ public class VerificarPassword
 	{
 		if(paquete.length() > 3 || paquete.substring(0, 2).equalsIgnoreCase("#1"))
 		{
-			/** puntero que extrae la dirección de memoria del hashmap **/
+			/** "puntero" que extrae la dirección de memoria del hashmap **/
 			Cuentas cuenta = Cuentas.get_Cuentas_Cargadas().get(Main.get_Database().get_Cuentas().get_Obtener_Id_Cuenta(socket.get_Cuenta_paquete()));
 
 			if(cuenta == null)//Si el puntero es nulo no esta conectado
 			{
-				cuenta = Main.get_Database().get_Cuentas().cargar_Cuenta(socket.get_Cuenta_paquete());
+				cuenta = Main.get_Database().get_Cuentas().cargar_Por_Nombre_Usuario(socket.get_Cuenta_paquete());
 				
 				if(cuenta == null)
 				{
@@ -30,7 +30,7 @@ public class VerificarPassword
 			}
 			socket.set_Cuenta(cuenta);
 			
-			if(paquete.equals(Formulas.get_Desencriptar_Password(socket.get_Hash_key(), Main.get_Database().get_Cuentas().get_Obtener_Cuenta_Campo_String("password", socket.get_Cuenta_paquete()))))
+			if(paquete.equals(Formulas.get_Desencriptar_Password(socket.get_Hash_key(), Main.get_Database().get_Cuentas().get_Obtener_Cuenta_Campo_String("password", socket.get_Cuenta().get_Id()))))
 			{
 				Servidores.get_Servidores().values().forEach(x-> 
 				{
@@ -53,7 +53,6 @@ public class VerificarPassword
 			{
 				socket.enviar_Paquete(ErroresLogin.CUENTA_PASSWORD_INCORRECTA.toString());
 				socket.cerrar_Conexion();
-				return;
 			}
 		}
 		else

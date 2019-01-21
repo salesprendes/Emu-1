@@ -1,32 +1,34 @@
 package objetos;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ConcurrentHashMap;
 
 import login.LoginSocket;
 import login.fila.NodoFila;
+import main.Main;
 
 final public class Cuentas 
 {
 	private final int id;
 	private final String usuario, password;
 	private String apodo;
-	private long tiempo_abono;
 	private LoginSocket login_respuesta = null;
 	private boolean cuenta_baneada = false, fila_espera = false, creando_apodo = false;
 	private final byte rango_cuenta;
 	private final Comunidades comunidad;
 	private NodoFila nodo_fila;
 	
+	final static SimpleDateFormat formato_fecha = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_cargadas = new ConcurrentHashMap<Integer, Cuentas>();
 	
-	public Cuentas(final int _id, final String _usuario, final String _password, String _apodo, final byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
+	public Cuentas(final int _id, final String _usuario, final String _password, String _apodo, final byte _rango_cuenta, final byte _comunidad, boolean _baneado)
 	{
 		id = _id;
 		usuario = _usuario;
 		password = _password;
 		apodo = _apodo;
 		rango_cuenta = _rango_cuenta;
-		tiempo_abono = _tiempo_abono;
 		comunidad = Comunidades.get_Comunidades().get(_comunidad);
 		cuenta_baneada = _baneado;
 		
@@ -50,12 +52,13 @@ final public class Cuentas
 	
 	public long get_Tiempo_Abono()
 	{
+		long tiempo_abono = 0;
+		try 
+		{
+			tiempo_abono = formato_fecha.parse(Main.get_Database().get_Cuentas().get_Obtener_Cuenta_Campo_String("abono", id)).getTime();
+		} 
+		catch (ParseException e){}
 		return tiempo_abono <= System.currentTimeMillis() ? 0 : tiempo_abono - System.currentTimeMillis();
-	}
-	
-	public boolean es_Cuenta_Abonada()
-	{
-		return tiempo_abono >= System.currentTimeMillis();
 	}
 	
 	public byte get_Rango_cuenta() 
@@ -86,11 +89,6 @@ final public class Cuentas
 	public void set_Apodo(String _apodo) 
 	{
 		apodo = _apodo;
-	}
-
-	public void set_Tiempo_Abono(long _tiempo_abono)
-	{
-		tiempo_abono = _tiempo_abono;
 	}
 	
 	public void set_Login_respuesta(LoginSocket _login_respuesta)

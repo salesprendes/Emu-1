@@ -8,7 +8,7 @@ import main.consola.Consola;
 import objetos.Experiencia;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.alineamientos.AlineamientosModelo;
-import objetos.entidades.monstruos.MonstruosModelos;
+import objetos.entidades.monstruos.MonstruosModelo;
 import objetos.entidades.monstruos.MonstruosRaza;
 import objetos.entidades.monstruos.MonstruosSuperRaza;
 import objetos.entidades.personajes.Dones;
@@ -98,7 +98,7 @@ public class Main
 	public static void get_Cargar_Juego()
 	{
 		Consola.print("Cargando cuentas: ");
-		database.get_Cuentas().get_Cargar_Todas_Cuentas();
+		database.get_Cuentas().get_Cargar_Todas();
 		Consola.println(Cuentas.get_Cuentas_Cargadas().size() + " cuentas cargadas");
 		
 		Consola.print("Cargando las super-areas: ");
@@ -157,7 +157,7 @@ public class Main
 		
 		Consola.print("Cargando monstruo modelo: ");
 		database.get_Monstruos().get_Cargar_Todos_Monstruos();
-		Consola.println(MonstruosModelos.get_Monstruos_Modelo_Cargados().size() + " monstruo modelo cargados");
+		Consola.println(MonstruosModelo.get_Monstruos_Modelo_Cargados().size() + " monstruo modelo cargados");
 	}
 	
 	public static void cerrar_Emulador()
