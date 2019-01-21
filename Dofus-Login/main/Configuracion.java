@@ -17,7 +17,9 @@ import main.consola.Consola;
 public class Configuracion 
 {
 	private static Properties propiedades;
-	private static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
+	private final static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
+	private final static String nombre_archivo = "conf-login.txt";
+	private static File archivo_configuracion = new File(nombre_archivo);
 	
 	/** Puertos **/
 	public static int PUERTO_LOGIN = 443, PUERTO_COMUNICADOR = 489;
@@ -37,10 +39,10 @@ public class Configuracion
 	{
 		try 
 		{
-			if(new File("conf-login.txt").exists())
+			if(archivo_configuracion.exists())
 			{
 				propiedades = new Properties();
-				propiedades.load(new FileInputStream("conf-login.txt"));
+				propiedades.load(new FileInputStream(nombre_archivo));
 				
 				//Puertos
 				PUERTO_LOGIN		=	Integer.valueOf(propiedades.getProperty("PUERTO_LOGIN"));
@@ -63,45 +65,52 @@ public class Configuracion
 				
 				propiedades.clear();
 				propiedades = null;
+				return true;
 			}
-			else
-			{
-				crear_Archivo_Configuracion();
-			}
-			return true;
 		}
 		catch (final IOException e) 
 		{
 			Consola.println("Error en la configuracion: " + e.getMessage());
 		}
-		System.exit(0);
 		return false;
 	}
 	
-	private static void crear_Archivo_Configuracion() throws IOException
+	public static void crear_Archivo_Configuracion()
 	{
-		propiedades = new Properties();
-		
-		propiedades.setProperty("PUERTO_LOGIN", Integer.toString(PUERTO_LOGIN));
-		propiedades.setProperty("PUERTO_COMUNICADOR", Integer.toString(PUERTO_COMUNICADOR));
-		
-		propiedades.setProperty("DATABASE_IP_LOGIN", DATABASE_IP_LOGIN);
-		propiedades.setProperty("DATABASE_PUERTO_LOGIN", Integer.toString(DATABASE_PUERTO_LOGIN));
-		propiedades.setProperty("DATABASE_USUARIO_LOGIN", DATABASE_USUARIO_LOGIN);
-		propiedades.setProperty("DATABASE_PASSWORD_LOGIN", DATABASE_PASSWORD_LOGIN);
-		propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
-		
-		propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
-		
-		propiedades.setProperty("POBLACION_RECOMENDADA", Short.toString(POBLACION_RECOMENDADA));
-		propiedades.setProperty("POBLACION_MEDIA_ALTA", Short.toString(POBLACION_MEDIA_ALTA));
-		propiedades.setProperty("POBLACION_ALTA", Short.toString(POBLACION_ALTA));
-		propiedades.setProperty("POBLACION_BAJA", Short.toString(POBLACION_BAJA));
-		propiedades.setProperty("POBLACION_COMPLETA", Short.toString(POBLACION_COMPLETA));
-		
-		propiedades.store(new FileOutputStream(new File("conf-login.txt")), "Archivo de configuración");
-		propiedades.clear();
-		propiedades = null;
+		try 
+		{
+			propiedades = new Properties();
+			
+			propiedades.setProperty("PUERTO_LOGIN", Integer.toString(PUERTO_LOGIN));
+			propiedades.setProperty("PUERTO_COMUNICADOR", Integer.toString(PUERTO_COMUNICADOR));
+			
+			propiedades.setProperty("DATABASE_IP_LOGIN", DATABASE_IP_LOGIN);
+			propiedades.setProperty("DATABASE_PUERTO_LOGIN", Integer.toString(DATABASE_PUERTO_LOGIN));
+			propiedades.setProperty("DATABASE_USUARIO_LOGIN", DATABASE_USUARIO_LOGIN);
+			propiedades.setProperty("DATABASE_PASSWORD_LOGIN", DATABASE_PASSWORD_LOGIN);
+			propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
+			
+			propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
+			
+			propiedades.setProperty("POBLACION_RECOMENDADA", Short.toString(POBLACION_RECOMENDADA));
+			propiedades.setProperty("POBLACION_MEDIA_ALTA", Short.toString(POBLACION_MEDIA_ALTA));
+			propiedades.setProperty("POBLACION_ALTA", Short.toString(POBLACION_ALTA));
+			propiedades.setProperty("POBLACION_BAJA", Short.toString(POBLACION_BAJA));
+			propiedades.setProperty("POBLACION_COMPLETA", Short.toString(POBLACION_COMPLETA));
+			
+			propiedades.store(new FileOutputStream(archivo_configuracion), "Archivo de configuración");
+			propiedades.clear();
+			propiedades = null;
+		}
+		catch (final IOException e) 
+		{
+			Consola.println("Error en la configuracion por defecto: " + e.getMessage());
+		}
+	}
+	
+	public static File get_Archivo_configuracion()
+	{
+		return archivo_configuracion;
 	}
 	
 	public static void cargar_Paquetes()

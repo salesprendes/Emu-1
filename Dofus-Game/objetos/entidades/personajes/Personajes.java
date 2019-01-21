@@ -11,8 +11,6 @@ import main.consola.Consola;
 import objetos.Experiencia;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.Entidades;
-import objetos.entidades.alineamientos.Alineamientos;
-import objetos.entidades.alineamientos.Especialidades;
 import objetos.mapas.Celdas;
 import objetos.mapas.Mapas;
 
@@ -536,7 +534,7 @@ public class Personajes implements Entidades
 			Celdas celda = mapa_destino.get_Celda(celda_destino_id);
 			if(celda != null)
 			{
-				if(mapa_destino.get_Sub_area().get_Area().get_Necesita_Abono() && !cuenta.es_Cuenta_Abonada())
+				if(mapa_destino.get_Sub_area().get_Area().get_Necesita_Abono() && !cuenta.es_Cuenta_Abonada(cuenta.get_Id()))
 				{
 					cuenta.get_Juego_socket().enviar_Paquete("BP+10");
 					cuenta.get_Juego_socket().enviar_Paquete("Im131");

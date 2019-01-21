@@ -6,15 +6,14 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.objetos.Alineamientos_DB;
-import database.objetos.Areas_DB;
 import database.objetos.Cuentas_DB;
 import database.objetos.Experiencia_DB;
 import database.objetos.Items_DB;
 import database.objetos.Mapas_DB;
+import database.objetos.Monstruos_DB;
 import database.objetos.Personajes_DB;
 import database.objetos.Razas_DB;
 import database.objetos.SubAreas_DB;
-import database.objetos.SuperAreas_DB;
 import main.Configuracion;
 
 public class ConexionPool 
@@ -25,27 +24,25 @@ public class ConexionPool
 	//objetos
 	private Cuentas_DB cuentas;
 	private Personajes_DB personajes;
-	private SuperAreas_DB super_areas;
-	private Areas_DB areas;
 	private SubAreas_DB sub_areas;
 	private Mapas_DB mapas;
 	private Razas_DB razas;
 	private Alineamientos_DB alineamientos;
 	private Experiencia_DB experiencia;
 	private Items_DB items;
+	private Monstruos_DB monstruos;
 	
 	public void iniciar_Database() 
 	{
 		cuentas = new Cuentas_DB(login_database);
 		personajes = new Personajes_DB(login_database);
-		super_areas = new SuperAreas_DB(game_database);
-		areas = new Areas_DB(game_database);
 		sub_areas = new SubAreas_DB(game_database);
 		mapas = new Mapas_DB(game_database);
 		razas = new Razas_DB(game_database);
 		alineamientos = new Alineamientos_DB(game_database);
 		experiencia = new Experiencia_DB(game_database);
 		items = new Items_DB(game_database);
+		monstruos = new Monstruos_DB(game_database);
 	}
 	
 	public Cuentas_DB get_Cuentas()
@@ -56,16 +53,6 @@ public class ConexionPool
 	public Personajes_DB get_Personajes()
 	{
 		return personajes;
-	}
-
-	public SuperAreas_DB get_Super_areas() 
-	{
-		return super_areas;
-	}
-
-	public Areas_DB get_Areas()
-	{
-		return areas;
 	}
 
 	public Alineamientos_DB get_Alineamientos()
@@ -96,6 +83,11 @@ public class ConexionPool
 	public Items_DB get_Items()
 	{
 		return items;
+	}
+
+	public Monstruos_DB get_Monstruos()
+	{
+		return monstruos;
 	}
 
 	public void cargar_Configuracion() 

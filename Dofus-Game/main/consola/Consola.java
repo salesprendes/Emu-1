@@ -6,10 +6,11 @@ final public class Consola extends Thread implements Runnable
 {
 	public Consola()
 	{
-		setName("Consola-Comandos");
 		println("======================================================");
 		println("Administración del login del emulador");
 		println("Para visualizar los comandos introducir: ?");
+		
+		setName("Consola-Comandos");
 		start();
 	}
 	

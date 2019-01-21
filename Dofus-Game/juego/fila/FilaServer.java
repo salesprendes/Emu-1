@@ -3,7 +3,7 @@ package juego.fila;
 import juego.JuegoSocket;
 import juego.enums.EstadosJuego;
 import main.Configuracion;
-import main.Estados;
+import main.EstadosEmulador;
 import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
@@ -25,7 +25,7 @@ final public class FilaServer extends Thread implements Runnable
 	{
 		synchronized(fila)
 		{
-			while(Main.estado_emulador != Estados.APAGADO && !isInterrupted())
+			while(Main.estado_emulador != EstadosEmulador.APAGADO && !isInterrupted())
 			{
 				nodo_fila = fila.eliminar_Cuenta_Fila_Espera();
 				try
@@ -76,7 +76,7 @@ final public class FilaServer extends Thread implements Runnable
 	private String get_Paquete_Lista_Personajes(Cuentas cuenta)
 	{
 		final StringBuilder paquete = new StringBuilder();
-		paquete.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size());
+		paquete.append("ALK" + cuenta.get_Fecha_abono(cuenta.get_Id()) + "|").append(cuenta.get_Personajes().size());
 		cuenta.get_Personajes().forEach(personaje -> paquete.append(personaje.get_Paquete_Alk()));
 		
 		return paquete.toString();

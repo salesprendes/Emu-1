@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 import database.ConexionPool;
 import main.Configuracion;
-import main.Estados;
+import main.EstadosEmulador;
 import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
@@ -57,7 +57,7 @@ final public class JuegoVinculador extends Thread implements Runnable
 				enviar_Paquete("S|C|" + Configuracion.SERVIDOR_ID);
 				final StringBuilder paquete = new StringBuilder();
 				
-				while(paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && !isInterrupted() && socket.isConnected())
+				while(paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != EstadosEmulador.APAGADO && !isInterrupted() && socket.isConnected())
 				{
 					controlador_Paquetes(paquete.toString());
 
@@ -73,7 +73,7 @@ final public class JuegoVinculador extends Thread implements Runnable
 			}
 			finally
 			{
-				Main.estado_emulador = Estados.VINCULANDO;
+				Main.estado_emulador = EstadosEmulador.VINCULANDO;
 				Main.esta_vinculado = false;
 				cerrar_Conexion();
 				Main.Vincular_Login();

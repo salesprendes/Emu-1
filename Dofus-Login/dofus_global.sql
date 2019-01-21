@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 19/01/2019 01:11:35
+ Date: 21/01/2019 12:32:08
 */
 
 SET NAMES utf8mb4;
@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `comunidades`;
 CREATE TABLE `comunidades`  (
-  `id` tinyint(2) NOT NULL COMMENT '0: Francesa\r\n1: Internacional\r\n2: Inglesa\r\n3: Alemana\r\n4: Española\r\n6: Portuguesa\r\n7: Holandesa\r\n9: Italiana',
+  `id` tinyint(2) NOT NULL,
   `nombre` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
@@ -53,23 +53,24 @@ CREATE TABLE `cuentas`  (
   `apodo` varchar(30) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '' COMMENT 'Apodo visible para la cuenta',
   `uid` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `rango_cuenta` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0: Usuario\r\n1: Mod\r\n2: GM\r\n3: Admin',
-  `tiempo_abono` datetime(0) NOT NULL COMMENT 'Abono con fecha y tiempo para la cuenta',
+  `rango` tinyint(2) NOT NULL DEFAULT 0 COMMENT '0: Usuario\r\n1: Mod\r\n2: GM\r\n3: Admin',
+  `abono` datetime(0) NOT NULL COMMENT 'Abono con fecha y tiempo para la cuenta',
   `comunidad` tinyint(2) NOT NULL DEFAULT 4 COMMENT 'id de la comunidad',
   `baneado` bit(1) NOT NULL DEFAULT b'0' COMMENT '0: No baneado\r\n1: Baneado',
   `migracion` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `index_nombre_usuario`(`usuario`) USING BTREE,
-  INDEX `Relacion_Comunidad`(`comunidad`) USING BTREE,
-  CONSTRAINT `Relacion_Comunidad` FOREIGN KEY (`comunidad`) REFERENCES `comunidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `index_abono`(`abono`) USING BTREE,
+  INDEX `relacion_comunidad_cuentas`(`comunidad`) USING BTREE,
+  CONSTRAINT `relacion_comunidad_cuentas` FOREIGN KEY (`comunidad`) REFERENCES `comunidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cuentas
 -- ----------------------------
-INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2030-03-28 17:45:50', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2019-03-28 17:45:50', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 0);
 INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', '', '127.0.0.1', 4, '2018-03-28 17:46:37', 4, b'0', 0);
 
 -- ----------------------------
@@ -105,11 +106,11 @@ CREATE TABLE `personajes`  (
   `restricciones` tinyint(3) NOT NULL DEFAULT 8 COMMENT 'numero de las restricciones que tiene el personaje',
   `servidor_id` int(4) NOT NULL,
   PRIMARY KEY (`id`, `nombre`) USING BTREE,
-  INDEX `Referencia_cuenta`(`cuenta_id`) USING BTREE,
-  INDEX `Referencia_servidor`(`servidor_id`) USING BTREE,
   INDEX `id`(`id`) USING BTREE,
-  CONSTRAINT `Referencia_cuenta` FOREIGN KEY (`cuenta_id`) REFERENCES `cuentas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Referencia_servidor` FOREIGN KEY (`servidor_id`) REFERENCES `servidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `relacion_cuenta_personajes`(`cuenta_id`) USING BTREE,
+  INDEX `relacion_servidor_personajes`(`servidor_id`) USING BTREE,
+  CONSTRAINT `relacion_cuenta_personajes` FOREIGN KEY (`cuenta_id`) REFERENCES `cuentas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `relacion_servidor_personajes` FOREIGN KEY (`servidor_id`) REFERENCES `servidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -132,7 +133,8 @@ CREATE TABLE `personajes_alineamientos`  (
   `deshonor` int(11) NOT NULL DEFAULT 0 COMMENT 'deshonor del alineamiento',
   `activado` bit(1) NOT NULL DEFAULT b'0' COMMENT 'sirve para mostrar o ocultar las alas',
   PRIMARY KEY (`personaje`) USING BTREE,
-  CONSTRAINT `referencia_personajes` FOREIGN KEY (`personaje`) REFERENCES `personajes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `referencia_personajes_alineamientos`(`personaje`) USING BTREE,
+  CONSTRAINT `referencia_personajes_alineamientos` FOREIGN KEY (`personaje`) REFERENCES `personajes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -152,8 +154,8 @@ CREATE TABLE `personajes_items`  (
   `posicion_inventario` tinyint(3) NOT NULL,
   `stats` text CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   PRIMARY KEY (`id`, `personaje`) USING BTREE,
-  INDEX `referencia_personaje`(`personaje`) USING BTREE,
-  CONSTRAINT `referencia_personaje` FOREIGN KEY (`personaje`) REFERENCES `personajes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `relacion_personaje_items`(`personaje`) USING BTREE,
+  CONSTRAINT `relacion_personaje_items` FOREIGN KEY (`personaje`) REFERENCES `personajes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -166,15 +168,15 @@ INSERT INTO `personajes_items` VALUES (1, 1, 39, 1, -1, '');
 -- ----------------------------
 DROP TABLE IF EXISTS `servidores`;
 CREATE TABLE `servidores`  (
-  `id` int(4) NOT NULL DEFAULT 0 COMMENT 'Id del servidor',
-  `comunidad` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'Comunidad del servidor',
+  `id` int(4) NOT NULL COMMENT 'id del servidor',
+  `comunidad` tinyint(2) NOT NULL DEFAULT 4 COMMENT 'id de la comunidad',
   `poblacion` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'id de las plazas libres del servidor',
-  `abono_necesario` bit(1) NOT NULL DEFAULT b'0' COMMENT 'Solo cuentas con abono',
-  `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '' COMMENT 'ip del game',
-  `puerto` int(4) NOT NULL COMMENT 'puerto del game',
+  `abono_necesario` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: el servidor solo aceptada cuentas abonadas',
+  `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'ip del servidor de juego',
+  `puerto` int(5) NOT NULL COMMENT 'puerto del servidor de juego',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `Referencia_Comunidad`(`comunidad`) USING BTREE,
-  CONSTRAINT `Referencia_Comunidad` FOREIGN KEY (`comunidad`) REFERENCES `comunidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `relacion_comunidad_servidores`(`comunidad`) USING BTREE,
+  CONSTRAINT `relacion_comunidad_servidores` FOREIGN KEY (`comunidad`) REFERENCES `comunidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

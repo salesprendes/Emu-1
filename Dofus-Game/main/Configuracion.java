@@ -17,18 +17,16 @@ import main.consola.Consola;
 public class Configuracion 
 {
 	private static Properties propiedades;
-	private static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
-	
+	private final static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
+	private final static String nombre_archivo = "conf-game.txt";
+	private static File archivo_configuracion = new File(nombre_archivo);
+
 	/** Puertos **/
-	public static int SERVIDOR_ID = 601;//Eratz
-	
-	/** Puertos **/
-	public static int PUERTO_GAME = 5555;
-	public static int PUERTO_COMUNICADOR = 489;
+	public static int PUERTO_GAME = 5555, PUERTO_COMUNICADOR = 489;
 	
 	/** ACCESO SERVIDOR **/
 	public static boolean ACTIVAR_FILA_DE_ESPERA = true;
-	public static int MAXIMOS_FILA_ESPERA = 100;
+	public static int MAXIMOS_FILA_ESPERA = 100, SERVIDOR_ID = 601;
 	public static short PLAZAS_SERVIDOR = 1000;
 	public static byte TIPO_COMUNIDAD = 4;
 	
@@ -50,10 +48,10 @@ public class Configuracion
 	{
 		try 
 		{
-			if(new File("conf-game.txt").exists())
+			if(archivo_configuracion.exists())
 			{
 				propiedades = new Properties();
-				propiedades.load(new FileInputStream("conf-game.txt"));
+				propiedades.load(new FileInputStream(nombre_archivo));
 				
 				//Puertos
 				PUERTO_GAME		=	Integer.valueOf(propiedades.getProperty("PUERTO_GAME"));
@@ -80,52 +78,59 @@ public class Configuracion
 				
 				propiedades.clear();
 				propiedades = null;
+				return true;
 			}
-			else
-			{
-				crear_Archivo_Configuracion();
-			}
-			return true;
 		}
 		catch (final IOException e) 
 		{
 			Consola.println("Error en la configuracion: " + e.getMessage());
 		}
-		System.exit(0);
 		return false;
 	}
 	
-	private static void crear_Archivo_Configuracion() throws IOException
+	public static void crear_Archivo_Configuracion()
 	{
-		propiedades = new Properties();
-		
-		propiedades.setProperty("PUERTO_GAME", Integer.toString(PUERTO_GAME));
-		propiedades.setProperty("PUERTO_COMUNICADOR", Integer.toString(PUERTO_COMUNICADOR));
-		
-		propiedades.setProperty("DATABASE_IP_LOGIN", DATABASE_IP_LOGIN);
-		propiedades.setProperty("DATABASE_PUERTO_LOGIN", Integer.toString(DATABASE_PUERTO_LOGIN));
-		propiedades.setProperty("DATABASE_USUARIO_LOGIN", DATABASE_USUARIO_LOGIN);
-		propiedades.setProperty("DATABASE_PASSWORD_LOGIN", DATABASE_PASSWORD_LOGIN);
-		propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
-		
-		propiedades.setProperty("SERVIDOR_ID", Integer.toString(SERVIDOR_ID));
-		
-		propiedades.setProperty("DATABASE_IP_GAME", DATABASE_IP_GAME);
-		propiedades.setProperty("DATABASE_PUERTO_GAME", Integer.toString(DATABASE_PUERTO_GAME));
-		propiedades.setProperty("DATABASE_USUARIO_GAME", DATABASE_USUARIO_GAME);
-		propiedades.setProperty("DATABASE_PASSWORD_GAME", DATABASE_PASSWORD_GAME);
-		propiedades.setProperty("DATABASE_NOMBRE_GAME", DATABASE_NOMBRE_GAME);
-		
-		propiedades.setProperty("ACTIVAR_FILA_DE_ESPERA", Boolean.toString(ACTIVAR_FILA_DE_ESPERA));
-		propiedades.setProperty("MAXIMOS_FILA_ESPERA", Integer.toString(MAXIMOS_FILA_ESPERA));
-		propiedades.setProperty("PLAZAS_SERVIDOR", Short.toString(PLAZAS_SERVIDOR));
-		propiedades.setProperty("TIPO_COMUNIDAD", Byte.toString(TIPO_COMUNIDAD));
-		
-		propiedades.store(new FileOutputStream(new File("conf-game.txt")), "Archivo de configuración");
-		propiedades.clear();
-		propiedades = null;
+		try 
+		{
+			propiedades = new Properties();
+			
+			propiedades.setProperty("PUERTO_GAME", Integer.toString(PUERTO_GAME));
+			propiedades.setProperty("PUERTO_COMUNICADOR", Integer.toString(PUERTO_COMUNICADOR));
+			
+			propiedades.setProperty("DATABASE_IP_LOGIN", DATABASE_IP_LOGIN);
+			propiedades.setProperty("DATABASE_PUERTO_LOGIN", Integer.toString(DATABASE_PUERTO_LOGIN));
+			propiedades.setProperty("DATABASE_USUARIO_LOGIN", DATABASE_USUARIO_LOGIN);
+			propiedades.setProperty("DATABASE_PASSWORD_LOGIN", DATABASE_PASSWORD_LOGIN);
+			propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
+			
+			propiedades.setProperty("SERVIDOR_ID", Integer.toString(SERVIDOR_ID));
+			
+			propiedades.setProperty("DATABASE_IP_GAME", DATABASE_IP_GAME);
+			propiedades.setProperty("DATABASE_PUERTO_GAME", Integer.toString(DATABASE_PUERTO_GAME));
+			propiedades.setProperty("DATABASE_USUARIO_GAME", DATABASE_USUARIO_GAME);
+			propiedades.setProperty("DATABASE_PASSWORD_GAME", DATABASE_PASSWORD_GAME);
+			propiedades.setProperty("DATABASE_NOMBRE_GAME", DATABASE_NOMBRE_GAME);
+			
+			propiedades.setProperty("ACTIVAR_FILA_DE_ESPERA", Boolean.toString(ACTIVAR_FILA_DE_ESPERA));
+			propiedades.setProperty("MAXIMOS_FILA_ESPERA", Integer.toString(MAXIMOS_FILA_ESPERA));
+			propiedades.setProperty("PLAZAS_SERVIDOR", Short.toString(PLAZAS_SERVIDOR));
+			propiedades.setProperty("TIPO_COMUNIDAD", Byte.toString(TIPO_COMUNIDAD));
+			
+			propiedades.store(new FileOutputStream(archivo_configuracion), "Archivo de configuración");
+			propiedades.clear();
+			propiedades = null;
+		}
+		catch (final IOException e) 
+		{
+			Consola.println("Error en la configuracion: " + e.getMessage());
+		}
 	}
 	
+	public static File get_Archivo_configuracion()
+	{
+		return archivo_configuracion;
+	}
+
 	public static void cargar_Paquetes()
 	{
         Reflections reflections = new Reflections("juego.paquetes");

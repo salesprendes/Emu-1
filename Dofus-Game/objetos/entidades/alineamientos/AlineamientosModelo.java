@@ -1,6 +1,7 @@
 package objetos.entidades.alineamientos;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import objetos.mapas.Areas;
 
@@ -10,7 +11,7 @@ final public class AlineamientosModelo
 	private final Areas area;
 	private final boolean es_especial;
 
-	private static final ConcurrentHashMap<Byte, AlineamientosModelo> alineamientos_cargados = new ConcurrentHashMap<Byte, AlineamientosModelo>();
+	private static final Map<Byte, AlineamientosModelo> alineamientos_cargados = new HashMap<Byte, AlineamientosModelo>();
 	
 	public AlineamientosModelo(final byte _id, Areas _area, boolean _es_especial)
 	{
@@ -36,7 +37,7 @@ final public class AlineamientosModelo
 		return es_especial;
 	}
 	
-	public static ConcurrentHashMap<Byte, AlineamientosModelo> get_Alineamientos_Cargados()
+	public static Map<Byte, AlineamientosModelo> get_Alineamientos_Cargados()
 	{
 		return alineamientos_cargados;
 	}

@@ -63,7 +63,7 @@ public class Comandos
 	 {
 		 Thread.getAllStackTraces().keySet().forEach(t ->
 		 {
-			 Consola.println(t.getName() + " es Daemon: " + t.isDaemon() + " esta activo: " + t.isAlive());
+			 Consola.println(t.getName() + " es Daemon: " + t.isDaemon() + " esta activo: " + t.isAlive() + " estado: " + t.getState());
 		 });
 	 }
 	 
@@ -136,7 +136,6 @@ public class Comandos
 		 else
 		 {
 			 Consola.println("Numero de argumentos no valido");
-			 return;
 		 }
 	 }
 }

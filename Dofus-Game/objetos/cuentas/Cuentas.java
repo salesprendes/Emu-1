@@ -7,13 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import juego.JuegoSocket;
 import juego.fila.Nodo;
+import main.Main;
 import objetos.entidades.personajes.Personajes;
 
 final public class Cuentas 
 {
 	private final int id;
 	private String apodo, ip, uid, idioma_cliente;
-	private long tiempo_abono;
 	private final byte rango_cuenta, comunidad;
 	private JuegoSocket juego_socket;
 	private boolean esta_baneado, fila_espera = false;
@@ -23,14 +23,13 @@ final public class Cuentas
 	
 	private static final ConcurrentHashMap<Integer, Cuentas> cuentas_cargadas = new ConcurrentHashMap<Integer, Cuentas>();
 
-	public Cuentas(final int _id, final String _apodo, final String _uid, final String _ip, final byte _rango_cuenta, long _tiempo_abono, final byte _comunidad, boolean _baneado)
+	public Cuentas(final int _id, final String _apodo, final String _uid, final String _ip, final byte _rango_cuenta, final byte _comunidad, boolean _baneado)
 	{
 		id = _id;
 		apodo = _apodo;
 		uid = _uid;
 		ip = _ip;
 		rango_cuenta = _rango_cuenta;
-		tiempo_abono = _tiempo_abono;
 		comunidad = _comunidad;
 		esta_baneado = _baneado;
 		
@@ -42,14 +41,15 @@ final public class Cuentas
 		return id;
 	}
 	
-	public long get_Fecha_abono()
+	public long get_Fecha_abono(final int cuenta_id)
 	{
+		long tiempo_abono = Main.get_Database().get_Cuentas().get_Cuenta_Abono(cuenta_id);
 		return tiempo_abono <= System.currentTimeMillis() ? 0 : tiempo_abono - System.currentTimeMillis();
 	}
 	
-	public boolean es_Cuenta_Abonada()
+	public boolean es_Cuenta_Abonada(final int cuenta_id)
 	{
-		return tiempo_abono >= System.currentTimeMillis();
+		return Main.get_Database().get_Cuentas().get_Cuenta_Abono(cuenta_id) >= System.currentTimeMillis();
 	}
 	
 	public boolean get_Esta_Baneado() 
@@ -81,11 +81,6 @@ final public class Cuentas
 	{
 		apodo = _apodo;
 	}
-
-	public void set_Tiempo_Abono(final long _tiempo_abono)
-	{
-		tiempo_abono = _tiempo_abono;
-	}
 	
 	public String get_Ip() 
 	{
@@ -102,7 +97,7 @@ final public class Cuentas
 		return juego_socket;
 	}
 
-	public void set_Juego_socket(JuegoSocket _juego_socket) 
+	public void set_Juego_socket(final JuegoSocket _juego_socket) 
 	{
 		juego_socket = _juego_socket;
 	}
@@ -112,7 +107,7 @@ final public class Cuentas
 		return uid;
 	}
 
-	public void set_Uid(String _uid) 
+	public void set_Uid(final String _uid) 
 	{
 		uid = _uid;
 	}

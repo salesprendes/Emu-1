@@ -8,8 +8,11 @@ import main.consola.Consola;
 import objetos.Experiencia;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.alineamientos.AlineamientosModelo;
-import objetos.entidades.alineamientos.Dones;
-import objetos.entidades.alineamientos.Especialidades;
+import objetos.entidades.monstruos.MonstruosModelos;
+import objetos.entidades.monstruos.MonstruosRaza;
+import objetos.entidades.monstruos.MonstruosSuperRaza;
+import objetos.entidades.personajes.Dones;
+import objetos.entidades.personajes.Especialidades;
 import objetos.entidades.personajes.Personajes;
 import objetos.entidades.personajes.Razas;
 import objetos.items.ItemsModelo;
@@ -22,7 +25,7 @@ public class Main
 {
 	public static boolean modo_debug = false;
 	public static boolean esta_vinculado = false;
-	public static Estados estado_emulador = Estados.APAGADO;
+	public static EstadosEmulador estado_emulador = EstadosEmulador.APAGADO;
 	
 	/** THREADS **/
 	public static FilaServer fila_espera;
@@ -39,7 +42,11 @@ public class Main
 		if(Configuracion.cargar_Configuracion())
 			Consola.println("correcta");
 		else
-			Consola.println("incorrecta");
+		{
+			Consola.println("incorrecta, creando archivo de configuración por defecto");
+			Configuracion.get_Archivo_configuracion().delete();
+			Configuracion.crear_Archivo_Configuracion();
+		}
 		
 		/** Conexion a la database **/
 		database.cargar_Configuracion();
@@ -57,12 +64,12 @@ public class Main
 		database.iniciar_Database();
 		
 		/** Cargando el servidor **/
-		estado_emulador = Estados.CARGANDO;
+		estado_emulador = EstadosEmulador.CARGANDO;
 		get_Cargar_Juego();
 		Configuracion.cargar_Paquetes();
 		
 		/** Vincular el game **/
-		estado_emulador = Estados.VINCULANDO;
+		estado_emulador = EstadosEmulador.VINCULANDO;
 		Vincular_Login();
 		
 		/** Crear Servers **/
@@ -70,14 +77,14 @@ public class Main
 			fila_espera = new FilaServer();
 		juego_servidor = new JuegoServer();
 		comandos_consola = new Consola();
-		estado_emulador = Estados.ENCENDIDO;
+		estado_emulador = EstadosEmulador.ENCENDIDO;
 	}
 	
 	public static void Vincular_Login()
 	{
 		if(!esta_vinculado)
 		{
-			while(!esta_vinculado && estado_emulador == Estados.VINCULANDO)
+			while(!esta_vinculado && estado_emulador == EstadosEmulador.VINCULANDO)
 			{
 				socket_vinculador = new JuegoVinculador();
 			}
@@ -95,11 +102,11 @@ public class Main
 		Consola.println(Cuentas.get_Cuentas_Cargadas().size() + " cuentas cargadas");
 		
 		Consola.print("Cargando las super-areas: ");
-		database.get_Super_areas().get_Cargar_Todas_Super_Areas();
+		database.get_Mapas().get_Cargar_Todas_Super_Areas();
 		Consola.println(SuperAreas.get_SuperAreas_Cargadas().size() + " super-areas cargadas");
 		
 		Consola.print("Cargando las areas: ");
-		database.get_Areas().get_Cargar_Todas_Areas();
+		database.get_Mapas().get_Cargar_Todas_Areas();
 		Consola.println(Areas.get_Areas_Cargadas().size() + " areas cargadas");
 		
 		Consola.print("Cargando las sub-areas: ");
@@ -139,12 +146,24 @@ public class Main
 		database.get_Personajes().get_Cargar_Alineaciones_Personajes();
 		database.get_Personajes().get_Cargar_Items_Personajes();
 		Consola.println(Personajes.get_Personajes_Cargados().size() + " personajes cargados");
+		
+		Consola.print("Cargando super razas de los monstruos: ");
+		database.get_Monstruos().get_Cargar_Super_Razas();
+		Consola.println(MonstruosSuperRaza.get_Super_Razas_Cargadas().size() + " super razas de monstruos cargadas");
+		
+		Consola.print("Cargando razas de los monstruos: ");
+		database.get_Monstruos().get_Cargar_Razas();
+		Consola.println(MonstruosRaza.get_Razas_Cargadas().size() + " razas de monstruos cargadas");
+		
+		Consola.print("Cargando monstruo modelo: ");
+		database.get_Monstruos().get_Cargar_Todos_Monstruos();
+		Consola.println(MonstruosModelos.get_Monstruos_Modelo_Cargados().size() + " monstruo modelo cargados");
 	}
 	
 	public static void cerrar_Emulador()
 	{
 		Consola.println("> El servidor se esta cerrando");
-		if (estado_emulador == Estados.ENCENDIDO)
+		if (estado_emulador == EstadosEmulador.ENCENDIDO)
 		{
 			if(fila_espera != null)
 				fila_espera.detener_Fila();
@@ -154,7 +173,7 @@ public class Main
 				comandos_consola.interrupt();
 			if(juego_servidor != null)
 				juego_servidor.detener_Server_Socket();
-			estado_emulador = Estados.APAGADO;
+			estado_emulador = EstadosEmulador.APAGADO;
 		}
 		Consola.println("> El emulador esta cerrado.");
 		System.exit(1);

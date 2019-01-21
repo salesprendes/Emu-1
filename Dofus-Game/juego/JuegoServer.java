@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import main.Configuracion;
-import main.Estados;
+import main.EstadosEmulador;
 import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
@@ -26,14 +26,13 @@ public class JuegoServer extends Thread implements Runnable
 		threadPool = Executors.newFixedThreadPool(Configuracion.PLAZAS_SERVIDOR);
 		setName("Server-Juego");
 		start();
-		Consola.println(">> Juego del servidor iniciado en el puerto: " + Configuracion.PUERTO_GAME);
 	}
 	
 	public void run()
 	{
 		get_Abrir_Server_Socket();
 		
-		while(Main.estado_emulador != Estados.APAGADO && !juego_servidor.isClosed() && !isInterrupted())
+		while(Main.estado_emulador != EstadosEmulador.APAGADO && !juego_servidor.isClosed() && !isInterrupted())
 		{
 			try
 			{

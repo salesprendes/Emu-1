@@ -15,7 +15,7 @@ import juego.enums.EstadosJuego;
 import juego.fila.FilaSocket;
 import juego.paquetes.GestorPaquetes;
 import main.Configuracion;
-import main.Estados;
+import main.EstadosEmulador;
 import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
@@ -71,7 +71,7 @@ public class JuegoSocket implements Runnable
 		{
 			enviar_Paquete("HG");//envia la bienvenida al papasito
 
-			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != Estados.APAGADO && socket.isConnected())
+			while (paquete.append(buffered_reader.readLine().trim()).toString() != null && !paquete.toString().isEmpty() && Main.estado_emulador != EstadosEmulador.APAGADO && socket.isConnected())
 			{
 				Consola.println("Recibido-Game: " + paquete.toString());
 				controlador_Paquetes(paquete.toString());
@@ -111,7 +111,6 @@ public class JuegoSocket implements Runnable
 			else
 			{
 				Consola.println("paquete desconocido: " + paquete);
-				return;
 			}
 		}
 		else

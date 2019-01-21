@@ -4,8 +4,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
 import objetos.entidades.alineamientos.AlineamientosModelo;
-import objetos.entidades.alineamientos.Dones;
-import objetos.entidades.alineamientos.Especialidades;
+import objetos.entidades.personajes.Dones;
+import objetos.entidades.personajes.Especialidades;
 import objetos.mapas.Areas;
 
 public class Alineamientos_DB extends DatabaseManager
