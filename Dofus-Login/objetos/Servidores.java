@@ -91,7 +91,7 @@ final public class Servidores
 		poblacion = Arrays.stream(Poblacion.values()).filter(poblacion -> poblacion.get_Plazas_Libres() >= plazas_libres).findFirst().orElse(Poblacion.COMPLETA);
     }
 	
-	public static String get_Obtener_Servidores(Cuentas cuenta)
+	public static String get_Servidores(Cuentas cuenta)
 	{
         final StringBuilder paquete_servidores = new StringBuilder(servidores_cargados.size() * 10).append("AH");
         servidores_cargados.values().forEach(servidor ->
@@ -105,7 +105,7 @@ final public class Servidores
         return paquete_servidores.toString();
     }
 	
-	public static String get_Obtener_Servidores_Disponibles() 
+	public static String get_Servidores_Disponibles() 
 	{
         final StringBuilder paquete = new StringBuilder(ErroresServidor.SERVIDORES_LIBRES.toString());
         servidores_cargados.values().stream().filter(filtro -> !filtro.es_Servidor_Vip() && filtro.get_Poblacion() != Poblacion.COMPLETA).forEach(servidor -> 

@@ -44,7 +44,7 @@ public class Comandos
 		 }
 	 }
 	 
-	 protected static void ver_Datos_Memoria(String[] args)
+	 private static void ver_Datos_Memoria(String[] args)
 	 {
 		 if(args.length > 1 && args[1].toLowerCase().equals("limpiar"))
 		 {
@@ -59,7 +59,7 @@ public class Comandos
 		 Consola.println("Memoria máxima: " + runtime.maxMemory() / mb + " mb");
 	 }
 	 
-	 protected static void ver_Threads_Activos()
+	 private static void ver_Threads_Activos()
 	 {
 		 Thread.getAllStackTraces().keySet().forEach(t ->
 		 {
@@ -67,16 +67,16 @@ public class Comandos
 		 });
 	 }
 	 
-	 protected static void lista_Comandos()
+	 private static void lista_Comandos()
 	 {
 		 Consola.println("threads: ver los threads activos");
 		 Consola.println("memoria: permite ver el estado de la memoria del heap Parametro: limpia (invoca el garbage)");
 		 Consola.println("limpiar/clear: limpia la consola");
 		 Consola.println("debug: (on, off) permite activar/desactivar para ver los mensajes debug");
-		 Consola.println("?: permite ver los comandos"); 
+		 Consola.println("?: permite ver los comandos");
 	 }
 	 
-	 protected static Float ver_Uso_Cpu()
+	 private static Float ver_Uso_Cpu()
 	 {
 		 final ThreadMXBean TMB = ManagementFactory.getThreadMXBean();
 		 long time = System.nanoTime(), lastNanoTime = 0, lastCpuTime = 0, cpuTime = 0;
@@ -96,7 +96,7 @@ public class Comandos
 		 return cpuDiff / timeDiff / Runtime.getRuntime().availableProcessors();
 	 }
 	 
-	 protected static void limpiar_Consola()
+	 private static void limpiar_Consola()
 	 {
 		 try
 		 {
@@ -112,7 +112,7 @@ public class Comandos
 		 catch (final Exception e){}
 	 }
 	 
-	 protected static void opcion_Debug(String[] args)
+	 private static void opcion_Debug(String[] args)
 	 {
 		 if(args.length > 1)
 		 {

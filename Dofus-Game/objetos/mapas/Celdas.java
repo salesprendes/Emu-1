@@ -2,6 +2,7 @@ package objetos.mapas;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import juego.enums.TipoDirecciones;
 import objetos.entidades.personajes.Personajes;
 
 public class Celdas 
@@ -32,7 +33,7 @@ public class Celdas
 		layer_objeto_2_interactivo = _layer_objeto_2_interactivo;
 		
 		final byte ancho = mapa.get_Anchura();
-		final int _loc5 = (int) Math.floor(id / (ancho * 2 - 1));
+		final int _loc5 = id / (ancho * 2 - 1);
 		final int _loc6 = id - _loc5 * (ancho * 2 - 1);
 		final int _loc7 = _loc6 % ancho;
 		Y = (byte) (_loc5 - _loc7);
@@ -157,5 +158,25 @@ public class Celdas
         if (personajes == null)
             return new CopyOnWriteArrayList<Personajes>();
         return personajes;
+    }
+    
+    public TipoDirecciones get_Direccion(Celdas destino) 
+    {
+    	if (X == destino.X) 
+    	{
+    		if (destino.Y > Y)
+    			return TipoDirecciones.SUR_OESTE;
+    		else 
+    			return TipoDirecciones.NORESTE;
+    	}
+    	else if (destino.X > X) 
+    		return TipoDirecciones.SUR_ESTE;
+    	else
+    		return TipoDirecciones.NOROESTE;
+    }
+    
+    public int get_Distancia(Celdas destino)
+    {
+        return Math.abs(X - destino.X) + Math.abs(Y - destino.Y);
     }
 }

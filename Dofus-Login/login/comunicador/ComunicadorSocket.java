@@ -205,7 +205,7 @@ final public class ComunicadorSocket extends Thread implements Runnable
 		{
 			Cuentas.get_Cuentas_Cargadas().values().stream().filter(filtro -> filtro.get_Login_respuesta() != null && filtro.get_Login_respuesta().get_Estado_login() == EstadosLogin.LISTA_SERVIDORES).forEach(cuenta -> 
 			{
-				cuenta.get_Login_respuesta().enviar_Paquete(Servidores.get_Obtener_Servidores(cuenta));
+				cuenta.get_Login_respuesta().enviar_Paquete(Servidores.get_Servidores(cuenta));
 			});
 		}
 	}

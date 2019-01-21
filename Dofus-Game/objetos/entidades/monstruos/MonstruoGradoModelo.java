@@ -1,8 +1,5 @@
 package objetos.entidades.monstruos;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import juego.enums.TipoStats;
 import objetos.entidades.personajes.Stats;
 
@@ -11,7 +8,7 @@ public class MonstruoGradoModelo
 	private final byte grado;
 	private short nivel;
 	private final MonstruosModelo monstruo_modelo;
-	private final Stats stats;
+	private final Stats stats = new Stats();
 	
 	private static int[] stats_ordenados =
 	{
@@ -26,7 +23,6 @@ public class MonstruoGradoModelo
 		grado = _grado;
 		monstruo_modelo = _monstruo_modelo;
 		
-		Map<Integer, Integer> map_stats = new TreeMap<Integer, Integer>();
 		int i = 0;
 		for (String valor : _stats.split(","))
 		{
@@ -41,7 +37,7 @@ public class MonstruoGradoModelo
 						break;
 
 						default:
-							map_stats.put(stats_ordenados[i], Integer.parseInt(valor));
+							stats.get_Agregar_Stat_Id(stats_ordenados[i], Integer.parseInt(valor));
 						break;
 					}
 				}
@@ -50,17 +46,14 @@ public class MonstruoGradoModelo
 			catch (final Exception e) {}
 		}
 		
-		if (map_stats.get(TipoStats.AGREGAR_VITALIDAD) == null) 
-			map_stats.put(TipoStats.AGREGAR_VITALIDAD, 50 * nivel);
-		if (map_stats.get(TipoStats.AGREGAR_PA) == null) 
-			map_stats.put(TipoStats.AGREGAR_PA, 6);
-		if (map_stats.get(TipoStats.AGREGAR_PM) == null) 
-			map_stats.put(TipoStats.AGREGAR_PM, 3);
-		if (map_stats.get(TipoStats.AGREGAR_CRIATURAS_INVOCABLES) == null) 
-			map_stats.put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
-
-		stats = new Stats(map_stats);
-		map_stats.clear();
+		if (stats.get_Stats().get(TipoStats.AGREGAR_VITALIDAD) == null) 
+			stats.get_Stats().put(TipoStats.AGREGAR_VITALIDAD, 50 * nivel);
+		if (stats.get_Stats().get(TipoStats.AGREGAR_PA) == null) 
+			stats.get_Stats().put(TipoStats.AGREGAR_PA, 6);
+		if (stats.get_Stats().get(TipoStats.AGREGAR_PM) == null) 
+			stats.get_Stats().put(TipoStats.AGREGAR_PM, 3);
+		if (stats.get_Stats().get(TipoStats.AGREGAR_CRIATURAS_INVOCABLES) == null) 
+			stats.get_Stats().put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
 	}
 
 	public byte get_Grado()

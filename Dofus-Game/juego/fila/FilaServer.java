@@ -32,7 +32,7 @@ final public class FilaServer extends Thread implements Runnable
 				{
 					fila.wait(1100 * fila.get_Fila().size());//1 segundo * tamaño fila
 				}
-				catch (InterruptedException e) {}
+				catch (final InterruptedException e) {}
 				finally 
 				{
 					if(nodo_fila != null)

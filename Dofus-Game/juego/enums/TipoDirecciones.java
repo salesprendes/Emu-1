@@ -1,8 +1,8 @@
-package objetos.mapas;
+package juego.enums;
 
 import java.util.function.Function;
 
-public enum Direccion
+public enum TipoDirecciones
 {
 	ESTE(mapa_anchura -> 1),
 	SUR_ESTE(mapa_anchura -> mapa_anchura),
@@ -15,7 +15,7 @@ public enum Direccion
 
 	final private Function<Integer, Integer> siguiente_celda;
 
-	private Direccion(Function<Integer, Integer> _siguiente_celda) 
+	private TipoDirecciones(Function<Integer, Integer> _siguiente_celda) 
 	{
 		siguiente_celda = _siguiente_celda;
 	}
@@ -25,19 +25,19 @@ public enum Direccion
 		return (char) (ordinal() + 'a');
 	}
 
-	public static Direccion get_Direccion_Desde_Char(char c)
+	public static TipoDirecciones get_Direccion_Desde_Char(char c)
 	{
 		return values()[c - 'a'];
 	}
 
-	public Direccion get_Opuesto()
+	public TipoDirecciones get_Opuesto()
 	{
-		return Direccion.values()[(ordinal() + 4) % 8];
+		return TipoDirecciones.values()[(ordinal() + 4) % 8];
 	}
 
-	public Direccion get_Ortogonal() 
+	public TipoDirecciones get_Ortogonal() 
 	{
-		return Direccion.values()[(ordinal() + 2) % 8];
+		return TipoDirecciones.values()[(ordinal() + 2) % 8];
 	}
 
 	/**
@@ -49,7 +49,7 @@ public enum Direccion
 		return ordinal() % 2 == 1;
 	}
 
-	public int get_Siguiente_Celda_Incremental(int mapa_anchura) 
+	public int get_Siguiente_Celda(int mapa_anchura) 
 	{
 		return siguiente_celda.apply(mapa_anchura);
 	}

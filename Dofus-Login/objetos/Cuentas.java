@@ -55,7 +55,7 @@ final public class Cuentas
 		long tiempo_abono = 0;
 		try 
 		{
-			tiempo_abono = formato_fecha.parse(Main.get_Database().get_Cuentas().get_Obtener_Cuenta_Campo_String("abono", id)).getTime();
+			tiempo_abono = formato_fecha.parse(Main.get_Database().get_Cuentas().get_Cuenta_Campo_String("abono", id)).getTime();
 		} 
 		catch (ParseException e){}
 		return tiempo_abono <= System.currentTimeMillis() ? 0 : tiempo_abono - System.currentTimeMillis();

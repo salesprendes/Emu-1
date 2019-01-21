@@ -33,7 +33,7 @@ public class Cuentas_DB extends DatabaseManager
 		return cuenta;
 	}
 	
-	public int get_Obtener_Id_Cuenta(final String nombre_usuario)
+	public int get_Id_Cuenta(final String nombre_usuario)
 	{
 		int id = 0;
 		try
@@ -49,7 +49,7 @@ public class Cuentas_DB extends DatabaseManager
 		return id;
 	}
 	
-	public String get_Obtener_Cuenta_Campo_String(final String campo, final int cuenta_id)
+	public String get_Cuenta_Campo_String(final String campo, final int cuenta_id)
 	{
 		try
 		{

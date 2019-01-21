@@ -121,7 +121,6 @@ final public class LoginSocket implements Runnable
 		{
 			enviar_Paquete(ErroresLogin.CONEXION_NO_TERMINADA.toString());
 			cerrar_Conexion();
-			return;
 		}
 	}
 	

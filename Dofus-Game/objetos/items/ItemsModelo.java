@@ -39,12 +39,12 @@ public class ItemsModelo
 					final String[] separador = stats_armas.split(",");
 					bonus_golpe_critico = Byte.parseByte(separador[0]);
 					coste_pa = Byte.parseByte(separador[1]);
-					byte alcanze_minimo = Byte.parseByte(separador[2]);
-					byte alcanze_maximo = Byte.parseByte(separador[3]);
+					//byte alcanze_minimo = Byte.parseByte(separador[2]);
+					//byte alcanze_maximo = Byte.parseByte(separador[3]);
 					porcentaje_golpe_critico = Short.parseShort(separador[4]);
-					short porcentaje_fallo_critico = Short.parseShort(separador[5]);
-					boolean lanzado_en_linea = Boolean.parseBoolean(separador[6]);
-					boolean necesita_linea_vision = Boolean.parseBoolean(separador[7]);
+					//short porcentaje_fallo_critico = Short.parseShort(separador[5]);
+					//boolean lanzado_en_linea = Boolean.parseBoolean(separador[6]);
+					//boolean necesita_linea_vision = Boolean.parseBoolean(separador[7]);
 					es_dos_manos = Boolean.parseBoolean(separador[8]);
 				}
 			}

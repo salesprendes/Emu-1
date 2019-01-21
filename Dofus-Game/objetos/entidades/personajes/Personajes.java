@@ -383,7 +383,7 @@ public class Personajes implements Entidades
 		paquete.add((color_1 == -1 ? "-1" : Integer.toHexString(color_1)));
 		paquete.add((color_2 == -1 ? "-1" : Integer.toHexString(color_2)));
 		paquete.add((color_3 == -1 ? "-1" : Integer.toHexString(color_3)));
-		paquete.add(get_Obtener_Items_Ask());
+		paquete.add(get_Items_Ask());
 
 		return paquete.toString();
 	}
@@ -438,7 +438,7 @@ public class Personajes implements Entidades
 		{
 			StringBuilder paquete = new StringBuilder(500);
 
-			paquete.append("As").append(get_Obtener_Experiencia_Personaje(",")).append('|');
+			paquete.append("As").append(get_Experiencia_Personaje(",")).append('|');
 			paquete.append(kamas).append('|').append(puntos_stats).append('|').append(puntos_hechizos).append('|');
 			paquete.append(get_Alineamiento_Id()).append('~').append(get_Alineamiento_Id()).append(',').append(get_Alineamiento_Orden_Nivel()).append(',').append(get_Grado_Alas()).append(',').append(get_Alineamiento_Honor()).append(',').append(get_Alineamiento_Deshonor()).append(',').append(get_Alineamiento_Tiene_Alas_Activadas()).append('|');
 			
@@ -481,7 +481,7 @@ public class Personajes implements Entidades
 		}
 	}
 	
-	private String get_Obtener_Items_Ask()
+	private String get_Items_Ask()
 	{
 		StringBuilder str = new StringBuilder();
 		for (Items obj : items.values()) 
@@ -551,7 +551,7 @@ public class Personajes implements Entidades
 		}
 	}
 
-	public String get_Obtener_Experiencia_Personaje(final String separador) 
+	public String get_Experiencia_Personaje(final String separador) 
 	{
 		return Experiencia.get_Experiencia_Personajes(nivel) + separador + experiencia + separador + Experiencia.get_Experiencia_Personajes(nivel + 1);
 	}

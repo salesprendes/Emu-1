@@ -25,7 +25,7 @@ public class ServidorSeleccionado implements GestorPaquetes
 				{
 					if(servidor.es_Servidor_Vip() && !(cuenta.get_Tiempo_Abono() > 0))
 					{
-						socket.enviar_Paquete(Servidores.get_Obtener_Servidores_Disponibles());
+						socket.enviar_Paquete(Servidores.get_Servidores_Disponibles());
 						return;
 					}
 					if(cuenta.get_Comunidad().get_Id() != servidor.get_Comunidad().get_Id())
