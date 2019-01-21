@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
+
+import objetos.mapas.Celdas;
 
 public class PathFinding implements Collection<Camino>
 {
@@ -20,82 +23,103 @@ public class PathFinding implements Collection<Camino>
     {
         this(_decodificador, new ArrayList<>());
     }
+    
+    public String get_Codificar() 
+    {
+        return decodificador.get_Codificado(this);
+    }
+    
+    public PathFinding get_Nuevo_Camino(Predicate<Camino> condicion) 
+    {
+    	PathFinding nuevo_camino = new PathFinding(decodificador, new ArrayList<>(size()));
 
-	public boolean add(Camino e)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+        for (Camino step : pasos) 
+        {
+            if (condicion.test(step)) 
+            {
+            	nuevo_camino.add(step);
+            }
+        }
+        return nuevo_camino;
+    }
 
-	public boolean addAll(Collection<? extends Camino> c)
+	public boolean add(Camino paso)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return pasos.add(paso);
 	}
+	
+	public Camino get(int paso) 
+	{
+        return pasos.get(paso);
+    }
+
+	public boolean addAll(Collection<? extends Camino> celdas)
+	{
+		return pasos.addAll(celdas);
+	}
+	
+	public Camino anterior() 
+	{
+        return pasos.get(pasos.size() - 1);
+    }
+	
+	public Celdas celda_objetivo() 
+	{
+        return anterior().get_Celda();
+    }
 
 	public void clear()
 	{
-		// TODO Auto-generated method stub
-		
+		pasos.clear();
 	}
 
 	public boolean contains(Object o)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return pasos.contains(o);
 	}
 
 	public boolean containsAll(Collection<?> c)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return pasos.containsAll(c);
 	}
 
 	public boolean isEmpty()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return pasos.isEmpty();
 	}
 
 	public Iterator<Camino> iterator()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return pasos.iterator();
 	}
 
 	public boolean remove(Object o)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return pasos.remove(o);
 	}
 
 	public boolean removeAll(Collection<?> c)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return pasos.removeAll(c);
 	}
 
 	public boolean retainAll(Collection<?> c)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return pasos.retainAll(c);
 	}
 
 	public int size()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return pasos.size();
 	}
 
 	public Object[] toArray()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return pasos.toArray();
 	}
 
 	public <T> T[] toArray(T[] a)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		 return pasos.toArray(a);
 	}
 }

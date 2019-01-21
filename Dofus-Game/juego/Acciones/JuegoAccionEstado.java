@@ -1,0 +1,15 @@
+package juego.Acciones;
+
+public enum JuegoAccionEstado
+{
+	ESPERANDO,
+	DESPLAZANDO,
+	ATACANDO,
+	DEFENDIENDO,
+	ANIMACION,
+	INTERCAMBIANDO,
+	OCUPADO,
+	FANTASMA,
+	CRAFTEANDO,
+	DIALOGO
+}

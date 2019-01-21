@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
+import juego.Acciones.JuegoAccionManejador;
 import juego.enums.EstadosJuego;
 import juego.enums.TipoCanales;
 import juego.enums.TipoStats;
@@ -34,8 +35,7 @@ public class Personajes implements Entidades
 	private String canales;
 	private Alineamientos alineamiento;
 	private Stats stats_principales;
-	
-	
+	private final JuegoAccionManejador juego_acciones;
 	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
 
 	/** Caches **/
@@ -86,6 +86,8 @@ public class Personajes implements Entidades
 		
 		if(cuenta != null)
 			cuenta.agregar_Personaje(this);
+		
+		juego_acciones = new JuegoAccionManejador(this);
 		personajes_cargados.put(id, this);
 	}
 
@@ -319,6 +321,11 @@ public class Personajes implements Entidades
 	public Map<Integer, Items> get_objetos()
 	{
 		return items;
+	}
+	
+	public JuegoAccionManejador get_Juego_Acciones()
+	{
+		return juego_acciones;
 	}
 
 	public final void get_Limpiar_Cache_Gm()
