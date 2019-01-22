@@ -4,14 +4,14 @@ import java.util.function.Function;
 
 public enum TipoDirecciones
 {
-	ESTE(mapa_anchura -> 1),
-	SUR_ESTE(mapa_anchura -> mapa_anchura),
-	SUR(mapa_anchura -> 2 * mapa_anchura - 1),
-	SUR_OESTE(mapa_anchura -> mapa_anchura - 1),
-	OESTE(mapa_anchura -> -1),
-	NOROESTE(mapa_anchura -> -mapa_anchura),
-	NORTE(mapa_anchura -> -(2 * mapa_anchura - 1)),
-	NORESTE(mapa_anchura -> -(mapa_anchura - 1));
+	DERECHA(mapa_anchura -> 1),
+	ABAJO_DERECHA(mapa_anchura -> mapa_anchura),
+	ABAJO(mapa_anchura -> 2 * mapa_anchura - 1),
+	ABAJO_IZQUIERDA(mapa_anchura -> mapa_anchura - 1),
+	IZQUIERDA(mapa_anchura -> -1),
+	ARRIBA_IZQUIERDA(mapa_anchura -> -mapa_anchura),
+	ARRIBA(mapa_anchura -> -(2 * mapa_anchura - 1)),
+	ARRIBA_DERECHA(mapa_anchura -> -(mapa_anchura - 1));
 
 	final private Function<Integer, Integer> siguiente_celda;
 
@@ -30,12 +30,12 @@ public enum TipoDirecciones
 		return values()[c - 'a'];
 	}
 
-	public TipoDirecciones get_Opuesto()
+	public TipoDirecciones get_Opuesto_4_Direcciones()
 	{
 		return TipoDirecciones.values()[(ordinal() + 4) % 8];
 	}
 
-	public TipoDirecciones get_Ortogonal() 
+	public TipoDirecciones get_Ortogonal_2_Direcciones() 
 	{
 		return TipoDirecciones.values()[(ordinal() + 2) % 8];
 	}

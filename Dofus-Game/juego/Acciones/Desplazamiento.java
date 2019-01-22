@@ -21,7 +21,7 @@ public class Desplazamiento implements JuegoAcciones
 
 	public synchronized boolean get_Esta_Iniciado()
 	{
-		if(personaje.get_Juego_Acciones().get_Estado() != JuegoAccionEstado.ESPERANDO)
+		if(personaje.get_Juego_Acciones().get_Estado() != JuegoAccionEstado.ESPERANDO || pathfinding == null)
 		{
 			personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA;0");
             return false;
@@ -33,7 +33,7 @@ public class Desplazamiento implements JuegoAcciones
             return false;
         }
 		
-		//verifica si en el camino hay obstaculos si lo hay lo detiene
+		//verifica si en el camino hay celdas caminables si no hay devuelve hasta X casilla caminable
 		pathfinding = pathfinding.get_Mantener_Mientras_Cumpla_Condicion(celdas -> celdas.get_Celda().get_Es_Caminable());
 		
 		//si no puede moverse en todas las direcciones y hay direcciones en diagonal 

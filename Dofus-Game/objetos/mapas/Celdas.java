@@ -170,19 +170,24 @@ public class Celdas
         return personajes;
     }
     
+    /**
+     * https://github.com/Emudofus/Dofus/blob/1.29/ank/battlefield/utils/Pathfinding.as#L204
+     */
     public TipoDirecciones get_Direccion(Celdas destino) 
     {
-    	if (X == destino.X) 
-    	{
-    		if (destino.Y > Y)
-    			return TipoDirecciones.SUR_OESTE;
-    		else 
-    			return TipoDirecciones.NORESTE;
-    	}
-    	else if (destino.X > X) 
-    		return TipoDirecciones.SUR_ESTE;
-    	else
-    		return TipoDirecciones.NOROESTE;
+    	int deltaX = X - destino.X;
+		int deltaY = Y - destino.Y;
+		
+    	if (Math.abs(deltaX) >= 1 && deltaY <= 0)
+			return deltaX > 0 ? TipoDirecciones.ARRIBA_DERECHA : TipoDirecciones.ABAJO_IZQUIERDA;
+		else if (Math.abs(deltaY) >= 1 && deltaX <= 0)
+			return deltaY > 0 ? TipoDirecciones.ABAJO_DERECHA : TipoDirecciones.ARRIBA_IZQUIERDA;
+		else if (Math.abs(deltaX) >= 1 && deltaY <= -1)
+			return deltaX > 0 ? TipoDirecciones.ARRIBA : TipoDirecciones.IZQUIERDA;
+		else if (Math.abs(deltaX) >= 1 && deltaY <= 1)
+			return deltaX > 0 ? TipoDirecciones.DERECHA : TipoDirecciones.ABAJO;
+		else
+			return null;
     }
     
     public int get_Distancia(Celdas destino)

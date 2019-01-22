@@ -36,7 +36,7 @@ public class Personajes implements Entidades
 	private String canales;
 	private Alineamientos alineamiento;
 	private Stats stats_principales;
-	private TipoDirecciones orientacion = TipoDirecciones.SUR_ESTE;
+	private TipoDirecciones orientacion = TipoDirecciones.ABAJO_DERECHA;
 	private final JuegoAccionManejador juego_acciones;
 	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
 
