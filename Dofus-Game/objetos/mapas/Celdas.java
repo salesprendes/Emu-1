@@ -175,17 +175,16 @@ public class Celdas
      */
     public TipoDirecciones get_Direccion(Celdas destino) 
     {
-    	int deltaX = X - destino.X;
-		int deltaY = Y - destino.Y;
-		
-    	if (Math.abs(deltaX) >= 1 && deltaY <= 0)
-			return deltaX > 0 ? TipoDirecciones.ARRIBA_DERECHA : TipoDirecciones.ABAJO_IZQUIERDA;
-		else if (Math.abs(deltaY) >= 1 && deltaX <= 0)
-			return deltaY > 0 ? TipoDirecciones.ABAJO_DERECHA : TipoDirecciones.ARRIBA_IZQUIERDA;
-		else if (Math.abs(deltaX) >= 1 && deltaY <= -1)
-			return deltaX > 0 ? TipoDirecciones.ARRIBA : TipoDirecciones.IZQUIERDA;
-		else if (Math.abs(deltaX) >= 1 && deltaY <= 1)
-			return deltaX > 0 ? TipoDirecciones.DERECHA : TipoDirecciones.ABAJO;
+    	/** Diagonales **/
+    	if(X == destino.X)
+    		return destino.Y < Y ? TipoDirecciones.ABAJO_IZQUIERDA : TipoDirecciones.ARRIBA_DERECHA;
+    	else if(Y == destino.Y)
+    		return destino.X < X ? TipoDirecciones.ABAJO_DERECHA : TipoDirecciones.ARRIBA_IZQUIERDA;
+		/** Linea recta **/
+    	else if(X > destino.X)
+    		return Y > destino.Y ? TipoDirecciones.ABAJO : TipoDirecciones.DERECHA;
+    	else if(X < destino.X)
+    		return Y < destino.Y ? TipoDirecciones.ARRIBA : TipoDirecciones.IZQUIERDA;
 		else
 			return null;
     }

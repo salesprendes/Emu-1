@@ -1,6 +1,7 @@
 package juego.acciones;
 
 import juego.enums.TipoDirecciones;
+import juego.enums.TipoEstadoAcciones;
 import objetos.entidades.personajes.Derechos;
 import objetos.entidades.personajes.Personajes;
 import objetos.mapas.pathfinding.Camino;
@@ -21,7 +22,7 @@ public class Desplazamiento implements JuegoAcciones
 
 	public synchronized boolean get_Esta_Iniciado()
 	{
-		if(personaje.get_Juego_Acciones().get_Estado() != JuegoAccionEstado.ESPERANDO || pathfinding == null)
+		if(personaje.get_Juego_Acciones().get_Estado() != TipoEstadoAcciones.ESPERANDO || pathfinding == null)
 		{
 			personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA;0");
             return false;
@@ -44,7 +45,7 @@ public class Desplazamiento implements JuegoAcciones
 		}
 		
 		personaje.get_Mapa().get_Personajes().stream().filter(personaje -> personaje != null && personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA" + id + ';' + get_Accion_id() + ';' + personaje.get_Id() + ';' + pathfinding.get_Codificar()));
-		personaje.get_Juego_Acciones().set_Estado(JuegoAccionEstado.DESPLAZANDO);
+		personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.DESPLAZANDO);
 		return true;
 	}
 	
@@ -77,7 +78,6 @@ public class Desplazamiento implements JuegoAcciones
 		personaje.set_Celda(pathfinding.celda_objetivo());
 		personaje.set_Orientacion(pathfinding.get_Anterior().get_Direccion());
 		personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("BN");
-		personaje.get_Juego_Acciones().set_Estado(JuegoAccionEstado.ESPERANDO);
 	}
 	
 	public int get_Id()

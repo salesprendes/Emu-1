@@ -30,7 +30,7 @@ public class Descifrador
 	
 	public PathFinding get_Descodificado(String path_codificado, Celdas celda_inicial)
 	{
-        if (path_codificado.length() % 3 != 0) 
+        if (path_codificado.length() % 3 != 0)
         {
         	Consola.println("path invalido, longitud menor a 3");
         	return null;
@@ -38,11 +38,16 @@ public class Descifrador
 
         PathFinding camino = new PathFinding(this);
         short siguiente_celda = (short) ((Crypt.get_ordinal(path_codificado.charAt(1)) & 15) << 6 | Crypt.get_ordinal(path_codificado.charAt(2)));
-        camino.add(new Camino(celda_inicial, celda_inicial.get_Direccion(mapa.get_Celda(siguiente_celda)).get_Ortogonal_2_Direcciones()));
+        TipoDirecciones direccion = celda_inicial.get_Direccion(mapa.get_Celda(siguiente_celda));
+        
+        if(direccion != null)
+        	camino.add(new Camino(celda_inicial, direccion));
+        else
+        	return null;
 
         for (int i = 0; i < path_codificado.length(); i += 3)
         {
-        	TipoDirecciones direccion = TipoDirecciones.get_Direccion_Desde_Char(path_codificado.charAt(i));
+        	direccion = TipoDirecciones.get_Direccion_Desde_Char(path_codificado.charAt(i));
         	siguiente_celda = (short) ((Crypt.get_ordinal(path_codificado.charAt(i + 1)) & 15) << 6 | Crypt.get_ordinal(path_codificado.charAt(i + 2)));
         
         	if (siguiente_celda < 0 || siguiente_celda >= mapa.get_Celdas().length) 
@@ -55,6 +60,8 @@ public class Descifrador
         }
         return camino;
     }
+	
+	
 	
 	public String get_Codificado(PathFinding path) 
 	{

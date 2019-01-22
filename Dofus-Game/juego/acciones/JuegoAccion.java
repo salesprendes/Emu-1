@@ -2,33 +2,34 @@ package juego.acciones;
 
 import java.util.ArrayList;
 
+import juego.enums.TipoEstadoAcciones;
 import main.consola.Consola;
 import objetos.entidades.personajes.Personajes;
 import objetos.mapas.pathfinding.Descifrador;
 
-public class JuegoAccionManejador
+public class JuegoAccion
 {
 	private final ArrayList<JuegoAcciones> acciones_actuales = new ArrayList<JuegoAcciones>();
     private final Personajes personaje;
-    private JuegoAccionEstado estado;
+    private TipoEstadoAcciones estado;
     private boolean esta_ocupado;
     
-    public JuegoAccionManejador(Personajes _personaje)
+    public JuegoAccion(Personajes _personaje)
     {
     	personaje = _personaje;
-    	estado = JuegoAccionEstado.ESPERANDO;
+    	estado = TipoEstadoAcciones.ESPERANDO;
     	esta_ocupado = false;
     }
     
-    public JuegoAccionEstado get_Estado()
+    public TipoEstadoAcciones get_Estado()
     {
         if(!esta_ocupado)
             return estado;
         else
-            return estado != JuegoAccionEstado.ESPERANDO ? estado : JuegoAccionEstado.ESPERANDO;
+            return estado != TipoEstadoAcciones.ESPERANDO ? estado : TipoEstadoAcciones.ESPERANDO;
     }
     
-    public void set_Estado(JuegoAccionEstado _estado) 
+    public void set_Estado(TipoEstadoAcciones _estado) 
     {
     	estado = _estado;
     }
@@ -98,6 +99,8 @@ public class JuegoAccionManejador
             if (!tiene_error)
             {
             	juego_accion.get_Correcto(args);
+            	estado = TipoEstadoAcciones.ESPERANDO;
+            	
                 if (acciones_actuales.size() > acciones_actuales.indexOf(juego_accion) + 1)
                 	get_Iniciar_Accion(acciones_actuales.get(acciones_actuales.indexOf(juego_accion) + 1));
                 
@@ -118,7 +121,7 @@ public class JuegoAccionManejador
         	acciones.get_Cancelar(args);
         }
         acciones_actuales.clear();
-        set_Estado(JuegoAccionEstado.ESPERANDO);
+        estado = TipoEstadoAcciones.ESPERANDO;
     }
     
     public int get_Siguiente_Accion_Id()

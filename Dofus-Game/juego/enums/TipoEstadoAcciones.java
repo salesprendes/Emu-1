@@ -1,6 +1,6 @@
-package juego.acciones;
+package juego.enums;
 
-public enum JuegoAccionEstado
+public enum TipoEstadoAcciones
 {
 	ESPERANDO,
 	DESPLAZANDO,

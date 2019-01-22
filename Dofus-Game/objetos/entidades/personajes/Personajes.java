@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-import juego.acciones.JuegoAccionManejador;
+import juego.acciones.JuegoAccion;
 import juego.enums.EstadosJuego;
 import juego.enums.TipoCanales;
 import juego.enums.TipoDirecciones;
@@ -37,7 +37,7 @@ public class Personajes implements Entidades
 	private Alineamientos alineamiento;
 	private Stats stats_principales;
 	private TipoDirecciones orientacion = TipoDirecciones.ABAJO_DERECHA;
-	private final JuegoAccionManejador juego_acciones;
+	private final JuegoAccion juego_acciones;
 	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
 
 	/** Caches **/
@@ -89,7 +89,7 @@ public class Personajes implements Entidades
 		if(cuenta != null)
 			cuenta.agregar_Personaje(this);
 		
-		juego_acciones = new JuegoAccionManejador(this);
+		juego_acciones = new JuegoAccion(this);
 		personajes_cargados.put(id, this);
 	}
 
@@ -335,7 +335,7 @@ public class Personajes implements Entidades
 		return items;
 	}
 	
-	public JuegoAccionManejador get_Juego_Acciones()
+	public JuegoAccion get_Juego_Acciones()
 	{
 		return juego_acciones;
 	}

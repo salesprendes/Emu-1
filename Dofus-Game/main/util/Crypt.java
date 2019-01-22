@@ -26,16 +26,16 @@ public class Crypt
 	
 	public static int get_ordinal(final char c) 
 	{
-		if (c >= 'a' && c <= 'z') 
+		if (c >= 'a' && c <= 'z')
 			return c - 'a';
 
-		if (c >= 'A' && c <= 'Z') 
+		if (c >= 'A' && c <= 'Z')
 			return c - 'A' + 26;
 
-		if (c >= '0' && c <= '9') 
+		if (c >= '0' && c <= '9')
 			return c - '0' + 52;
 
-		switch (c) 
+		switch (c)
 		{
 			case '-':
 				return 62;
