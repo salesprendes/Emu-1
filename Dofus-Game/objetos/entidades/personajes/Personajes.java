@@ -48,7 +48,7 @@ public class Personajes implements Entidades
 
 	private static final ConcurrentHashMap<Integer, Personajes> personajes_cargados = new ConcurrentHashMap<Integer, Personajes>();
 
-	public Personajes(final int _id, final String _nombre, final int _color_1, final int _color_2, final int _color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final Map<Integer, Integer> _stats_principales, final int _emotes, final String _canales, final int cuenta_id, final short derecho_id, final short restriccion_id, final short servidor_id)
+	public Personajes(final int _id, final String _nombre, final int _color_1, final int _color_2, final int _color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final Map<Integer, Integer> _stats_principales, final int _emotes, final String _canales, final int cuenta_id, final int derecho_id, final short restriccion_id, final short servidor_id)
 	{
 		id = _id;
 		nombre = _nombre;
@@ -365,7 +365,7 @@ public class Personajes implements Entidades
 				cuenta.get_Juego_socket().enviar_Paquete("ZS" + especialidad.get_Id());
 			
 			cuenta.get_Juego_socket().enviar_Paquete("cC+" + canales + (nivel <= 16 ? TipoCanales.INCARNAM.get_Identificador() : "") + (cuenta.get_Rango_cuenta() > 0 ? TipoCanales.ADMINISTRADOR.get_Identificador() + TipoCanales.MEETIC.get_Identificador() : ""));
-			cuenta.get_Juego_socket().enviar_Paquete("AR" + derechos.get_Derechos());
+			cuenta.get_Juego_socket().enviar_Paquete("AR" + derechos.get_Convertir_Base36());
 			cuenta.get_Juego_socket().enviar_Paquete("eL" + emotes.get());//Lista emotes
 			cuenta.get_Juego_socket().enviar_Paquete("Im189");// Im bienvenida dofus
 			cuenta.get_Juego_socket().enviar_Paquete("Im0153;" + cuenta.get_Ip());

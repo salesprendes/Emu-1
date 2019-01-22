@@ -1,6 +1,7 @@
 package juego.acciones;
 
 import juego.enums.TipoDirecciones;
+import objetos.entidades.personajes.Derechos;
 import objetos.entidades.personajes.Personajes;
 import objetos.mapas.pathfinding.Camino;
 import objetos.mapas.pathfinding.PathFinding;
@@ -35,10 +36,13 @@ public class Desplazamiento implements JuegoAcciones
 		//verifica si en el camino hay obstaculos si lo hay lo detiene
 		pathfinding = pathfinding.get_Mantener_Mientras_Cumpla_Condicion(celdas -> celdas.get_Celda().get_Es_Caminable());
 		
-		//el primer valor siempre es "a" entonces lo quita y solo se podra mover en linea
-		if(!personaje.get_Derechos().get_Puede_Moverse_Todas_Direcciones())
-			pathfinding.stream().skip(1).map(Camino::get_Direccion).allMatch(TipoDirecciones::get_Restringido);
-
+		//si no puede moverse en todas las direcciones y hay direcciones en diagonal 
+		if(!personaje.get_Derechos().get_Derechos(Derechos.PUEDE_MOVERSE_TODAS_DIRECCIONES) && pathfinding.stream().skip(1).map(Camino::get_Direccion).allMatch(TipoDirecciones::get_Restringido))
+		{
+			personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA;0");
+			return false;
+		}
+		
 		personaje.get_Mapa().get_Personajes().stream().filter(personaje -> personaje != null && personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA" + id + ';' + get_Accion_id() + ';' + personaje.get_Id() + ';' + pathfinding.get_Codificar()));
 		personaje.get_Juego_Acciones().set_Estado(JuegoAccionEstado.DESPLAZANDO);
 		return true;

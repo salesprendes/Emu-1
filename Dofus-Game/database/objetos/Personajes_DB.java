@@ -36,7 +36,7 @@ public class Personajes_DB extends DatabaseManager
 				stats_principales.put(119, query.get_Rs().getInt(21));
 				
 				//id(1), nombre(2), color1(3), color2(4), color3(5), nivel(6), gfx(7), tamano(8), mapa_id(9), celda_id(10), sexo(11), experiencia(12), kamas(13), porcentaje_vida(14), razaID(15), vitalidad(16), sabiduria(17), fuerza(18), inteligencia(19), suerte(20), agilidad(21), emotes(22), canales(23), cuentaID(24), derechos(25), derechos(26), servidorID(27)
-				new Personajes(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getInt(5), query.get_Rs().getShort(6), query.get_Rs().getShort(7), query.get_Rs().getShort(8), query.get_Rs().getShort(9), query.get_Rs().getShort(10), query.get_Rs().getByte(11), query.get_Rs().getLong(12), query.get_Rs().getLong(13), query.get_Rs().getByte(14), query.get_Rs().getByte(15), stats_principales, query.get_Rs().getInt(22), query.get_Rs().getString(23), query.get_Rs().getInt(24), query.get_Rs().getShort(25), query.get_Rs().getShort(26), query.get_Rs().getShort(27));
+				new Personajes(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getInt(5), query.get_Rs().getShort(6), query.get_Rs().getShort(7), query.get_Rs().getShort(8), query.get_Rs().getShort(9), query.get_Rs().getShort(10), query.get_Rs().getByte(11), query.get_Rs().getLong(12), query.get_Rs().getLong(13), query.get_Rs().getByte(14), query.get_Rs().getByte(15), stats_principales, query.get_Rs().getInt(22), query.get_Rs().getString(23), query.get_Rs().getInt(24), query.get_Rs().getInt(25), query.get_Rs().getShort(26), query.get_Rs().getShort(27));
 			}
 			cerrar(query);
 		}
