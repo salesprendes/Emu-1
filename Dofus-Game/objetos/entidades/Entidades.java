@@ -1,10 +1,12 @@
 package objetos.entidades;
 
+import juego.enums.TipoDirecciones;
+
 public interface Entidades
 {
 	public int get_Id();
 	public byte get_Tipo();
-	public byte get_Orientacion();
+	public TipoDirecciones get_Orientacion();
 	public short get_Mapa_Id();
 	public short get_Celda_Id();
 	

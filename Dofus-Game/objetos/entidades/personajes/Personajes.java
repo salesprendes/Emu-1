@@ -4,9 +4,10 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-import juego.Acciones.JuegoAccionManejador;
+import juego.acciones.JuegoAccionManejador;
 import juego.enums.EstadosJuego;
 import juego.enums.TipoCanales;
+import juego.enums.TipoDirecciones;
 import juego.enums.TipoStats;
 import main.consola.Consola;
 import objetos.Experiencia;
@@ -35,6 +36,7 @@ public class Personajes implements Entidades
 	private String canales;
 	private Alineamientos alineamiento;
 	private Stats stats_principales;
+	private TipoDirecciones orientacion = TipoDirecciones.SUR_ESTE;
 	private final JuegoAccionManejador juego_acciones;
 	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
 
@@ -134,7 +136,7 @@ public class Personajes implements Entidades
 
 		if (celda != null) 
 		{
-			celda.get_Eliminar_Personaje(this, mapa_diferente || get_Esta_Conectado());
+			celda.get_Eliminar_Personaje(this, mapa_diferente || !get_Esta_Conectado());
 		}
 		if (_celda != null) 
 		{
@@ -216,9 +218,14 @@ public class Personajes implements Entidades
 		return TipoEntidades.PERSONAJE.get_Tipo_Entidad();
 	}
 
-	public byte get_Orientacion()
+	public TipoDirecciones get_Orientacion()
 	{
-		return 0;
+		return orientacion;
+	}
+	
+	public TipoDirecciones set_Orientacion(TipoDirecciones _orientacion)
+	{
+		return orientacion = _orientacion;
 	}
 
 	public Mapas get_Mapa()
@@ -239,6 +246,11 @@ public class Personajes implements Entidades
 	public final short get_Celda_Id() 
 	{
 		return celda.get_Id();
+	}
+	
+	public Derechos get_Derechos()
+	{
+		return derechos;
 	}
 
 	public final Restricciones get_Restricciones()
@@ -436,7 +448,7 @@ public class Personajes implements Entidades
 
 			cache_gm = personaje.toString();
 		}
-		return new StringBuilder().append(celda.get_Id()).append(';').append(1).append(';').append(cache_gm).toString();
+		return new StringBuilder().append(celda.get_Id()).append(';').append(orientacion.ordinal()).append(';').append(cache_gm).toString();
 	}
 
 	public String get_Paquete_As()

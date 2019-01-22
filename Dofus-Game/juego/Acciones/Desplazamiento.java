@@ -1,73 +1,88 @@
-package juego.Acciones;
+package juego.acciones;
 
-import java.util.Arrays;
-import java.util.List;
-
-import main.util.Crypt;
+import juego.enums.TipoDirecciones;
 import objetos.entidades.personajes.Personajes;
 import objetos.mapas.pathfinding.Camino;
-import objetos.mapas.pathfinding.Descifrador;
 import objetos.mapas.pathfinding.PathFinding;
 
 public class Desplazamiento implements JuegoAcciones
 {
 	private final int id;
 	private final Personajes personaje;
-	private String args;
-	private int step;
+	private PathFinding pathfinding;
 
-	public Desplazamiento(final int _id, final Personajes _personaje, final String _args) 
+	public Desplazamiento(final int _id, final Personajes _personaje, final PathFinding _pathfinding) 
 	{
 		id = _id;
 		personaje = _personaje;
-		args = _args;
+		pathfinding = _pathfinding;
 	}
 
-	public boolean get_Esta_Iniciado()
+	public synchronized boolean get_Esta_Iniciado()
 	{
 		if(personaje.get_Juego_Acciones().get_Estado() != JuegoAccionEstado.ESPERANDO)
 		{
 			personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA;0");
             return false;
         }
-		final short celda_destino = Crypt.get_Hash_A_Celda_Id(args.substring(args.length() - 2));
-		List<Camino> camino = Arrays.asList(new Camino(personaje.get_Celda(), personaje.get_Celda().get_Direccion(personaje.get_Mapa().get_Celda(celda_destino))), new Camino(personaje.get_Mapa().get_Celda(celda_destino), personaje.get_Mapa().get_Celda(celda_destino).get_Direccion(personaje.get_Mapa().get_Celda(celda_destino))));
-		PathFinding pathfinding = new PathFinding(new Descifrador(personaje.get_Mapa()), camino);
 		
+		if (pathfinding.celda_objetivo().get_Id() == personaje.get_Celda_Id())
+		{
+			personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA;0");
+            return false;
+        }
 		
-		personaje.get_Mapa().get_Personajes().stream().filter(personaje -> personaje != null && personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA" + id + ';' + personaje.get_Id() + ";a" + pathfinding.get_Codificar()));
+		//verifica si en el camino hay obstaculos si lo hay lo detiene
+		pathfinding = pathfinding.get_Mantener_Mientras_Cumpla_Condicion(celdas -> celdas.get_Celda().get_Es_Caminable());
+		
+		//el primer valor siempre es "a" entonces lo quita y solo se podra mover en linea
+		if(!personaje.get_Derechos().get_Puede_Moverse_Todas_Direcciones())
+			pathfinding.stream().skip(1).map(Camino::get_Direccion).allMatch(TipoDirecciones::get_Restringido);
+
+		personaje.get_Mapa().get_Personajes().stream().filter(personaje -> personaje != null && personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA" + id + ';' + get_Accion_id() + ';' + personaje.get_Id() + ';' + pathfinding.get_Codificar()));
 		personaje.get_Juego_Acciones().set_Estado(JuegoAccionEstado.DESPLAZANDO);
-		return false;
+		return true;
 	}
 	
-	public void get_Cancelar()
+	public synchronized void get_Cancelar(String args)
 	{
-		// TODO Auto-generated method stub
-
+		if (!args.isEmpty()) 
+		{
+			try 
+			{
+				short celda_id = Short.parseShort(args);
+				
+				pathfinding.stream().filter(camino -> camino.get_Celda().get_Id() == celda_id).forEach(camino -> 
+				{
+					personaje.set_Celda(camino.get_Celda());
+					personaje.set_Orientacion(camino.get_Direccion());
+				});
+				
+				personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("BN");
+			}
+			catch(NumberFormatException e) 
+			{
+				personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("BN");
+				return;
+			}
+        }
 	}
 	
-	public void get_Fallo(String args)
+	public synchronized void get_Correcto(String args)
 	{
-		int nueva_celda_id = Integer.parseInt(args);
-		
+		personaje.set_Celda(pathfinding.celda_objetivo());
+		personaje.set_Orientacion(pathfinding.get_Anterior().get_Direccion());
 		personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("BN");
-	}
-	
-	public void get_Correcto(String args)
-	{
-		// TODO Auto-generated method stub
-
+		personaje.get_Juego_Acciones().set_Estado(JuegoAccionEstado.ESPERANDO);
 	}
 	
 	public int get_Id()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return id;
 	}
 	
 	public int get_Accion_id()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 }

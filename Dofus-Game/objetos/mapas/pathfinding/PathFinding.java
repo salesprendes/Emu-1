@@ -29,7 +29,7 @@ public class PathFinding implements Collection<Camino>
         return decodificador.get_Codificado(this);
     }
     
-    public PathFinding get_Nuevo_Camino(Predicate<Camino> condicion) 
+    public PathFinding get_Mantener_Mientras_Cumpla_Condicion(Predicate<Camino> condicion) 
     {
     	PathFinding nuevo_camino = new PathFinding(decodificador, new ArrayList<>(size()));
 
@@ -58,14 +58,14 @@ public class PathFinding implements Collection<Camino>
 		return pasos.addAll(celdas);
 	}
 	
-	public Camino anterior() 
+	public Camino get_Anterior() 
 	{
         return pasos.get(pasos.size() - 1);
     }
 	
 	public Celdas celda_objetivo() 
 	{
-        return anterior().get_Celda();
+        return get_Anterior().get_Celda();
     }
 
 	public void clear()

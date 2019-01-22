@@ -90,6 +90,11 @@ public class Celdas
 		return ground_nivel;
 	}
 
+	/**
+     * - 0 significa que no se puede caminar
+     * - 1 significa caminable, pero no en un camino
+     * - 2 a 5 significa diferentes niveles de celdas caminables. Más grande es el movimiento, más bajo es el peso en el path.
+     */
 	public byte get_Tipo_Movimiento() 
 	{
 		return tipo_movimiento;
@@ -129,6 +134,11 @@ public class Celdas
 	{
 		return layer_objeto_2_interactivo;
 	}
+	
+	public boolean get_Es_Caminable() 
+	{
+        return esta_activa && tipo_movimiento > 1;
+    }
 	
 	public void get_Agregar_Jugador(Personajes jugador, boolean agregar_mapa) 
 	{

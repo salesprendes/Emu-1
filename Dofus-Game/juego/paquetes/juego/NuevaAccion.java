@@ -5,7 +5,7 @@ import juego.paquetes.GestorPaquetes;
 import juego.paquetes.Paquete;
 
 @Paquete("GA")
-public class Acciones implements GestorPaquetes
+public class NuevaAccion implements GestorPaquetes
 {
 	public void analizar(JuegoSocket socket, String paquete)
 	{

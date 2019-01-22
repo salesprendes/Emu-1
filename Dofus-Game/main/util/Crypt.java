@@ -24,22 +24,7 @@ public class Crypt
 		return HASH[i];
 	}
 	
-	public static short get_Hash_A_Celda_Id(final String celdaCodigo) 
-	{
-		final char char1 = celdaCodigo.charAt(0), char2 = celdaCodigo.charAt(1);
-		short code1 = 0, code2 = 0, a = 0;
-		while (a < HASH.length) 
-		{
-			if (HASH[a] == char1) 
-				code1 = (short) (a * 64);
-			if (HASH[a] == char2)
-				code2 = a;
-			a++;
-		}
-		return (short) (code1 + code2);
-	}
-	
-	public static int get_ordinal(char c) 
+	public static int get_ordinal(final char c) 
 	{
 		if (c >= 'a' && c <= 'z') 
 			return c - 'a';
@@ -65,14 +50,14 @@ public class Crypt
 	
 	public static String get_codificar_String(short valor, final int anchura) 
 	{
-        char[] encoded = new char[anchura];
+        char[] codificado = new char[anchura];
 
         for (int i = anchura - 1; i >= 0; --i) 
         {
-            encoded[i] = HASH[valor & 63];
+        	codificado[i] = HASH[valor & 63];
             valor >>= 6;
         }
         
-        return new String(encoded);
+        return new String(codificado);
     }
 }

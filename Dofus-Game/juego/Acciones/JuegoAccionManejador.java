@@ -1,9 +1,10 @@
-package juego.Acciones;
+package juego.acciones;
 
 import java.util.ArrayList;
 
 import main.consola.Consola;
 import objetos.entidades.personajes.Personajes;
+import objetos.mapas.pathfinding.Descifrador;
 
 public class JuegoAccionManejador
 {
@@ -60,7 +61,7 @@ public class JuegoAccionManejador
     	switch (accion_id)
     	{
     		case 1:
-    			juego_accion = new Desplazamiento(id, personaje, args);
+    			juego_accion = new Desplazamiento(id, personaje, new Descifrador(personaje.get_Mapa()).get_Descodificado(args, personaje.get_Celda()));
             break;
             
     		default:
@@ -83,18 +84,18 @@ public class JuegoAccionManejador
         	acciones_actuales.remove(juego_accion);
     }
     
-    public void endAction(int accion_id, final boolean tiene_error)
+    public void get_Finalizar_Accion(int accion_id, final boolean tiene_error)
     {
     	get_Finalizar_Accion(accion_id, tiene_error, "");
     }
     
-    public void get_Finalizar_Accion(int accion_id, boolean tiene_error, String args)
+    public synchronized void get_Finalizar_Accion(int accion_id, boolean tiene_error, String args)
     {
     	JuegoAcciones juego_accion = acciones_actuales.get(accion_id);
     	
         if(juego_accion != null) 
         {
-            if (tiene_error) 
+            if (!tiene_error)
             {
             	juego_accion.get_Correcto(args);
                 if (acciones_actuales.size() > acciones_actuales.indexOf(juego_accion) + 1)
@@ -103,19 +104,18 @@ public class JuegoAccionManejador
                 if(acciones_actuales.contains(juego_accion))
                 	acciones_actuales.remove(juego_accion);
             } 
-            else 
+            else
             {
-            	juego_accion.get_Fallo(args);
-                get_Reset_Acciones();
+            	get_Cancelar_Acciones(args);
             }
         }
     }
     
-    public void get_Reset_Acciones()
+    public void get_Cancelar_Acciones(String args)
     {
-        for (JuegoAcciones actions : acciones_actuales)
+        for (JuegoAcciones acciones : acciones_actuales)
         {
-            actions.get_Cancelar();
+        	acciones.get_Cancelar(args);
         }
         acciones_actuales.clear();
         set_Estado(JuegoAccionEstado.ESPERANDO);

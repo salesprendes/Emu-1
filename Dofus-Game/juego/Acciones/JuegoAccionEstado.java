@@ -1,4 +1,4 @@
-package juego.Acciones;
+package juego.acciones;
 
 public enum JuegoAccionEstado
 {

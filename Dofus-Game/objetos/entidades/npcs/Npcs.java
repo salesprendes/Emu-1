@@ -2,6 +2,7 @@ package objetos.entidades.npcs;
 
 import java.util.StringJoiner;
 
+import juego.enums.TipoDirecciones;
 import objetos.entidades.Entidades;
 
 public class Npcs implements Entidades
@@ -9,9 +10,9 @@ public class Npcs implements Entidades
 	private final NpcsModelo modelo;
 	private short celda_id;
 	private final int id;
-	private byte orientacion;
+	private TipoDirecciones orientacion;
 	
-	public Npcs(final NpcsModelo _modelo, final int _id, final short _celda_id, final byte _orientacion)
+	public Npcs(final NpcsModelo _modelo, final int _id, final short _celda_id, final TipoDirecciones _orientacion)
 	{
 		modelo = _modelo;
 		id = _id;
@@ -24,7 +25,7 @@ public class Npcs implements Entidades
 		final StringJoiner npc = new StringJoiner(";").add((modificador ? "~" : "+"));
 		
 		npc.add(Short.toString(celda_id));
-		npc.add(Byte.toString(orientacion));
+		npc.add(Byte.toString((byte) orientacion.ordinal()));
 		npc.add("0");
 		npc.add(Integer.toString(id));
 		
@@ -46,7 +47,7 @@ public class Npcs implements Entidades
 		return TipoEntidades.NPC.get_Tipo_Entidad();
 	}
 
-	public byte get_Orientacion()
+	public TipoDirecciones get_Orientacion()
 	{
 		return orientacion;
 	}
