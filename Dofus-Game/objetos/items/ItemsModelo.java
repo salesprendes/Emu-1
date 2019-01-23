@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import juego.enums.TipoStats;
-
 public class ItemsModelo
 {
 	final private int id, kamas;
@@ -13,7 +11,7 @@ public class ItemsModelo
 	final private short nivel, pods, set;
 	final private List<ItemsModeloEfecto> efectos;
 	final private String condiciones, informacion_armas;
-	private final boolean es_magueable, es_eterea;
+	final private boolean es_magueable, es_eterea;
 
 	private static final Map<Integer, ItemsModelo> items_cargados = new HashMap<Integer, ItemsModelo>();
 
@@ -48,6 +46,11 @@ public class ItemsModelo
 	{
 		return kamas;
 	}
+	
+	public short get_Set()
+	{
+		return set;
+	}
 
 	public short get_Nivel()
 	{
@@ -74,23 +77,14 @@ public class ItemsModelo
 		return es_eterea;
 	}
 
-	public static int get_Stat_Similar(int statID) 
+	public List<ItemsModeloEfecto> get_Efectos()
 	{
-		switch (statID) 
-		{
-			case TipoStats.AGREGAR_PA2:
-				return TipoStats.AGREGAR_PA;
-				
-			case TipoStats.AGREGAR_DANOS2:
-				return TipoStats.AGREGAR_DANOS;
-				
-			case TipoStats.AGREGAR_PM2:
-				return TipoStats.AGREGAR_PM;
-				
-			case TipoStats.AGREGAR_DANOS_DEVUELTOS:
-				return TipoStats.AGREGAR_REENVIA_DANOS;
-		}
-		return statID;
+		return efectos;
+	}
+
+	public String get_Informacion_armas()
+	{
+		return informacion_armas;
 	}
 
 	public static Map<Integer, ItemsModelo> get_Items_Cargados()

@@ -1,18 +1,24 @@
 package database.objetos;
 
+import java.util.List;
 import java.util.TreeMap;
 
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
+import database.objetos.transformer.ItemEfectosTransformer;
+import database.objetos.transformer.Transformer;
 import main.Configuracion;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.personajes.Alineamientos;
 import objetos.entidades.personajes.Items;
 import objetos.entidades.personajes.Personajes;
+import objetos.items.ItemsModeloEfecto;
 
 public class Personajes_DB extends DatabaseManager
 {
+	final private Transformer<List<ItemsModeloEfecto>> efectos_transformados = new ItemEfectosTransformer();
+	
 	public Personajes_DB(HikariDataSource database_conexion) 
 	{
 		super(database_conexion);
@@ -69,7 +75,7 @@ public class Personajes_DB extends DatabaseManager
 			while(query.get_Rs().next())
 			{
 				//personaje_id(1), id_objeto(2), id_modelo_objeto(3), cantidad(4), posicion_inventario(5), stats(6)
-				Personajes.get_Personaje_Cargado(query.get_Rs().getInt(1)).get_objetos().put(query.get_Rs().getInt(2), new Items(query.get_Rs().getInt(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getByte(5), query.get_Rs().getString(6)));
+				Personajes.get_Personaje_Cargado(query.get_Rs().getInt(1)).get_objetos().put(query.get_Rs().getInt(2), new Items(query.get_Rs().getInt(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getByte(5), efectos_transformados.deserializar(query.get_Rs().getString(6))));
 			}
 			
 			cerrar(query);

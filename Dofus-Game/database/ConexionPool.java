@@ -14,7 +14,6 @@ import database.objetos.Monstruos_DB;
 import database.objetos.Personajes_DB;
 import database.objetos.Razas_DB;
 import database.objetos.SubAreas_DB;
-import database.objetos.transformer.ItemEfectosTransformer;
 import main.Configuracion;
 
 public class ConexionPool 
@@ -42,7 +41,7 @@ public class ConexionPool
 		razas = new Razas_DB(game_database);
 		alineamientos = new Alineamientos_DB(game_database);
 		experiencia = new Experiencia_DB(game_database);
-		items = new Items_DB(game_database, new ItemEfectosTransformer());
+		items = new Items_DB(game_database);
 		monstruos = new Monstruos_DB(game_database);
 	}
 	

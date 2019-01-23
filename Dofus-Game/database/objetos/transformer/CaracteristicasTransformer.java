@@ -1,7 +1,5 @@
 package database.objetos.transformer;
 
-import org.apache.commons.lang3.StringUtils;
-
 import juego.enums.TipoCaracteristica;
 import objetos.entidades.caracteristicas.Caracteristicas;
 import objetos.entidades.caracteristicas.DefaultCaracteristicas;
@@ -22,12 +20,12 @@ public class CaracteristicasTransformer
 
 		StringBuilder sb = new StringBuilder();
 
-		for (TipoCaracteristica characteristic : TipoCaracteristica.values()) 
+		for (TipoCaracteristica caracteristica : TipoCaracteristica.values()) 
 		{
-			int valor = caracteristicas.get(characteristic);
+			int valor = caracteristicas.get(caracteristica);
 			if (valor != 0) 
 			{
-				sb.append(Integer.toString(characteristic.get_Id(), SERIALIZADOR_BASE)).append(VALOR_SEPARADOR).append(Integer.toString(valor, SERIALIZADOR_BASE)).append(STATS_SEPARADOR);
+				sb.append(Integer.toString(caracteristica.get_Id(), SERIALIZADOR_BASE)).append(VALOR_SEPARADOR).append(Integer.toString(valor, SERIALIZADOR_BASE)).append(STATS_SEPARADOR);
 			}
 		}
 		return sb.toString();
@@ -42,11 +40,11 @@ public class CaracteristicasTransformer
         
         MutableCaracteristicas caracteristicas = new DefaultCaracteristicas();
 
-        for (String stats : StringUtils.split(serializado, STATS_SEPARADOR)) 
+        for (String stats : serializado.split(STATS_SEPARADOR)) 
         {
             if (!stats.isEmpty())
             {
-            	String[] data = StringUtils.split(stats, VALOR_SEPARADOR, 2);
+            	String[] data = stats.split(VALOR_SEPARADOR, 2);
                 caracteristicas.set(TipoCaracteristica.get_Id(Integer.parseInt(data[0], SERIALIZADOR_BASE)), Integer.parseInt(data[1], SERIALIZADOR_BASE));
             }
         }

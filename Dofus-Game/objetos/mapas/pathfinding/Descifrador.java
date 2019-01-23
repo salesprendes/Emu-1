@@ -19,7 +19,7 @@ public class Descifrador
 	{
 		short siguiente_celda_id = (short) (celda_inicial.get_Id() + direccion.get_Siguiente_Celda(mapa.get_Anchura()));
 		
-		if (siguiente_celda_id >= mapa.get_Celdas().length) 
+		if (siguiente_celda_id >= mapa.get_Celdas().length || siguiente_celda_id <= 0) 
 		{
 			Consola.println("celda en el path invalido");
 			return null;
@@ -38,7 +38,10 @@ public class Descifrador
 
         PathFinding camino = new PathFinding(this);
         short siguiente_celda = (short) ((Crypt.get_ordinal(path_codificado.charAt(1)) & 15) << 6 | Crypt.get_ordinal(path_codificado.charAt(2)));
-        TipoDirecciones direccion = celda_inicial.get_Direccion(mapa.get_Celda(siguiente_celda));
+        TipoDirecciones direccion = null;
+       
+        if(siguiente_celda < mapa.get_Celdas().length && siguiente_celda >= 0)
+        	direccion = celda_inicial.get_Direccion(mapa.get_Celda(siguiente_celda));
         
         if(direccion != null)
         	camino.add(new Camino(celda_inicial, direccion));
@@ -50,12 +53,12 @@ public class Descifrador
         	direccion = TipoDirecciones.get_Direccion_Desde_Char(path_codificado.charAt(i));
         	siguiente_celda = (short) ((Crypt.get_ordinal(path_codificado.charAt(i + 1)) & 15) << 6 | Crypt.get_ordinal(path_codificado.charAt(i + 2)));
         
-        	if (siguiente_celda < 0 || siguiente_celda >= mapa.get_Celdas().length) 
+        	if (siguiente_celda <= 0 || siguiente_celda >= mapa.get_Celdas().length) 
         	{
         		Consola.println("celda no existente en el mapa");
     			return null;
             }
-        	
+ 
         	get_Crear_Camino(camino, camino.celda_objetivo(), mapa.get_Celda(siguiente_celda), direccion);
         }
         return camino;
@@ -84,18 +87,21 @@ public class Descifrador
 	
 	private void get_Crear_Camino(PathFinding path, Celdas celda_inicio, Celdas celda_destino, TipoDirecciones direccion)
 	{
-        int limite_pasos =  2 * mapa.get_Anchura() + 1;
+		int limite_pasos =  2 * mapa.get_Anchura() + 1;
 
-        while (!celda_inicio.equals(celda_destino))
-        {
-        	celda_inicio = get_Siguiente_Celda_Desde_Direccion(celda_inicio, direccion);
-            path.add(new Camino(celda_inicio, direccion));
+		while (!celda_inicio.equals(celda_destino))
+		{
+			celda_inicio = get_Siguiente_Celda_Desde_Direccion(celda_inicio, direccion);
+			if(celda_inicio != null)
+			{
+				path.add(new Camino(celda_inicio, direccion));
 
-            if (--limite_pasos < 0) 
-            {
-            	Consola.println("path invalido: mala direccion");
-    			return;
-            }
-        }
-    }
+				if (--limite_pasos < 0) 
+				{
+					Consola.println("path invalido: mala direccion");
+					return;
+				}
+			}
+		}
+	}
 }

@@ -1,8 +1,10 @@
 package objetos.entidades.personajes;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import juego.acciones.JuegoAccion;
 import juego.enums.EstadosJuego;
@@ -184,6 +186,11 @@ public class Personajes implements Entidades
 		color_3 = _color_3;
 		get_Limpiar_Cache_Gm();
 	}
+	
+	public String[] get_Array_Colores() 
+	{
+        return Arrays.stream(new int[] {color_1, color_2, color_3}).mapToObj(valor -> valor == -1 ? "-1" : Integer.toHexString(valor)).toArray(String[]::new);
+    }
 
 	public Cuentas get_Cuenta()
 	{
@@ -401,10 +408,8 @@ public class Personajes implements Entidades
 		paquete.add(Integer.toString(raza.get_Id()));
 		paquete.add(Integer.toString(sexo));//Sexo
 		paquete.add(Integer.toString(gfx));
-		paquete.add((color_1 == -1 ? "-1" : Integer.toHexString(color_1)));
-		paquete.add((color_2 == -1 ? "-1" : Integer.toHexString(color_2)));
-		paquete.add((color_3 == -1 ? "-1" : Integer.toHexString(color_3)));
-		paquete.add(get_Items_Ask());
+		paquete.add(String.join("|", get_Array_Colores()));
+		paquete.add(items.values().stream().map(Items::get_Item_String).collect(Collectors.joining(";")));
 
 		return paquete.toString();
 	}
@@ -418,9 +423,7 @@ public class Personajes implements Entidades
 		personaje.append(get_Nombre()).append(';');
 		personaje.append(nivel).append(';');
 		personaje.append(gfx).append(';');
-		personaje.append((color_1 != -1 ? Integer.toHexString(color_1) : "-1")).append(';');
-		personaje.append((color_2 != -1 ? Integer.toHexString(color_1) : "-1")).append(';');
-		personaje.append((color_3 != -1 ? Integer.toHexString(color_1) : "-1")).append(';');
+		personaje.append(String.join(";", get_Array_Colores()));
 		personaje.append("").append(';');//objetos
 		personaje.append(es_mercante ? 1 : 0).append(';');//mercante
 		personaje.append(servidor).append(';');
@@ -444,9 +447,7 @@ public class Personajes implements Entidades
 			personaje.append(get_Alineamiento_Orden_Nivel()).append(",").append(get_Alineamiento_Alas_Activadas_Nivel()).append(',');
 			personaje.append(nivel + id).append(',');
 			personaje.append(alineamiento != null ? (alineamiento.get_Deshonor() > 0 ? 1 : 0) : 0).append(';');
-			personaje.append((color_1 == -1 ? "-1" : Integer.toHexString(color_1))).append(';');
-			personaje.append((color_2 == -1 ? "-1" : Integer.toHexString(color_2))).append(';');
-			personaje.append((color_3 == -1 ? "-1" : Integer.toHexString(color_3))).append(';');
+			personaje.append(String.join(";", get_Array_Colores())).append(';');//3 - colores
 
 			cache_gm = personaje.toString();
 		}
@@ -487,16 +488,6 @@ public class Personajes implements Entidades
 		}
 	}
 	
-	private String get_Items_Ask()
-	{
-		StringBuilder str = new StringBuilder();
-		for (Items obj : items.values()) 
-		{
-			str.append(obj.get_String_Item());
-		}
-		return str.toString();
-	}
-	
 	public int get_Iniciativa() 
 	{
 		float fact = 4;
@@ -512,6 +503,7 @@ public class Personajes implements Entidades
 			fact = (float) vida / vida_maxima;
 			iniciativa *= fact;
 		}
+		
 		if (iniciativa < 0)
 			iniciativa = 0;
 		return 0;

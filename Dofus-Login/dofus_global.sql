@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 21/01/2019 12:32:08
+ Date: 23/01/2019 13:40:28
 */
 
 SET NAMES utf8mb4;
@@ -68,7 +68,7 @@ CREATE TABLE `cuentas`  (
 -- ----------------------------
 -- Records of cuentas
 -- ----------------------------
-INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2019-03-28 17:45:50', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '6zNICR53q0i49d49C', '127.0.0.1', 0, '2019-03-28 17:45:50', 4, b'0', 0);
 INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
 INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 0);
 INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', '', '127.0.0.1', 4, '2018-03-28 17:46:37', 4, b'0', 0);
@@ -106,9 +106,9 @@ CREATE TABLE `personajes`  (
   `restricciones` tinyint(3) NOT NULL DEFAULT 8 COMMENT 'numero de las restricciones que tiene el personaje',
   `servidor_id` int(4) NOT NULL,
   PRIMARY KEY (`id`, `nombre`) USING BTREE,
-  INDEX `id`(`id`) USING BTREE,
   INDEX `relacion_cuenta_personajes`(`cuenta_id`) USING BTREE,
   INDEX `relacion_servidor_personajes`(`servidor_id`) USING BTREE,
+  INDEX `id`(`id`) USING BTREE,
   CONSTRAINT `relacion_cuenta_personajes` FOREIGN KEY (`cuenta_id`) REFERENCES `cuentas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `relacion_servidor_personajes` FOREIGN KEY (`servidor_id`) REFERENCES `servidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
@@ -161,7 +161,7 @@ CREATE TABLE `personajes_items`  (
 -- ----------------------------
 -- Records of personajes_items
 -- ----------------------------
-INSERT INTO `personajes_items` VALUES (1, 1, 39, 1, -1, '');
+INSERT INTO `personajes_items` VALUES (1, 1, 65, 1, -1, '76#2#0#0#0d0+2,77#2#0#0#0d0+2,7b#2#0#0#0d0+2,7c#2#0#0#0d0+2,7e#2#0#0#0d0+2');
 
 -- ----------------------------
 -- Table structure for servidores
@@ -169,7 +169,7 @@ INSERT INTO `personajes_items` VALUES (1, 1, 39, 1, -1, '');
 DROP TABLE IF EXISTS `servidores`;
 CREATE TABLE `servidores`  (
   `id` int(4) NOT NULL COMMENT 'id del servidor',
-  `comunidad` tinyint(2) NOT NULL DEFAULT 4 COMMENT 'id de la comunidad',
+  `comunidad` tinyint(2) NOT NULL COMMENT 'id de la comunidad',
   `poblacion` tinyint(2) NOT NULL DEFAULT 0 COMMENT 'id de las plazas libres del servidor',
   `abono_necesario` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: el servidor solo aceptada cuentas abonadas',
   `ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL COMMENT 'ip del servidor de juego',

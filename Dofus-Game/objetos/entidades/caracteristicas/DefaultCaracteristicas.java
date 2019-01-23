@@ -4,7 +4,6 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import juego.enums.TipoCaracteristica;
-import objetos.entidades.personajes.Personajes;
 
 final public class DefaultCaracteristicas implements MutableCaracteristicas 
 {

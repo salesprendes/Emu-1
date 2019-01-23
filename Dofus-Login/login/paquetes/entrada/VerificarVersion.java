@@ -11,7 +11,6 @@ public class VerificarVersion implements GestorPaquetes
 {
 	public void analizar(LoginSocket jugador, String paquete)
 	{
-		System.out.println("asasaas");
 		if (paquete.equalsIgnoreCase("1.29.1"))
 		{
 			jugador.set_Estado_login(EstadosLogin.NOMBRE_CUENTA);

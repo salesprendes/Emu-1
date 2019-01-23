@@ -5,6 +5,7 @@ import java.util.List;
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
+import database.objetos.transformer.ItemEfectosTransformer;
 import database.objetos.transformer.Transformer;
 import main.consola.Consola;
 import objetos.items.ItemsModelo;
@@ -12,12 +13,11 @@ import objetos.items.ItemsModeloEfecto;
 
 public class Items_DB extends DatabaseManager
 {
-	final private Transformer<List<ItemsModeloEfecto>> efectos_transformados;
+	final private Transformer<List<ItemsModeloEfecto>> efectos_transformados = new ItemEfectosTransformer();
 	
-	public Items_DB(final HikariDataSource database_conexion, Transformer<List<ItemsModeloEfecto>> _efectos_transformados) 
+	public Items_DB(final HikariDataSource database_conexion) 
 	{
 		super(database_conexion);
-		efectos_transformados = _efectos_transformados;
 	}
 	
 	public void get_Cargar_Todos_Items()
