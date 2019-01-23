@@ -37,7 +37,6 @@ public class Main
 	public static void main(String[] args) 
 	{
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> cerrar_Emulador()));
-		Consola.println("Emulador libre y publico GitHub: www.github.com/salesprendes/Emu-1");
 		
 		Consola.print("Cargando la configuración: ");
 		if(Configuracion.cargar_Configuracion())

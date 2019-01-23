@@ -7,12 +7,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import juego.acciones.JuegoAccion;
 import juego.enums.EstadosJuego;
 import juego.enums.TipoCanales;
+import juego.enums.TipoCaracteristica;
 import juego.enums.TipoDirecciones;
-import juego.enums.TipoStats;
 import main.consola.Consola;
 import objetos.Experiencia;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.Entidades;
+import objetos.entidades.caracteristicas.DefaultCaracteristicas;
+import objetos.entidades.caracteristicas.MutableCaracteristicas;
 import objetos.mapas.Celdas;
 import objetos.mapas.Mapas;
 
@@ -35,7 +37,7 @@ public class Personajes implements Entidades
 	final private Emotes emotes;
 	private String canales;
 	private Alineamientos alineamiento;
-	private Stats stats_principales;
+	private MutableCaracteristicas stats_principales;
 	private TipoDirecciones orientacion = TipoDirecciones.ABAJO_DERECHA;
 	private final JuegoAccion juego_acciones;
 	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
@@ -62,7 +64,7 @@ public class Personajes implements Entidades
 		experiencia = _experiencia;
 		kamas = _kamas;
 		raza = Razas.get_Razas_Cargadas(_raza_id);
-		stats_principales = new Stats(_stats_principales, true, this);
+		stats_principales = new DefaultCaracteristicas();
 		emotes = new Emotes(_emotes);
 		canales = _canales;
 		cuenta = Cuentas.get_Cuenta_Cargada(cuenta_id);
@@ -322,10 +324,10 @@ public class Personajes implements Entidades
 	
 	public void get_Actualizar_Vida_Maxima() 
 	{
-		puntos_vida_maxima = (nivel-1) * 5 + raza.get_Vida_base() + stats_principales.get_Mostrar_Stat(TipoStats.AGREGAR_VIDA) + stats_principales.get_Mostrar_Stat(TipoStats.AGREGAR_VIDA);
+		puntos_vida_maxima = (nivel - 1) * 5 + raza.get_Vida_base() + stats_principales.get(TipoCaracteristica.VITALIDAD) + stats_principales.get(TipoCaracteristica.VITALIDAD);
 	}
 
-	public Stats get_Stats_principales()
+	public MutableCaracteristicas get_Stats_principales()
 	{
 		return stats_principales;
 	}
@@ -467,24 +469,9 @@ public class Personajes implements Entidades
 			paquete.append(get_Iniciativa()).append('|');//iniciativa
 			paquete.append(0).append('|');//prospeccion
 			
-			final int[] array_stats =
+			for (TipoCaracteristica stat : TipoCaracteristica.values())
 			{
-				TipoStats.AGREGAR_PA, TipoStats.AGREGAR_PM, TipoStats.AGREGAR_FUERZA, TipoStats.AGREGAR_VITALIDAD, 
-				TipoStats.AGREGAR_SABIDURIA, TipoStats.AGREGAR_SUERTE, TipoStats.AGREGAR_AGILIDAD, TipoStats.AGREGAR_INTELIGENCIA, 
-				TipoStats.AGREGAR_ALCANCE, TipoStats.AGREGAR_CRIATURAS_INVOCABLES, TipoStats.AGREGAR_DANOS, TipoStats.AGREGAR_DANO_FISICO, 
-				TipoStats.AGREGAR_DOMINIO_ARMAS, TipoStats.AGREGAR_PORC_DANOS, TipoStats.AGREGAR_CURAS, TipoStats.AGREGAR_DANOS_TRAMPA, 
-				TipoStats.AGREGAR_PORC_DANOS_TRAMPA, TipoStats.AGREGAR_REENVIA_DANOS, TipoStats.AGREGAR_GOLPES_CRITICOS, TipoStats.AGREGAR_FALLOS_CRITICOS, 
-				TipoStats.AGREGAR_ESQUIVA_PERD_PA, TipoStats.AGREGAR_ESQUIVA_PERD_PM, TipoStats.AGREGAR_RES_FIJA_NEUTRAL, TipoStats.AGREGAR_RES_PORC_NEUTRAL, 
-				TipoStats.AGREGAR_RES_FIJA_PVP_NEUTRAL, TipoStats.AGREGAR_RES_PORC_PVP_NEUTRAL, TipoStats.AGREGAR_RES_FIJA_TIERRA, TipoStats.AGREGAR_RES_PORC_TIERRA, 
-				TipoStats.AGREGAR_RES_FIJA_PVP_TIERRA, TipoStats.AGREGAR_RES_PORC_PVP_TIERRA, TipoStats.AGREGAR_RES_FIJA_AGUA, TipoStats.AGREGAR_RES_PORC_AGUA, 
-				TipoStats.AGREGAR_RES_FIJA_PVP_AGUA, TipoStats.AGREGAR_RES_PORC_PVP_AGUA, TipoStats.AGREGAR_RES_FIJA_AIRE, TipoStats.AGREGAR_RES_PORC_AIRE, 
-				TipoStats.AGREGAR_RES_FIJA_PVP_AIRE, TipoStats.AGREGAR_RES_PORC_PVP_AIRE, TipoStats.AGREGAR_RES_FIJA_FUEGO, TipoStats.AGREGAR_RES_PORC_FUEGO, 
-				TipoStats.AGREGAR_RES_FIJA_PVP_FUEGO, TipoStats.AGREGAR_RES_PORC_PVP_FUEGO
-			};
-			
-			for (final int s : array_stats)
-			{
-				paquete.append(stats_principales.get_Mostrar_Stat(s)).append(',').append(0).append(',').append(0).append(',').append(0).append(',').append(0).append('|');
+				paquete.append(stats_principales.get(stat)).append(',').append(0).append(',').append(0).append(',').append(0).append(',').append(0).append('|');
 			}
 			
 			cache_as = paquete.toString();
