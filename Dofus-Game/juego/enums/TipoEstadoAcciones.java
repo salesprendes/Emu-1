@@ -1,0 +1,15 @@
+package juego.enums;
+
+public enum TipoEstadoAcciones
+{
+	ESPERANDO,
+	DESPLAZANDO,
+	ATACANDO,
+	DEFENDIENDO,
+	ANIMACION,
+	INTERCAMBIANDO,
+	OCUPADO,
+	FANTASMA,
+	CRAFTEANDO,
+	DIALOGO
+}
