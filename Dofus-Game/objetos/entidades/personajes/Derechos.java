@@ -22,13 +22,18 @@ final public class Derechos
 	{
 		valor_derechos = derecho;
 	}
+	
+	public int get_Valor_Derechos()
+	{
+		return valor_derechos;
+	}
 
 	public boolean get_Derechos(int condicion)
 	{
 		return (valor_derechos & condicion) == condicion;
 	}
 	
-	public void set_Derechos(final int restriccion, final int modificado) 
+	public void set_Derechos(final int restriccion, final int modificado)
 	{
 		valor_derechos = (valor_derechos | restriccion) ^ (restriccion ^ modificado);
 	}

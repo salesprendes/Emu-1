@@ -20,7 +20,7 @@ public class DatabaseManager
 	
 	protected void ejecutar_Update_Insert(String query)
 	{
-		synchronized (bloqueo) 
+		synchronized (bloqueo)
 		{
 			Connection conexion = null;
 			Statement statement = null;

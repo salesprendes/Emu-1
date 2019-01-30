@@ -10,6 +10,7 @@ import juego.JuegoSocket;
 import juego.fila.Nodo;
 import main.Main;
 import objetos.entidades.personajes.Personajes;
+import objetos.entidades.personajes.Razas;
 
 final public class Cuentas 
 {
@@ -158,11 +159,17 @@ final public class Cuentas
 	{
 		idioma_cliente = _idioma_cliente;
 	}
+	
+	public byte get_Max_Creacion_Personajes_Total() 
+	{
+		return Main.get_Database().get_Cuentas().get_Max_Pjs_Creacion(id);
+	}
 
 	public void agregar_Personaje(final Personajes personaje)
 	{
 		if (!personajes.containsKey(personaje.get_Id()))
 		{
+			System.out.println("personaje agregado: " + personaje.get_Id());
 			personajes.put(personaje.get_Id(), personaje);
 		}
 	}
@@ -173,6 +180,22 @@ final public class Cuentas
 		{
 			personajes.remove(id_personaje);
 		}
+	}
+	
+	public Personajes crearPersonaje(final String nombre, final byte clase, byte sexo, int color_1, int color_2, int color_3) 
+	{
+		color_1 = Math.min(16777215, Math.max(-1, color_1));
+		color_2 = Math.min(16777215, Math.max(-1, color_2));
+		color_3 = Math.min(16777215, Math.max(-1, color_3));
+		Razas raza = Razas.get_Razas_Cargadas(clase);
+		if (raza == null)
+			raza = Razas.get_Razas_Cargadas((byte) 1);
+		
+		final Personajes personaje = Personajes.crear_Personaje(id, nombre, color_1, color_2, color_3, raza, (byte) (sexo != 0 ? 1 : 0));
+		
+		if (personaje != null)
+			agregar_Personaje(personaje);
+		return personaje;
 	}
 	
 	public final static ConcurrentHashMap<Integer, Cuentas> get_Cuentas_Cargadas() 

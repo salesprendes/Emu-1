@@ -1,5 +1,10 @@
 package database.objetos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.TreeMap;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -92,7 +97,7 @@ public class Personajes_DB extends DatabaseManager
 		boolean existe_personaje = false;
 		try 
 		{
-			final Ejecucion_Query query = ejecutar_Query_Select("select * FROM personajes WHERE nombre = '" + nombre_personaje + "'");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes WHERE nombre = '" + nombre_personaje + "'");
 			existe_personaje = query.get_Rs().next();
 			cerrar(query);
 		} 
@@ -114,6 +119,79 @@ public class Personajes_DB extends DatabaseManager
 		catch (final Exception e)
 		{
 			Consola.println("ERROR SQL: " + e.toString());
+		}
+	}
+	
+	public void get_Guardar_Personaje(final Personajes personaje)
+	{
+		synchronized (bloqueo)
+		{
+			Connection conexion = null;
+			PreparedStatement statement = null;
+			String query = null;
+			try 
+			{
+				query = "INSERT INTO personajes (nombre, color_1, color_2, color_3, nivel, gfx, tamano, mapa_id, celda_id, sexo, experiencia, kamas, porcentaje_vida, raza_id, vitalidad, sabiduria, fuerza, inteligencia, suerte, agilidad, emotes, canales, cuenta_id, derechos, restricciones, servidor_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+				conexion = database_conexion.getConnection();
+				statement = conexion.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+				
+				statement.setString(1, personaje.get_Nombre(false));
+				statement.setInt(2, personaje.get_Color_1());
+				statement.setInt(3, personaje.get_Color_2());
+				statement.setInt(4, personaje.get_Color_3());
+				statement.setInt(5, personaje.get_Nivel());
+				statement.setShort(6, personaje.get_Gfx());
+				statement.setShort(7, personaje.get_Tamano());
+				statement.setShort(8, personaje.get_Mapa_Id());
+				statement.setShort(9, personaje.get_Celda_Id());
+				statement.setByte(10, personaje.get_Sexo());
+				statement.setLong(11, personaje.get_Experiencia());
+				statement.setLong(12, personaje.get_Kamas());
+				statement.setByte(13, personaje.get_Porcentaje_Vida());
+				statement.setByte(14, personaje.get_Raza().get_Id());
+				
+				//Stats
+				statement.setInt(15, 0);//vitalidad(16)
+				statement.setInt(16, 0);//sabiduria(17)
+				statement.setInt(17, 0);// fuerza(18)
+				statement.setInt(18, 0);//inteligencia(19)
+				statement.setInt(19, 0);//suerte(20)
+				statement.setInt(20, 0);//agilidad(21)
+				
+				statement.setInt(21, personaje.get_Emotes().get());
+				statement.setString(22, personaje.get_Canales());
+				statement.setInt(23, personaje.get_Cuenta().get_Id());
+				statement.setInt(24, personaje.get_Derechos().get_Valor_Derechos());
+				statement.setInt(25, personaje.get_Restricciones().get_Restricciones());
+				statement.setInt(26, personaje.get_Servidor());
+				
+				statement.executeUpdate();
+				
+				try (ResultSet generatedKeys = statement.getGeneratedKeys()) 
+				{
+					if (generatedKeys.next())
+						personaje.set_Id(generatedKeys.getInt(1));
+		            else
+		                throw new SQLException("La creación del personaje falló, no se encontro ID");
+				}
+			}
+			catch(final SQLException e)
+			{
+				System.out.println(e);
+				try
+				{
+					if (conexion != null) 
+					{
+						conexion.rollback();
+					}
+				} 
+				catch (final Exception ignorar){}
+			}
+			finally 
+			{
+				cerrar_Statement(statement);
+				cerrar_Conexion(conexion);
+			}
 		}
 	}
 }

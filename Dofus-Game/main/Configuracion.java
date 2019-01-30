@@ -26,8 +26,8 @@ public class Configuracion
 	
 	/** ACCESO SERVIDOR **/
 	public static boolean ACTIVAR_FILA_DE_ESPERA = true;
-	public static int MAXIMOS_FILA_ESPERA = 100, SERVIDOR_ID = 601;
-	public static short PLAZAS_SERVIDOR = 1000;
+	public static int MAXIMOS_FILA_ESPERA = 100;
+	public static short PLAZAS_SERVIDOR = 1000, SERVIDOR_ID = 601;;
 	public static byte TIPO_COMUNIDAD = 4;
 	
 	/** ACCESO DATABASE LOGIN **/
@@ -63,7 +63,7 @@ public class Configuracion
 				DATABASE_PASSWORD_LOGIN	=	propiedades.getProperty("DATABASE_PASSWORD_LOGIN");
 				DATABASE_NOMBRE_LOGIN	=	propiedades.getProperty("DATABASE_NOMBRE_LOGIN");
 				
-				SERVIDOR_ID	=	Integer.valueOf(propiedades.getProperty("SERVIDOR_ID"));
+				SERVIDOR_ID	=	Short.valueOf(propiedades.getProperty("SERVIDOR_ID"));
 				
 				DATABASE_IP_GAME		=	propiedades.getProperty("DATABASE_IP_GAME");
 				DATABASE_PUERTO_GAME	=	Integer.valueOf(propiedades.getProperty("DATABASE_PUERTO_GAME"));
@@ -103,7 +103,7 @@ public class Configuracion
 			propiedades.setProperty("DATABASE_PASSWORD_LOGIN", DATABASE_PASSWORD_LOGIN);
 			propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
 			
-			propiedades.setProperty("SERVIDOR_ID", Integer.toString(SERVIDOR_ID));
+			propiedades.setProperty("SERVIDOR_ID", Short.toString(SERVIDOR_ID));
 			
 			propiedades.setProperty("DATABASE_IP_GAME", DATABASE_IP_GAME);
 			propiedades.setProperty("DATABASE_PUERTO_GAME", Integer.toString(DATABASE_PUERTO_GAME));

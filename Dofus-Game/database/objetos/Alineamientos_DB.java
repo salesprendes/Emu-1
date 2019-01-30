@@ -18,47 +18,59 @@ public class Alineamientos_DB extends DatabaseManager
 
 	public void get_Cargar_Todos_Alineamientos()
 	{
+		Ejecucion_Query query = null;
+		
 		try
 		{
-			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM alineamientos;");
+			query = ejecutar_Query_Select("SELECT * FROM alineamientos;");
 
 			while(query.get_Rs().next())
 			{
 				//Id(1), Area(2), Especial(3)
 				new AlineamientosModelo(query.get_Rs().getByte(1), Areas.get_Areas_Cargadas(query.get_Rs().getShort(2)), query.get_Rs().getBoolean(3));
 			}
-			cerrar(query);
 		}
 		catch (final Exception e)
 		{
 			Consola.println("ERROR SQL: " + e.toString());
 		}
+		finally 
+		{
+			cerrar(query);
+		}
 	}
 	
 	public void get_Cargar_Todas_Especialidades()
 	{
+		Ejecucion_Query query = null;
+		
 		try
 		{
-			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM especialidades;");
+			query = ejecutar_Query_Select("SELECT * FROM especialidades;");
 
 			while(query.get_Rs().next())
 			{
 				//id(1), nombre(2), orden(3), nivel(4), dones(5)
 				new Especialidades(query.get_Rs().getInt(1), query.get_Rs().getByte(3), query.get_Rs().getByte(4), query.get_Rs().getString(5));
 			}
-			cerrar(query);
 		}
 		catch (final Exception e)
 		{
 			Consola.println("ERROR SQL: " + e.toString());
 		}
+		finally 
+		{
+			cerrar(query);
+		}
 	}
 	
 	public void get_Cargar_Todos_Dones()
 	{
+		Ejecucion_Query query = null;
+		
 		try
 		{
-			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM dones;");
+			query = ejecutar_Query_Select("SELECT * FROM dones;");
 
 			while(query.get_Rs().next())
 			{
@@ -70,6 +82,10 @@ public class Alineamientos_DB extends DatabaseManager
 		catch (final Exception e)
 		{
 			Consola.println("ERROR SQL: " + e.toString());
+		}
+		finally 
+		{
+			cerrar(query);
 		}
 	}
 }

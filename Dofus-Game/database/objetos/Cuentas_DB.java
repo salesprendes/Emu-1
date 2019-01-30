@@ -74,20 +74,36 @@ public class Cuentas_DB extends DatabaseManager
 
 	public boolean get_Puede_Migrar(final int id_cuenta) 
 	{
+		boolean necesita_migracion = false;
+		
 		try 
 		{
-			boolean necesita_migracion = false;
-			
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT migracion FROM cuentas WHERE id = " + id_cuenta + ";");
 
 			if(query.get_Rs().next())
 				necesita_migracion = query.get_Rs().getBoolean(1);
 			
 			cerrar(query);
-			return necesita_migracion;
 		} 
 		catch(Exception e){}
-		return false;
+		return necesita_migracion;
+	}
+	
+	public byte get_Max_Pjs_Creacion(final int id_cuenta) 
+	{
+		byte max_pjs_creacion = 0;
+		
+		try 
+		{
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT personajes_total FROM cuentas WHERE id = " + id_cuenta + ";");
+
+			if(query.get_Rs().next())
+				max_pjs_creacion = query.get_Rs().getByte(1);
+			
+			cerrar(query);
+		} 
+		catch(Exception e){}
+		return max_pjs_creacion;
 	}
 	
 	public String get_Lista_Servidores_Otros_Personajes(int cuenta_id) 

@@ -3,6 +3,7 @@ package objetos.cuentas;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import java.util.TreeMap;
 
 final public class Migracion
@@ -48,7 +49,7 @@ final public class Migracion
 	
 	private void get_Paquete_AM() 
 	{
-		String[] personajes_paquete = lista_personajes.toString().substring(1).split("\\|");
+		String[] personajes_paquete = lista_personajes.toString().substring(1).split(Pattern.quote("|"));
 
 		for(final String personaje : personajes_paquete)
 		{

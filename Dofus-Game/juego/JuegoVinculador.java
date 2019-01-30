@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 import database.ConexionPool;
 import main.Configuracion;
@@ -126,7 +127,7 @@ final public class JuegoVinculador extends Thread implements Runnable
 			break;
 			
 			case 'M'://Migracion
-				String[] split_migracion = paquete.substring(2).split("\\|");
+				String[] split_migracion = paquete.substring(2).split(Pattern.quote("|"));
 				
 				switch(paquete.charAt(1)) 
 				{

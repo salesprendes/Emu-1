@@ -3,6 +3,7 @@ package objetos.entidades.personajes;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,8 @@ import juego.enums.EstadosJuego;
 import juego.enums.TipoCanales;
 import juego.enums.TipoCaracteristica;
 import juego.enums.TipoDirecciones;
+import main.Configuracion;
+import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.Entidades;
@@ -22,7 +25,7 @@ import objetos.mapas.Mapas;
 
 public class Personajes implements Entidades
 {
-	final private int id; // superara 32767 (4 bytes)
+	private int id; // superara 32767 (4 bytes)
 	private int color_1, color_2, color_3, puntos_stats, puntos_hechizos, puntos_vida, puntos_vida_maxima; // superara 32767 (4 bytes)
 	private short nivel, gfx, tamano; // no superara el maximo permitido 32767 (2 bytes)
 	private final short servidor;
@@ -52,10 +55,10 @@ public class Personajes implements Entidades
 
 	private static final ConcurrentHashMap<Integer, Personajes> personajes_cargados = new ConcurrentHashMap<Integer, Personajes>();
 
-	public Personajes(final int _id, final String _nombre, final int _color_1, final int _color_2, final int _color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final Map<Integer, Integer> _stats_principales, final int _emotes, final String _canales, final int cuenta_id, final int derecho_id, final short restriccion_id, final short servidor_id)
+	public Personajes(final int _id, final String _nombre_personaje, final int _color_1, final int _color_2, final int _color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final Map<Integer, Integer> _stats_principales, final int _emotes, final String _canales, final int cuenta_id, final int derecho_id, final short restriccion_id, final short servidor_id)
 	{
 		id = _id;
-		nombre = _nombre;
+		nombre = _nombre_personaje;
 		color_1 = _color_1;
 		color_2 = _color_2;
 		color_3 = _color_3;
@@ -89,18 +92,30 @@ public class Personajes implements Entidades
 			puntos_vida = puntos_vida_maxima;
 		else
 			puntos_vida = puntos_vida_maxima * _porcentaje_vida / 100;
-		
-		if(cuenta != null)
+
+		if(cuenta != null && id > 0)
 			cuenta.agregar_Personaje(this);
-		
+
 		juego_acciones = new JuegoAccion(this);
 		personajes_cargados.put(id, this);
+	}
+
+	public synchronized static Personajes crear_Personaje(final int cuenta_id, final String nombre_personaje, final int color_1, final int color_2, final int color_3, final Razas raza, final byte sexo)
+	{
+		Personajes nuevo_personaje = new Personajes(-1, nombre_personaje, color_1, color_2, color_3, /** nivel **/ (short)1, /** gfx**/ (short) ((10 * raza.get_Id()) + sexo), (short)100, raza.get_Mapa_id_comienzo(), raza.get_Celda_id_comienzo(), sexo, /** experiencia **/ (long)0, /** kamas**/ (long)0, /** porcentaje vida**/ (byte)100, raza.get_Id(), new TreeMap<Integer,Integer>(), 1, "*p?:", cuenta_id, 8192, (short)8, Configuracion.SERVIDOR_ID);
+		Main.get_Database().get_Personajes().get_Guardar_Personaje(nuevo_personaje);
+		return nuevo_personaje;
 	}
 
 	/** Get & Setters **/
 	public int get_Id() 
 	{
 		return id;
+	}
+
+	public void set_Id(int _id)//creacion de personaje
+	{
+		id = _id;
 	}
 
 	public String get_Nombre(final boolean mostrar_admin)
@@ -132,6 +147,16 @@ public class Personajes implements Entidades
 	{
 		gfx = _gfx;
 		get_Limpiar_Cache_Gm();
+	}
+
+	public long get_Experiencia()
+	{
+		return experiencia;
+	}
+
+	public void set_Experiencia(long _experiencia)
+	{
+		experiencia = _experiencia;
 	}
 
 	public synchronized void set_Celda(Celdas _celda)
@@ -170,27 +195,27 @@ public class Personajes implements Entidades
 			_color_1 = -1;
 		else if (_color_1 > 16777215)
 			_color_1 = 16777215;
-		
+
 		if (_color_2 < -1)
 			_color_2 = -1;
 		else if (_color_2 > 16777215)
 			_color_2 = 16777215;
-		
+
 		if (_color_3 < -1)
 			_color_3 = -1;
 		else if (_color_3 > 16777215)
 			_color_3 = 16777215;
-		
+
 		color_1 = _color_1;
 		color_2 = _color_2;
 		color_3 = _color_3;
 		get_Limpiar_Cache_Gm();
 	}
-	
+
 	public String[] get_Array_Colores() 
 	{
-        return Arrays.stream(new int[] {color_1, color_2, color_3}).mapToObj(valor -> valor == -1 ? "-1" : Integer.toHexString(valor)).toArray(String[]::new);
-    }
+		return Arrays.stream(new int[] {color_1, color_2, color_3}).mapToObj(valor -> valor == -1 ? "-1" : Integer.toHexString(valor)).toArray(String[]::new);
+	}
 
 	public Cuentas get_Cuenta()
 	{
@@ -231,10 +256,30 @@ public class Personajes implements Entidades
 	{
 		return orientacion;
 	}
-	
+
 	public TipoDirecciones set_Orientacion(TipoDirecciones _orientacion)
 	{
 		return orientacion = _orientacion;
+	}
+
+	public byte get_Sexo()
+	{
+		return sexo;
+	}
+
+	public void set_Sexo(byte _sexo)
+	{
+		sexo = _sexo;
+	}
+
+	public long get_Kamas()
+	{
+		return kamas;
+	}
+
+	public void set_Kamas(long _kamas)
+	{
+		kamas = _kamas;
 	}
 
 	public Mapas get_Mapa()
@@ -256,7 +301,7 @@ public class Personajes implements Entidades
 	{
 		return celda.get_Id();
 	}
-	
+
 	public Derechos get_Derechos()
 	{
 		return derechos;
@@ -265,6 +310,21 @@ public class Personajes implements Entidades
 	public final Restricciones get_Restricciones()
 	{
 		return restricciones;
+	}
+
+	public short get_Tamano()
+	{
+		return tamano;
+	}
+
+	public void set_Tamano(short _tamano)
+	{
+		tamano = _tamano;
+	}
+	
+	public final String get_Canales()
+	{
+		return canales;
 	}
 
 	public final Emotes get_Emotes()
@@ -322,13 +382,18 @@ public class Personajes implements Entidades
 		return (emotes.get() & ((int) Math.pow(2, emote - 1))) != 0;
 	}
 	
+	public byte get_Porcentaje_Vida() 
+	{
+		return (byte) Math.min(100, (100 * puntos_vida / puntos_vida_maxima));
+	}
+
 	public void get_Actualizar_Vida() 
 	{
 		final float porcentaje_vida = 100f * puntos_vida / puntos_vida_maxima;
 		get_Actualizar_Vida_Maxima();
 		puntos_vida = Math.round(puntos_vida_maxima * porcentaje_vida / 100);
 	}
-	
+
 	public void get_Actualizar_Vida_Maxima() 
 	{
 		puntos_vida_maxima = (nivel - 1) * 5 + raza.get_Vida_base() + stats_principales.get_Caracteristica(TipoCaracteristica.VITALIDAD) + stats_principales.get_Caracteristica(TipoCaracteristica.VITALIDAD);
@@ -343,7 +408,7 @@ public class Personajes implements Entidades
 	{
 		return items;
 	}
-	
+
 	public JuegoAccion get_Juego_Acciones()
 	{
 		return juego_acciones;
@@ -363,16 +428,16 @@ public class Personajes implements Entidades
 				es_mercante = false;
 				mapa.get_Personajes().forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|-" + id));
 			}
-			
+
 			cuenta.get_Juego_socket().get_Iniciar_Buffering();
-			
+
 			cuenta.set_Personaje_jugando(this);
 			cuenta.get_Juego_socket().enviar_Paquete(get_Paquete_Ask());
-			
+
 			Especialidades especialidad = Especialidades.get_Especialidad(get_Alineamiento_Orden(), get_Alineamiento_Orden_Nivel());
 			if (especialidad != null)
 				cuenta.get_Juego_socket().enviar_Paquete("ZS" + especialidad.get_Id());
-			
+
 			cuenta.get_Juego_socket().enviar_Paquete("cC+" + canales + (nivel <= 16 ? TipoCanales.INCARNAM.get_Identificador() : "") + (cuenta.get_Rango_cuenta() > 0 ? TipoCanales.ADMINISTRADOR.get_Identificador() + TipoCanales.MEETIC.get_Identificador() : ""));
 			cuenta.get_Juego_socket().enviar_Paquete("AR" + derechos.get_Convertir_Base36());
 			cuenta.get_Juego_socket().enviar_Paquete("eL" + emotes.get());//Lista emotes
@@ -393,7 +458,7 @@ public class Personajes implements Entidades
 		cuenta.get_Juego_socket().enviar_Paquete("GCK|1|" + get_Nombre(false));
 		cuenta.get_Juego_socket().enviar_Paquete("GDM|" + mapa.get_Id() + '|' + mapa.get_Fecha() + '|' + mapa.get_Key());
 		cuenta.get_Juego_socket().enviar_Paquete(get_Paquete_As());
-		
+
 		celda.get_Agregar_Jugador(this, true);
 	}
 
@@ -463,23 +528,23 @@ public class Personajes implements Entidades
 			paquete.append("As").append(get_Experiencia_Personaje(",")).append('|');
 			paquete.append(kamas).append('|').append(puntos_stats).append('|').append(puntos_hechizos).append('|');
 			paquete.append(get_Alineamiento_Id()).append('~').append(get_Alineamiento_Id()).append(',').append(get_Alineamiento_Orden_Nivel()).append(',').append(get_Grado_Alas()).append(',').append(get_Alineamiento_Honor()).append(',').append(get_Alineamiento_Deshonor()).append(',').append(get_Alineamiento_Tiene_Alas_Activadas()).append('|');
-			
+
 			get_Actualizar_Vida();
 			paquete.append(puntos_vida).append(',').append(puntos_vida_maxima).append('|');
 			paquete.append(10000).append(',').append(servidor == 22 ? 1 : 10000).append('|');//energia
 			paquete.append(get_Iniciativa()).append('|');//iniciativa
 			paquete.append(0).append('|');//prospeccion
-			
+
 			for (TipoCaracteristica stat : TipoCaracteristica.values())
 			{
 				paquete.append(stats_principales.get_Caracteristica(stat)).append(',').append(0).append(',').append(0).append(',').append(0).append(',').append(0).append('|');
 			}
-			
+
 			cache_as = paquete.toString();
 		}
 		return cache_as;
 	}
-	
+
 	public int get_Iniciativa() 
 	{
 		float fact = 4;
@@ -488,14 +553,14 @@ public class Personajes implements Entidades
 		if (raza.get_Id() == 11)//sacrogito
 			fact = 8;
 		int iniciativa = 0;
-		
+
 		if (vida_maxima > 0) 
 		{
 			iniciativa += vida_maxima / fact;
 			fact = (float) vida / vida_maxima;
 			iniciativa *= fact;
 		}
-		
+
 		if (iniciativa < 0)
 			iniciativa = 0;
 		return 0;
@@ -515,7 +580,7 @@ public class Personajes implements Entidades
 		}
 		return 0;
 	}
-	
+
 	public void get_Teleport(final short mapa_destino_id, final short celda_destino_id)
 	{
 		Mapas mapa_destino = Mapas.get_Mapas_Cargados(mapa_destino_id);
@@ -533,7 +598,7 @@ public class Personajes implements Entidades
 				mapa.get_Personajes().forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|-" + id));
 				mapa = mapa_destino;
 				set_Celda(mapa.get_Celda(celda_destino_id));
-				
+
 				cuenta.get_Juego_socket().enviar_Paquete("GA;2;" + id + ';');
 				cuenta.get_Juego_socket().enviar_Paquete("GDM|" + mapa.get_Id() + '|' + mapa.get_Fecha() + '|' + mapa.get_Key());
 				mapa.get_Personajes().forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));

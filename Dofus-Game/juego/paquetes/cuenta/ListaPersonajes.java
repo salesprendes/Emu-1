@@ -16,7 +16,7 @@ public class ListaPersonajes implements GestorPaquetes
 	{
 		Cuentas cuenta = socket.get_Cuenta();
 
-		if(cuenta != null && socket.get_Estado_Juego() != EstadosJuego.SELECCION_PERSONAJE)
+		if(cuenta != null && socket.get_Personaje() == null && socket.get_Estado_Juego() != EstadosJuego.SELECCION_PERSONAJE)
 		{
 			if(Configuracion.TIPO_COMUNIDAD != get_Comunidad_Idioma(cuenta.get_Idioma_cliente()))
 			{
@@ -39,7 +39,7 @@ public class ListaPersonajes implements GestorPaquetes
 				{
 					final StringBuilder paquete_enviado = new StringBuilder();
 					paquete_enviado.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size());
-					cuenta.get_Personajes().forEach(personaje -> paquete_enviado.append(personaje.get_Paquete_Alk()));
+					cuenta.get_Personajes().forEach(personajes -> paquete_enviado.append(personajes.get_Paquete_Alk()));
 
 					socket.enviar_Paquete(paquete_enviado.toString());
 					socket.set_Estado_Juego(EstadosJuego.SELECCION_PERSONAJE);
