@@ -69,7 +69,7 @@ public class Cuentas_DB extends DatabaseManager
 	
 	public void get_Actualizar_Campo(final String campo, final String valor, final int cuenta_id)
 	{
-		ejecutar_Update_Insert("UPDATE cuentas SET "  + campo + " = '" + valor + "' WHERE id = " + cuenta_id + ";");
+		ejecutar_Update("UPDATE cuentas SET "  + campo + " = '" + valor + "' WHERE id = " + cuenta_id + ";");
 	}
 
 	public boolean get_Puede_Migrar(final int id_cuenta) 

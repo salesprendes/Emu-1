@@ -169,7 +169,6 @@ final public class Cuentas
 	{
 		if (!personajes.containsKey(personaje.get_Id()))
 		{
-			System.out.println("personaje agregado: " + personaje.get_Id());
 			personajes.put(personaje.get_Id(), personaje);
 		}
 	}

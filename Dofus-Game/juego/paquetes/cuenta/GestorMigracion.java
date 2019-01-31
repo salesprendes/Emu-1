@@ -52,7 +52,7 @@ public class GestorMigracion implements GestorPaquetes
 				default:
 					String[] separador = paquete.substring(2).split("\\;");
 					String nombre = separador[1];
-					if(!Main.get_Database().get_Personajes().get_Comprobar_Existe_Nombre_Personaje(nombre))
+					if(!Main.get_Database().get_Personajes().get_Comprobar_Existe_Nombre_Personaje(nombre, Configuracion.SERVIDOR_ID))
 					{
 						
 					}

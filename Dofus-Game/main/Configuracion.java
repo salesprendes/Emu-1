@@ -48,12 +48,12 @@ public class Configuracion
 	{
 		try 
 		{
-			if(archivo_configuracion.exists())
+			propiedades = new Properties();
+			
+			try (FileInputStream fileInputStream = new FileInputStream(nombre_archivo))
 			{
-				propiedades = new Properties();
-				propiedades.load(new FileInputStream(nombre_archivo));
-				
-				//Puertos
+				propiedades.load(fileInputStream);
+
 				PUERTO_GAME		=	Integer.valueOf(propiedades.getProperty("PUERTO_GAME"));
 				PUERTO_COMUNICADOR	=	Integer.valueOf(propiedades.getProperty("PUERTO_COMUNICADOR"));
 				

@@ -18,7 +18,7 @@ public class DatabaseManager
 		database_conexion = _dataSource;
 	}
 	
-	protected void ejecutar_Update_Insert(String query)
+	protected void ejecutar_Update(String query)
 	{
 		synchronized (bloqueo)
 		{

@@ -41,8 +41,8 @@ public class CaracteristicasTransformer
         {
             if (!stats.isEmpty())
             {
-            	String[] data = stats.split(VALOR_SEPARADOR, 2);
-                caracteristicas.set_Caracteristica(TipoCaracteristica.get_Id(Integer.parseInt(data[0], SERIALIZADOR_BASE)), Integer.parseInt(data[1], SERIALIZADOR_BASE));
+            	String[] separador = stats.split(VALOR_SEPARADOR, 2);
+                caracteristicas.set_Caracteristica(TipoCaracteristica.get_Id(Integer.parseInt(separador[0], SERIALIZADOR_BASE)), Integer.parseInt(separador[1], SERIALIZADOR_BASE));
             }
         }
         return caracteristicas;

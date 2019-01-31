@@ -5,14 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.TreeMap;
 
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
+import juego.enums.TipoCaracteristica;
 import main.Configuracion;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
+import objetos.entidades.caracteristicas.DefaultCaracteristicas;
 import objetos.entidades.personajes.Alineamientos;
 import objetos.entidades.personajes.Items;
 import objetos.entidades.personajes.Personajes;
@@ -30,16 +31,17 @@ public class Personajes_DB extends DatabaseManager
 		{
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes WHERE servidor_id = " + Configuracion.SERVIDOR_ID +";");
 
-			TreeMap<Integer, Integer> stats_principales;
+			DefaultCaracteristicas stats_principales;
 			while(query.get_Rs().next())
 			{
-				stats_principales = new TreeMap<Integer, Integer>();
-				stats_principales.put(125, query.get_Rs().getInt(16));
-				stats_principales.put(118, query.get_Rs().getInt(17));
-				stats_principales.put(124, query.get_Rs().getInt(18));
-				stats_principales.put(126, query.get_Rs().getInt(19));
-				stats_principales.put(123, query.get_Rs().getInt(20));
-				stats_principales.put(119, query.get_Rs().getInt(21));
+				stats_principales = new DefaultCaracteristicas();
+				
+				stats_principales.set_Caracteristica(TipoCaracteristica.VITALIDAD, query.get_Rs().getInt(16));
+				stats_principales.set_Caracteristica(TipoCaracteristica.SABIDURIA, query.get_Rs().getInt(17));
+				stats_principales.set_Caracteristica(TipoCaracteristica.FUERZA, query.get_Rs().getInt(18));
+				stats_principales.set_Caracteristica(TipoCaracteristica.INTELIGENCIA, query.get_Rs().getInt(19));
+				stats_principales.set_Caracteristica(TipoCaracteristica.SUERTE, query.get_Rs().getInt(20));
+				stats_principales.set_Caracteristica(TipoCaracteristica.AGILIDAD, query.get_Rs().getInt(21));
 				
 				//id(1), nombre(2), color1(3), color2(4), color3(5), nivel(6), gfx(7), tamano(8), mapa_id(9), celda_id(10), sexo(11), experiencia(12), kamas(13), porcentaje_vida(14), razaID(15), vitalidad(16), sabiduria(17), fuerza(18), inteligencia(19), suerte(20), agilidad(21), emotes(22), canales(23), cuentaID(24), derechos(25), derechos(26), servidorID(27)
 				new Personajes(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getInt(5), query.get_Rs().getShort(6), query.get_Rs().getShort(7), query.get_Rs().getShort(8), query.get_Rs().getShort(9), query.get_Rs().getShort(10), query.get_Rs().getByte(11), query.get_Rs().getLong(12), query.get_Rs().getLong(13), query.get_Rs().getByte(14), query.get_Rs().getByte(15), stats_principales, query.get_Rs().getInt(22), query.get_Rs().getString(23), query.get_Rs().getInt(24), query.get_Rs().getInt(25), query.get_Rs().getShort(26), query.get_Rs().getShort(27));
@@ -92,12 +94,12 @@ public class Personajes_DB extends DatabaseManager
 		}
 	}
 	
-	public boolean get_Comprobar_Existe_Nombre_Personaje(final String nombre_personaje) 
+	public boolean get_Comprobar_Existe_Nombre_Personaje(final String nombre_personaje, final short servidor_id) 
 	{
 		boolean existe_personaje = false;
 		try 
 		{
-			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes WHERE nombre = '" + nombre_personaje + "'");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes WHERE nombre = '" + nombre_personaje + "' AND servidor_id = " + servidor_id + ";");
 			existe_personaje = query.get_Rs().next();
 			cerrar(query);
 		} 
@@ -112,7 +114,7 @@ public class Personajes_DB extends DatabaseManager
 	{
 		try
 		{
-			ejecutar_Update_Insert("DELETE FROM personajes where id = " + personaje_id +";");
+			ejecutar_Update("DELETE FROM personajes where id = " + personaje_id + ";");
 			Personajes.eliminar_Personaje_Cargado(personaje_id);
 			cuenta.eliminar_Personaje(personaje_id);
 		}

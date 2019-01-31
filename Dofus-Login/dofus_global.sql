@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 23/01/2019 13:40:28
+ Date: 31/01/2019 03:52:52
 */
 
 SET NAMES utf8mb4;
@@ -57,6 +57,7 @@ CREATE TABLE `cuentas`  (
   `abono` datetime(0) NOT NULL COMMENT 'Abono con fecha y tiempo para la cuenta',
   `comunidad` tinyint(2) NOT NULL DEFAULT 4 COMMENT 'id de la comunidad',
   `baneado` bit(1) NOT NULL DEFAULT b'0' COMMENT '0: No baneado\r\n1: Baneado',
+  `personajes_total` tinyint(3) NOT NULL DEFAULT 5 COMMENT 'numero total de personajes total que puede crear por cuenta',
   `migracion` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `index_nombre_usuario`(`usuario`) USING BTREE,
@@ -68,10 +69,10 @@ CREATE TABLE `cuentas`  (
 -- ----------------------------
 -- Records of cuentas
 -- ----------------------------
-INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '6zNICR53q0i49d49C', '127.0.0.1', 0, '2019-03-28 17:45:50', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 0);
-INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', '', '127.0.0.1', 4, '2018-03-28 17:46:37', 4, b'0', 0);
+INSERT INTO `cuentas` VALUES (1, 'test', '1', 'Aidemu', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2019-03-28 17:45:50', 4, b'0', 5, 0);
+INSERT INTO `cuentas` VALUES (2, 'tes', '1', 'ApodoActualizado', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2019-03-27 17:46:08', 4, b'0', 5, 0);
+INSERT INTO `cuentas` VALUES (3, 'caca', '1', 'apodo', '6zNICR53q0i49d49C', '127.0.0.1', 4, '2018-03-28 17:46:23', 4, b'0', 5, 0);
+INSERT INTO `cuentas` VALUES (4, 'vip', '1', 'vip1', '', '127.0.0.1', 4, '2018-03-28 17:46:37', 4, b'0', 5, 0);
 
 -- ----------------------------
 -- Table structure for personajes
@@ -105,20 +106,21 @@ CREATE TABLE `personajes`  (
   `derechos` int(5) NOT NULL DEFAULT 8192 COMMENT 'numero de los derechos que tiene el personaje',
   `restricciones` tinyint(3) NOT NULL DEFAULT 8 COMMENT 'numero de las restricciones que tiene el personaje',
   `servidor_id` int(4) NOT NULL,
-  PRIMARY KEY (`id`, `nombre`) USING BTREE,
+  PRIMARY KEY (`id`, `nombre`, `servidor_id`) USING BTREE,
   INDEX `relacion_cuenta_personajes`(`cuenta_id`) USING BTREE,
   INDEX `relacion_servidor_personajes`(`servidor_id`) USING BTREE,
   INDEX `id`(`id`) USING BTREE,
   CONSTRAINT `relacion_cuenta_personajes` FOREIGN KEY (`cuenta_id`) REFERENCES `cuentas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `relacion_servidor_personajes` FOREIGN KEY (`servidor_id`) REFERENCES `servidores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_spanish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of personajes
 -- ----------------------------
 INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', 11568205, 11568205, 11568205, 200, 10, 100, 7411, 250, 0, 0, 0, 100, 5, 900, 900, 900, 900, 900, 900, 1, '*p?:', 1, 8192, 8, 601);
-INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 10, 20, 100, 666, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 2, 8192, 8, 601);
-INSERT INTO `personajes` VALUES (3, 'test', -1, -1, -1, 1, 10, 100, 666, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 1, 8192, 8, 602);
+INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 10, 20, 100, 7411, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 2, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (3, 'test', -1, -1, -1, 1, 10, 100, 7411, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 3, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (4, 'Aidemu', 15461139, 0, 0, 1, 91, 100, 10292, 299, 1, 0, 0, 100, 9, 0, 0, 0, 0, 0, 0, 1, '*p?:', 1, 8192, 8, 601);
 
 -- ----------------------------
 -- Table structure for personajes_alineamientos

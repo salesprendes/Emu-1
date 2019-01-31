@@ -9,36 +9,6 @@ public class Stats
 {
 	private Map<Integer, Integer> stats = new TreeMap<Integer, Integer>();
 
-	public Stats(final boolean agregar_bases, final Personajes personaje)
-	{
-		stats = new TreeMap<Integer,Integer>();
-		if(agregar_bases)
-		{
-			byte puntos_accion = personaje.get_Raza().get_Pa_Base();
-			stats.put(TipoStats.AGREGAR_PA, personaje.get_Nivel() < 100 ? puntos_accion : puntos_accion + 1);
-			stats.put(TipoStats.AGREGAR_PM, (int) personaje.get_Raza().get_Pm_Base());
-			stats.put(TipoStats.AGREGAR_PROSPECCION, (int) personaje.get_Raza().get_Prospeccion_base());
-			stats.put(TipoStats.AGREGAR_PODS, 1000);
-			stats.put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
-			stats.put(TipoStats.AGREGAR_INICIATIVA, (int) personaje.get_Raza().get_Iniciativa_base());
-		}
-	}
-
-	public Stats(final Map<Integer, Integer> _stats, final boolean agregar_bases, final Personajes personaje)
-	{
-		stats = _stats;
-		if(agregar_bases)
-		{
-			byte puntos_accion = personaje.get_Raza().get_Pa_Base();
-			stats.put(TipoStats.AGREGAR_PA, personaje.get_Nivel() < 100 ? puntos_accion : puntos_accion + 1);
-			stats.put(TipoStats.AGREGAR_PM, (int) personaje.get_Raza().get_Pm_Base());
-			stats.put(TipoStats.AGREGAR_PROSPECCION, (int) personaje.get_Raza().get_Prospeccion_base());
-			stats.put(TipoStats.AGREGAR_PODS, 1000);
-			stats.put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
-			stats.put(TipoStats.AGREGAR_INICIATIVA, (int) personaje.get_Raza().get_Iniciativa_base());
-		}
-	}
-
 	public Stats(final Map<Integer, Integer> _stats)
 	{
 		stats = _stats;

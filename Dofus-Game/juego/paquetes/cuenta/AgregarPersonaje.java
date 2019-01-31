@@ -6,6 +6,7 @@ import juego.JuegoSocket;
 import juego.enums.EstadosJuego;
 import juego.paquetes.GestorPaquetes;
 import juego.paquetes.Paquete;
+import main.Configuracion;
 import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
@@ -35,7 +36,7 @@ public class AgregarPersonaje implements GestorPaquetes
 					return;
 				}
 				
-				if (Main.get_Database().get_Personajes().get_Comprobar_Existe_Nombre_Personaje(separador[0])) 
+				if (Main.get_Database().get_Personajes().get_Comprobar_Existe_Nombre_Personaje(separador[0], Configuracion.SERVIDOR_ID)) 
 				{
 					socket.enviar_Paquete("AAEa");
 					return;
@@ -73,7 +74,7 @@ public class AgregarPersonaje implements GestorPaquetes
 					socket.enviar_Paquete("AAK");
 					
 					final StringBuilder paquete_alk = new StringBuilder();
-					paquete_alk.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size());
+					paquete_alk.append("ALK" + cuenta.get_Fecha_abono() + '|').append(cuenta.get_Personajes().size());
 					cuenta.get_Personajes().forEach(personajes -> paquete_alk.append(personajes.get_Paquete_Alk()));
 					socket.enviar_Paquete(paquete_alk.toString());
 					

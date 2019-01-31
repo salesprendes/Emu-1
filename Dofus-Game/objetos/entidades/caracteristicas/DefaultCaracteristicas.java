@@ -16,11 +16,6 @@ final public class DefaultCaracteristicas implements Caracteristicas
 
 	public void set_Caracteristica(TipoCaracteristica caracteristica, int valor)
 	{
-		map.put(caracteristica, valor);
-	}
-
-	public void agregar_Caracteristica(TipoCaracteristica caracteristica, int valor)
-	{
 		map.put(caracteristica, map.getOrDefault(caracteristica, 0) + valor);
 	}
 

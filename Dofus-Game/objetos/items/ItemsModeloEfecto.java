@@ -8,7 +8,7 @@ final public class ItemsModeloEfecto
     final private int minimo, maximo, especial;
     final private String texto;
     
-    public ItemsModeloEfecto(final Efectos _efecto, final int _minimo, final int _maximo, final int _especial, final String _texto) 
+    public ItemsModeloEfecto(final Efectos _efecto, final int _minimo, final int _maximo, final int _especial, final String _texto)
     {
     	efecto = _efecto;
     	minimo = _minimo;

@@ -43,7 +43,7 @@ public class Main
 			Consola.println("correcta");
 		else
 		{
-			Consola.println("incorrecta, creando archivo de configuración por defecto");
+			Consola.println("creando archivo de configuración por defecto");
 			Configuracion.get_Archivo_configuracion().delete();
 			Configuracion.crear_Archivo_Configuracion();
 		}

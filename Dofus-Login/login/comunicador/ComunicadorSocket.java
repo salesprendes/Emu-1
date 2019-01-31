@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import login.enums.EstadosLogin;
 import main.Estados;
@@ -93,7 +94,7 @@ final public class ComunicadorSocket extends Thread implements Runnable
 								break;
 								
 								case 'T'://C|M|T|id_cuenta|servidor_id
-									String[] separador = paquete.substring(6).split("\\|");
+									String[] separador = paquete.substring(6).split(Pattern.quote("|"));
 									String cuenta = separador[0], lista_personajes = paquete.substring(paquete.indexOf('|' , paquete.indexOf('|') + 1) + 1);
 									Servidores servidor = Servidores.get_Servidores().get(Integer.parseInt(separador[1]));
 									

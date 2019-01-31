@@ -13,9 +13,10 @@ public class VerificarCreacionApodo
 		{
 			if(!paquete.toLowerCase().equals(jugador.get_Cuenta().get_Usuario().toLowerCase()))
 			{
-				if(paquete.matches("[A-Za-z0-9.@.-]+") && !Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("apodo", "apodo", paquete))
+				//mayusculas A-Z, minusculas a-z, numeros de 0-9 y guines permitidos
+				if(paquete.matches("[A-Za-z0-9-]+") && !Main.get_Database().get_Cuentas().get_Existe_Campo_Cuenta("apodo", "apodo", paquete))
 				{
-					jugador.get_Cuenta().set_Apodo(paquete);
+					jugador.get_Cuenta().set_Apodo(paquete.substring(0, 1).toUpperCase() + paquete.substring(1));
 					Main.get_Database().get_Cuentas().actualizar_Apodo(jugador.get_Cuenta());
 					jugador.get_Cuenta().set_Creando_apodo(false);
 					jugador.get_Cuenta().set_Fila_espera(true);
