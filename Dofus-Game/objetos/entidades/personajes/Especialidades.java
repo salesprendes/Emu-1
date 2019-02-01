@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import juego.enums.TipoCaracteristica;
+
 public class Especialidades
 {
 	private final int id;
@@ -27,7 +29,7 @@ public class Especialidades
 					String[] args = s.split(",");
 					byte don_id = Byte.parseByte(args[0]);
 					short don_nivel = Short.parseShort(args[1]);
-					short don_stat = Dones.get_Don_Stat(don_id);
+					TipoCaracteristica don_stat = TipoCaracteristica.get_Id(Dones.get_Don_Stat(don_id));
 					int valor = 0;
 					if (args.length > 2)
 						valor = Integer.parseInt(args[2]);

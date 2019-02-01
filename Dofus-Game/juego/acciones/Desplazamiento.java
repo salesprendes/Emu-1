@@ -47,7 +47,7 @@ public class Desplazamiento implements JuegoAcciones
 			return false;
 		}
 		
-		personaje.get_Mapa().get_Personajes().forEach(pj -> pj.get_Cuenta().get_Juego_socket().enviar_Paquete("GA" + id + ';' + get_Accion_id() + ';' + personaje.get_Id() + ';' + pathfinding.get_Codificar()));
+		personaje.get_Mapa().get_Personajes().forEach(pj -> pj.get_Cuenta().get_Juego_socket().enviar_Paquete("GA" + id + ';' + get_Accion_id() + ';' + personaje.get_Id() + ';' + pathfinding.get_Codificar(false)));
 		personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.DESPLAZANDO);
 		return true;
 	}
@@ -78,9 +78,9 @@ public class Desplazamiento implements JuegoAcciones
 	
 	public synchronized void get_Correcto(String args)
 	{
-		long tiempo_recorrido = pathfinding.get_Path_Tiempo(false), tiempo_local = (System.currentTimeMillis() - tiempo_inicio) + personaje.get_Cuenta().get_Juego_socket().get_ping();
-		
-		if(tiempo_recorrido <= tiempo_local)
+		long tiempo_local = (System.currentTimeMillis() - tiempo_inicio) + personaje.get_Cuenta().get_Juego_socket().get_ping();
+
+		if(pathfinding.get_Tiempo_recorrido() <= tiempo_local)
 		{
 			Celdas celda_destino = pathfinding.celda_objetivo();
 			personaje.set_Celda(celda_destino != null ? celda_destino : personaje.get_Celda());

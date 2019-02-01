@@ -81,22 +81,46 @@ public class Descifrador
 		return camino;
 	}
 
-	public String get_Codificado(PathFinding path) 
+	public String get_Codificado(final PathFinding path, final boolean esta_con_montura) 
 	{
+		boolean esta_caminando = path.size() < 6;
+    	int tiempo = 0;
 		StringBuilder path_codificado = new StringBuilder(path.size() * 3);//1(direccion) + 2 (celda)
-
-		for (int i = 0; i < path.size(); ++i) 
+		
+		Celdas celda_anterior = path.get(0).get_Celda();
+		path_codificado.append(path.get(0).get_Direccion().get_Direccion_Char()).append(Crypt.get_codificar_String(celda_anterior.get_Id(), 2));
+		
+		for (int i = 1; i < path.size(); ++i)
 		{
 			Camino paso = path.get(i);
 			path_codificado.append(paso.get_Direccion().get_Direccion_Char());
-
+			
+			Celdas celda_siguiente = paso.get_Celda();
+			TipoDirecciones direccion = celda_anterior.get_Direccion(celda_siguiente);
+			tiempo += 25 / (esta_con_montura ? direccion.get_Velocidad_Montura() : esta_caminando ? direccion.get_Velocidad_Caminando() : direccion.get_Velocidad_Corriendo());
+			
+			if (celda_anterior.get_Ground_nivel() < celda_siguiente.get_Ground_nivel())
+				tiempo += 100;
+			else if (celda_siguiente.get_Ground_nivel() > celda_anterior.get_Ground_nivel())
+				tiempo -= 100;
+			else if (celda_anterior.get_Ground_Slope() != celda_siguiente.get_Ground_Slope())
+			{
+				if (celda_anterior.get_Ground_Slope() == 1)
+					tiempo += 100;
+				else if (celda_siguiente.get_Ground_Slope() == 1)
+					tiempo -= 100;
+			}
+			
 			while (i + 1 < path.size() && path.get(i + 1).get_Direccion() == paso.get_Direccion()) 
 			{
 				++i;
 			}
-
+			
+			celda_anterior = celda_siguiente;
 			path_codificado.append(Crypt.get_codificar_String(path.get(i).get_Celda().get_Id(), 2));
 		}
+		
+		path.set_Tiempo_recorrido(tiempo);
 		return path_codificado.toString();
 	}
 
