@@ -29,7 +29,8 @@ public class JuegoSocket implements Runnable
 	private PrintWriter outputStream;
 	private Socket socket;
 	private FilaSocket fila;
-	private EstadosJuego estado_juego = EstadosJuego.NINGUNO;//para evitar el envio de paquetes cuando no toca
+	private EstadosJuego estado_juego = EstadosJuego.NINGUNO;
+	private long ping, lastMillis, ultMillis;
 
 	/** Buffer paquetes **/
 	private Map<Integer, String> buffer_paquetes = new TreeMap<Integer, String>();
@@ -102,7 +103,7 @@ public class JuegoSocket implements Runnable
 				enviar_Paquete("BN");
 				return;
 			}
-
+			
 			GestorPaquetes buscar_paquete = manejar_paquete(paquete);
 			if(manejar_paquete(paquete) != null)
 			{
@@ -207,7 +208,7 @@ public class JuegoSocket implements Runnable
 			paquete_buscado = Configuracion.get_Paquetes_Emulador().get(paquete_string);
 		if(paquete_buscado == null && tamano_paquete != 2)
 			paquete_buscado = Configuracion.get_Paquetes_Emulador().get(paquete_string.substring(0, tamano_paquete - 1));
-
+		
 		return paquete_buscado;
 	}
 
@@ -249,5 +250,42 @@ public class JuegoSocket implements Runnable
 	public void set_Estado_Juego(EstadosJuego _estado_login)
 	{
 		estado_juego = _estado_login;
+	}
+
+	public long get_ping()
+	{
+		return ping;
+	}
+
+	public void set_ping(long _ping)
+	{
+		ping = _ping;
+	}
+
+	public long get_LastMillis()
+	{
+		return lastMillis;
+	}
+
+	public void set_LastMillis(long _lastMillis)
+	{
+		lastMillis = _lastMillis;
+	}
+
+	public long get_UltMillis()
+	{
+		return ultMillis;
+	}
+
+	public void set_UltMillis(long _ultMillis)
+	{
+		ultMillis = _ultMillis;
+	}
+	
+	public void get_Registrar_Ping() 
+	{
+		ultMillis++;
+		enviar_Paquete("rpong" + ultMillis);
+		lastMillis = System.currentTimeMillis();
 	}
 }

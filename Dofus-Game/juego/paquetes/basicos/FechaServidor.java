@@ -16,5 +16,6 @@ public class FechaServidor implements GestorPaquetes
 		
 		socket.enviar_Paquete(String.format("BD%04d|%02d|%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
 		socket.enviar_Paquete("BT" + (calendar.getTimeInMillis() + calendar.get(Calendar.ZONE_OFFSET)));
+		socket.get_Registrar_Ping();
 	}
 }

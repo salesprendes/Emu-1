@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
+import juego.enums.TipoDirecciones;
 import objetos.mapas.Celdas;
 
 public class PathFinding implements Collection<Camino>
@@ -21,7 +22,7 @@ public class PathFinding implements Collection<Camino>
     
     public PathFinding(Descifrador _decodificador) 
     {
-        this(_decodificador, new ArrayList<>());
+        this(_decodificador, new ArrayList<Camino>());
     }
     
     public String get_Codificar() 
@@ -31,7 +32,7 @@ public class PathFinding implements Collection<Camino>
     
     public PathFinding get_Mantener_Mientras_Cumpla_Condicion(Predicate<Camino> condicion) 
     {
-    	PathFinding nuevo_camino = new PathFinding(decodificador, new ArrayList<>(size()));
+    	PathFinding nuevo_camino = new PathFinding(decodificador, new ArrayList<Camino>(size()));
 
         for (Camino step : pasos) 
         {
@@ -41,6 +42,41 @@ public class PathFinding implements Collection<Camino>
             }
         }
         return nuevo_camino;
+    }
+    
+    public int get_Path_Tiempo(final boolean esta_con_montura) 
+    {
+    	boolean esta_caminando = pasos.size() < 6;
+    	int tiempo = 0;
+    	Celdas celda_anterior = pasos.get(0).get_Celda();
+    	
+    	byte lastGroundLevel = celda_anterior.get_Ground_nivel();
+		byte lastGroundSlope = celda_anterior.get_Ground_Slope();
+		
+		for (int i = 1; i < pasos.size(); i++) 
+		{
+			Celdas celda_siguiente = pasos.get(i).get_Celda();
+			TipoDirecciones direccion = celda_anterior.get_Direccion(celda_siguiente);
+			
+			tiempo += 25 / (esta_con_montura ? direccion.get_Velocidad_Montura() : esta_caminando ? direccion.get_Velocidad_Caminando() : direccion.get_Velocidad_Corriendo());
+		
+			if (lastGroundLevel < celda_siguiente.get_Ground_nivel())
+				tiempo += 100;
+			else if (celda_siguiente.get_Ground_nivel() > lastGroundLevel)
+				tiempo -= 100;
+			else if (lastGroundSlope != celda_siguiente.get_Ground_Slope())
+			{
+				if (lastGroundSlope == 1)
+					tiempo += 100;
+				else if (celda_siguiente.get_Ground_Slope() == 1)
+					tiempo -= 100;
+			}
+			
+			lastGroundLevel = celda_siguiente.get_Ground_nivel();
+			lastGroundSlope = celda_siguiente.get_Ground_Slope();
+			celda_anterior = celda_siguiente;
+		}
+    	return tiempo;
     }
 
 	public boolean add(Camino paso)

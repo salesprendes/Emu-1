@@ -11,6 +11,7 @@ import objetos.mapas.pathfinding.PathFinding;
 public class Desplazamiento implements JuegoAcciones
 {
 	private final int id;
+	private final long tiempo_inicio;
 	private final Personajes personaje;
 	private PathFinding pathfinding;
 
@@ -19,6 +20,7 @@ public class Desplazamiento implements JuegoAcciones
 		id = _id;
 		personaje = _personaje;
 		pathfinding = _pathfinding;
+		tiempo_inicio = System.currentTimeMillis();
 	}
 
 	public synchronized boolean get_Esta_Iniciado()
@@ -76,10 +78,15 @@ public class Desplazamiento implements JuegoAcciones
 	
 	public synchronized void get_Correcto(String args)
 	{
-		Celdas celda_destino = pathfinding.celda_objetivo();
-		personaje.set_Celda(celda_destino != null ? celda_destino : personaje.get_Celda());
-		personaje.set_Orientacion(pathfinding.get_Anterior().get_Direccion());
-		personaje.get_Mapa().get_Acciones_Final_Movimiento(personaje);
+		long tiempo_recorrido = pathfinding.get_Path_Tiempo(false), tiempo_local = (System.currentTimeMillis() - tiempo_inicio) + personaje.get_Cuenta().get_Juego_socket().get_ping();
+		
+		if(tiempo_recorrido <= tiempo_local)
+		{
+			Celdas celda_destino = pathfinding.celda_objetivo();
+			personaje.set_Celda(celda_destino != null ? celda_destino : personaje.get_Celda());
+			personaje.set_Orientacion(pathfinding.get_Anterior().get_Direccion());
+			personaje.get_Mapa().get_Acciones_Final_Movimiento(personaje);
+		}
 	}
 	
 	public int get_Id()
