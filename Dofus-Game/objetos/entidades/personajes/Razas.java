@@ -1,27 +1,26 @@
 package objetos.entidades.personajes;
 
-import java.util.Map.Entry;
-import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
-
-import objetos.entidades.caracteristicas.Caracteristicas;
 
 final public class Razas
 {
-	private final byte id;
-	final private SortedMap<Integer, Caracteristicas> stats_base;
-	private final short mapa_id_comienzo, celda_id_comienzo, vida_base;
-
+	private final byte id, pa_base, pm_base, vida_base;
+	private final short iniciativa_base, prospeccion_base, mapa_id_comienzo, celda_id_comienzo, pods_base;
+	
 	private static final ConcurrentHashMap<Byte, Razas> razas_cargadas = new ConcurrentHashMap<Byte, Razas>();
-
-	public Razas(final byte _id, final SortedMap<Integer, Caracteristicas> _stats_base, final short _vida_base, final short _mapa_id_comienzo, final short _celda_id_comienzo)
+	
+	public Razas(final byte _id, final byte _pa_base, final byte _pm_base, final byte _vida_base, final short _iniciativa_base, final short _pods_base, final short _prospeccion_base, final short _mapa_id_comienzo, final short _celda_id_comienzo)
 	{
 		id = _id;
-		stats_base = _stats_base;
+		pa_base = _pa_base;
+		pm_base = _pm_base;
 		vida_base = _vida_base;
+		iniciativa_base = _iniciativa_base;
+		pods_base = _pods_base;
+		prospeccion_base = _prospeccion_base;
 		mapa_id_comienzo = _mapa_id_comienzo;
 		celda_id_comienzo = _celda_id_comienzo;
-
+		
 		razas_cargadas.put(id, this);
 	}
 
@@ -30,26 +29,34 @@ final public class Razas
 		return id;
 	}
 
-	public Caracteristicas get_Stats_base(int nivel) 
+	public byte get_Pa_Base() 
 	{
-		for (Entry<Integer, Caracteristicas> caracteristica  : stats_base.entrySet()) 
-		{
-			if (caracteristica.getKey() <= nivel) 
-			{
-				return caracteristica.getValue();
-			}
-		}
-		throw new IllegalArgumentException("Nivel no encontrado " + nivel + " para la raza: " + id);
+		return pa_base;
 	}
 
-	public SortedMap<Integer, Caracteristicas> get_Stats_base()
+	public byte get_Pm_Base() 
 	{
-		return stats_base;
+		return pm_base;
 	}
 
-	public short get_Vida_Base()
+	public byte get_Vida_base()
 	{
 		return vida_base;
+	}
+
+	public short get_Iniciativa_base() 
+	{
+		return iniciativa_base;
+	}
+
+	public int get_Pods_base()
+	{
+		return pods_base;
+	}
+
+	public short get_Prospeccion_base()
+	{
+		return prospeccion_base;
 	}
 
 	public short get_Mapa_id_comienzo() 
@@ -61,7 +68,7 @@ final public class Razas
 	{
 		return celda_id_comienzo;
 	}
-
+	
 	public static ConcurrentHashMap<Byte, Razas> get_Razas_Cargadas()
 	{
 		return razas_cargadas;

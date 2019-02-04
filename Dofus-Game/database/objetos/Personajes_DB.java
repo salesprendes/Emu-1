@@ -5,15 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.TreeMap;
 
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
-import juego.enums.TipoCaracteristica;
+import juego.enums.TipoStats;
 import main.Configuracion;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
-import objetos.entidades.caracteristicas.DefaultCaracteristicas;
 import objetos.entidades.personajes.Alineamientos;
 import objetos.entidades.personajes.Items;
 import objetos.entidades.personajes.Personajes;
@@ -31,17 +31,16 @@ public class Personajes_DB extends DatabaseManager
 		{
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes WHERE servidor_id = " + Configuracion.SERVIDOR_ID +";");
 
-			DefaultCaracteristicas stats_principales;
+			TreeMap<Integer, Integer> stats_principales;
 			while(query.get_Rs().next())
 			{
-				stats_principales = new DefaultCaracteristicas();
-				
-				stats_principales.set_Caracteristica(TipoCaracteristica.VITALIDAD, query.get_Rs().getInt(16));
-				stats_principales.set_Caracteristica(TipoCaracteristica.SABIDURIA, query.get_Rs().getInt(17));
-				stats_principales.set_Caracteristica(TipoCaracteristica.FUERZA, query.get_Rs().getInt(18));
-				stats_principales.set_Caracteristica(TipoCaracteristica.INTELIGENCIA, query.get_Rs().getInt(19));
-				stats_principales.set_Caracteristica(TipoCaracteristica.SUERTE, query.get_Rs().getInt(20));
-				stats_principales.set_Caracteristica(TipoCaracteristica.AGILIDAD, query.get_Rs().getInt(21));
+				stats_principales = new TreeMap<Integer, Integer>();
+				stats_principales.put(TipoStats.AGREGAR_VITALIDAD, query.get_Rs().getInt(16));
+				stats_principales.put(TipoStats.AGREGAR_FUERZA, query.get_Rs().getInt(17));
+				stats_principales.put(TipoStats.AGREGAR_SABIDURIA, query.get_Rs().getInt(18));
+				stats_principales.put(TipoStats.AGREGAR_INTELIGENCIA, query.get_Rs().getInt(19));
+				stats_principales.put(TipoStats.AGREGAR_SUERTE, query.get_Rs().getInt(20));
+				stats_principales.put(TipoStats.AGREGAR_AGILIDAD, query.get_Rs().getInt(21));
 				
 				//id(1), nombre(2), color1(3), color2(4), color3(5), nivel(6), gfx(7), tamano(8), mapa_id(9), celda_id(10), sexo(11), experiencia(12), kamas(13), porcentaje_vida(14), razaID(15), vitalidad(16), sabiduria(17), fuerza(18), inteligencia(19), suerte(20), agilidad(21), emotes(22), canales(23), cuentaID(24), derechos(25), derechos(26), servidorID(27)
 				new Personajes(query.get_Rs().getInt(1), query.get_Rs().getString(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getInt(5), query.get_Rs().getShort(6), query.get_Rs().getShort(7), query.get_Rs().getShort(8), query.get_Rs().getShort(9), query.get_Rs().getShort(10), query.get_Rs().getByte(11), query.get_Rs().getLong(12), query.get_Rs().getLong(13), query.get_Rs().getByte(14), query.get_Rs().getByte(15), stats_principales, query.get_Rs().getInt(22), query.get_Rs().getString(23), query.get_Rs().getInt(24), query.get_Rs().getInt(25), query.get_Rs().getShort(26), query.get_Rs().getShort(27));
@@ -83,7 +82,7 @@ public class Personajes_DB extends DatabaseManager
 			while(query.get_Rs().next())
 			{
 				//personaje_id(1), id_objeto(2), id_modelo_objeto(3), cantidad(4), posicion_inventario(5), stats(6)
-				Personajes.get_Personaje_Cargado(query.get_Rs().getInt(1)).get_objetos().put(query.get_Rs().getInt(2), new Items(query.get_Rs().getInt(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getByte(5), Items.deserializar(query.get_Rs().getString(6))));
+				Personajes.get_Personaje_Cargado(query.get_Rs().getInt(1)).get_objetos().put(query.get_Rs().getInt(2), new Items(query.get_Rs().getInt(2), query.get_Rs().getInt(3), query.get_Rs().getInt(4), query.get_Rs().getByte(5), query.get_Rs().getString(6)));
 			}
 			
 			cerrar(query);

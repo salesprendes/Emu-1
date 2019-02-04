@@ -1,16 +1,9 @@
 package database.objetos;
 
-import java.util.Collections;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.regex.Pattern;
-
 import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
 import main.consola.Consola;
-import objetos.entidades.caracteristicas.Caracteristicas;
-import objetos.entidades.caracteristicas.CaracteristicasTransformer;
 import objetos.entidades.personajes.Razas;
 
 public class Razas_DB extends DatabaseManager
@@ -28,8 +21,8 @@ public class Razas_DB extends DatabaseManager
 
 			while(query.get_Rs().next())
 			{
-				//id(1), Nombre(2), stats(3), vida(4), mapa_inicial(5), celda_inicial(6)
-				new Razas(query.get_Rs().getByte(1), deserializar(query.get_Rs().getString(3)), query.get_Rs().getShort(4), query.get_Rs().getShort(5), query.get_Rs().getShort(6));
+				//id(1), Nombre(2), pa(3), pm(4), vida(5), iniciativa(6), pods(7), prospeccion(8), mapa_inicial(9), celda_inicial(10)
+				new Razas(query.get_Rs().getByte(1), query.get_Rs().getByte(3), query.get_Rs().getByte(4), query.get_Rs().getByte(5), query.get_Rs().getShort(6), query.get_Rs().getShort(7), query.get_Rs().getShort(8), query.get_Rs().getShort(9), query.get_Rs().getShort(10));
 			}
 			cerrar(query);
 		}
@@ -38,15 +31,4 @@ public class Razas_DB extends DatabaseManager
 			Consola.println("ERROR SQL: " + e.toString());
 		}
 	}
-	
-	public SortedMap<Integer, Caracteristicas> deserializar(String cadena_stats) 
-	{
-        SortedMap<Integer, Caracteristicas> stats = new TreeMap<Integer, Caracteristicas>(Collections.reverseOrder());
-        for (String stats_nivel : cadena_stats.split(Pattern.quote("|")))
-        {
-            String[] separador = stats_nivel.split("@", 2);
-            stats.put(Integer.parseUnsignedInt(separador[0]), CaracteristicasTransformer.deserializar(separador[1]));
-        }
-        return stats;
-    }
 }

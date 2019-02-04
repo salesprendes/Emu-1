@@ -3,22 +3,23 @@ package objetos.entidades.personajes;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import juego.acciones.JuegoAccion;
 import juego.enums.EstadosJuego;
 import juego.enums.TipoCanales;
-import juego.enums.TipoCaracteristica;
 import juego.enums.TipoDirecciones;
+import juego.enums.TipoStats;
 import main.Configuracion;
 import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.Entidades;
 import objetos.entidades.Experiencia;
-import objetos.entidades.caracteristicas.Caracteristicas;
-import objetos.entidades.caracteristicas.DefaultCaracteristicas;
+import objetos.entidades.caracteristicas.BaseStats;
+import objetos.entidades.caracteristicas.Stats;
 import objetos.mapas.Celdas;
 import objetos.mapas.Mapas;
 
@@ -41,7 +42,7 @@ public class Personajes implements Entidades
 	final private Emotes emotes;
 	private String canales;
 	private Alineamientos alineamiento;
-	private Caracteristicas stats_principales;
+	private BaseStats stats = new BaseStats(new Stats(), new Stats(), new Stats(), new Stats());
 	private TipoDirecciones orientacion = TipoDirecciones.ABAJO_DERECHA;
 	private final JuegoAccion juego_acciones;
 	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
@@ -54,7 +55,7 @@ public class Personajes implements Entidades
 
 	private static final ConcurrentHashMap<Integer, Personajes> personajes_cargados = new ConcurrentHashMap<Integer, Personajes>();
 
-	public Personajes(final int _id, final String _nombre_personaje, final int _color_1, final int _color_2, final int _color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final DefaultCaracteristicas _stats_principales, final int _emotes, final String _canales, final int cuenta_id, final int derecho_id, final short restriccion_id, final short servidor_id)
+	public Personajes(final int _id, final String _nombre_personaje, final int _color_1, final int _color_2, final int _color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final Map<Integer, Integer> _stats_principales, final int _emotes, final String _canales, final int cuenta_id, final int derecho_id, final short restriccion_id, final short servidor_id)
 	{
 		id = _id;
 		nombre = _nombre_personaje;
@@ -68,11 +69,7 @@ public class Personajes implements Entidades
 		experiencia = _experiencia;
 		kamas = _kamas;
 		raza = Razas.get_Razas_Cargadas(_raza_id);
-		stats_principales = _stats_principales;
-		
-		for (TipoCaracteristica stat : TipoCaracteristica.values())//agrega stats base de la raza
-			stats_principales.set_Caracteristica(stat, raza.get_Stats_base(nivel).get_Caracteristica(stat));
-	
+		stats.get_Base().set_Stats_Base(_stats_principales, this);
 		emotes = new Emotes(_emotes);
 		canales = _canales;
 		cuenta = Cuentas.get_Cuenta_Cargada(cuenta_id);
@@ -105,7 +102,7 @@ public class Personajes implements Entidades
 
 	public synchronized static Personajes crear_Personaje(final int cuenta_id, final String nombre_personaje, final int color_1, final int color_2, final int color_3, final Razas raza, final byte sexo)
 	{
-		Personajes nuevo_personaje = new Personajes(-1, nombre_personaje, color_1, color_2, color_3, /** nivel **/ (short)1, /** gfx**/ (short) ((10 * raza.get_Id()) + sexo), (short)100, raza.get_Mapa_id_comienzo(), raza.get_Celda_id_comienzo(), sexo, /** experiencia **/ (long)0, /** kamas**/ (long)0, /** porcentaje vida**/ (byte)100, raza.get_Id(), new DefaultCaracteristicas(), 1, "*p?:", cuenta_id, 8192, (short)8, Configuracion.SERVIDOR_ID);
+		Personajes nuevo_personaje = new Personajes(-1, nombre_personaje, color_1, color_2, color_3, /** nivel **/ (short)1, /** gfx**/ (short) ((10 * raza.get_Id()) + sexo), (short)100, raza.get_Mapa_id_comienzo(), raza.get_Celda_id_comienzo(), sexo, /** experiencia **/ (long)0, /** kamas**/ (long)0, /** porcentaje vida**/ (byte)100, raza.get_Id(), new TreeMap<Integer, Integer>(), 1, "*p?:", cuenta_id, 8192, (short)8, Configuracion.SERVIDOR_ID);
 		Main.get_Database().get_Personajes().get_Guardar_Personaje(nuevo_personaje);
 		return nuevo_personaje;
 	}
@@ -399,20 +396,13 @@ public class Personajes implements Entidades
 
 	public void get_Actualizar_Vida_Maxima() 
 	{
-		puntos_vida_maxima = (nivel - 1) * 5 + raza.get_Vida_Base() + stats_principales.get_Caracteristica(TipoCaracteristica.VITALIDAD);
+		puntos_vida_maxima = (nivel-1) * 5 + raza.get_Vida_base() + stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_VITALIDAD) + stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_VIDA);
 	}
 
-	public Caracteristicas get_Stats_principales()
+	public BaseStats get_Stats()
 	{
-		return stats_principales;
+		return stats;
 	}
-	
-	public int get_Stats_Base(TipoCaracteristica caracteristica) 
-	{
-		//stats_principales.set_Caracteristica(TipoCaracteristica.PUNTOS_ACCION, raza.get_Stats_base(nivel).get_Caracteristica(TipoCaracteristica.PUNTOS_ACCION));
-
-        return stats_principales.get_Caracteristica(caracteristica);
-    }
 
 	public Map<Integer, Items> get_objetos()
 	{
@@ -451,6 +441,7 @@ public class Personajes implements Entidades
 			cuenta.get_Juego_socket().enviar_Paquete("cC+" + canales + (nivel <= 16 ? TipoCanales.INCARNAM.get_Identificador() : "") + (cuenta.get_Rango_cuenta() > 0 ? TipoCanales.ADMINISTRADOR.get_Identificador() + TipoCanales.MEETIC.get_Identificador() : ""));
 			cuenta.get_Juego_socket().enviar_Paquete("AR" + derechos.get_Convertir_Base36());
 			cuenta.get_Juego_socket().enviar_Paquete("eL" + emotes.get());//Lista emotes
+			cuenta.get_Juego_socket().enviar_Paquete("Ow" + get_Pods_Utilizados() + '|' + get_Pods_Maximos());//Pods
 			cuenta.get_Juego_socket().enviar_Paquete("Im189");// Im bienvenida dofus
 			cuenta.get_Juego_socket().enviar_Paquete("Im0153;" + cuenta.get_Ip());
 			mapa.get_Personajes().forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
@@ -543,10 +534,25 @@ public class Personajes implements Entidades
 			paquete.append(puntos_vida).append(',').append(puntos_vida_maxima).append('|');
 			paquete.append(10000).append(',').append(servidor == 22 ? 1 : 10000).append('|');//energia
 			paquete.append(get_Iniciativa()).append('|');//iniciativa
-			paquete.append(0).append('|');//prospeccion
+			paquete.append(stats.get_Stat_Mostrar_Complemento(TipoStats.AGREGAR_PROSPECCION)).append('|');//prospeccion
+			
+			final int[] array_stats =
+			{
+				TipoStats.AGREGAR_PA, TipoStats.AGREGAR_PM, TipoStats.AGREGAR_FUERZA, TipoStats.AGREGAR_VITALIDAD, 
+				TipoStats.AGREGAR_SABIDURIA, TipoStats.AGREGAR_SUERTE, TipoStats.AGREGAR_AGILIDAD, TipoStats.AGREGAR_INTELIGENCIA, 
+				TipoStats.AGREGAR_ALCANCE, TipoStats.AGREGAR_CRIATURAS_INVOCABLES, TipoStats.AGREGAR_DANOS, TipoStats.AGREGAR_DANO_FISICO, 
+				TipoStats.AGREGAR_DOMINIO_ARMAS, TipoStats.AGREGAR_PORC_DANOS, TipoStats.AGREGAR_CURAS, TipoStats.AGREGAR_DANOS_TRAMPA, 
+				TipoStats.AGREGAR_PORC_DANOS_TRAMPA, TipoStats.AGREGAR_REENVIA_DANOS, TipoStats.AGREGAR_GOLPES_CRITICOS, TipoStats.AGREGAR_FALLOS_CRITICOS, 
+				TipoStats.AGREGAR_ESQUIVA_PERD_PA, TipoStats.AGREGAR_ESQUIVA_PERD_PM, TipoStats.AGREGAR_RES_FIJA_NEUTRAL, TipoStats.AGREGAR_RES_PORC_NEUTRAL, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_NEUTRAL, TipoStats.AGREGAR_RES_PORC_PVP_NEUTRAL, TipoStats.AGREGAR_RES_FIJA_TIERRA, TipoStats.AGREGAR_RES_PORC_TIERRA, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_TIERRA, TipoStats.AGREGAR_RES_PORC_PVP_TIERRA, TipoStats.AGREGAR_RES_FIJA_AGUA, TipoStats.AGREGAR_RES_PORC_AGUA, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_AGUA, TipoStats.AGREGAR_RES_PORC_PVP_AGUA, TipoStats.AGREGAR_RES_FIJA_AIRE, TipoStats.AGREGAR_RES_PORC_AIRE, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_AIRE, TipoStats.AGREGAR_RES_PORC_PVP_AIRE, TipoStats.AGREGAR_RES_FIJA_FUEGO, TipoStats.AGREGAR_RES_PORC_FUEGO, 
+				TipoStats.AGREGAR_RES_FIJA_PVP_FUEGO, TipoStats.AGREGAR_RES_PORC_PVP_FUEGO
+			};
 
-			for (TipoCaracteristica stat : TipoCaracteristica.values())
-				paquete.append(stats_principales.get_Caracteristica(stat)).append(',').append(0).append(',').append(0).append(',').append(0).append(',').append(0).append('|');
+			for (final int stat : array_stats)
+				paquete.append(stats.get_Base().get_Mostrar_Stat(stat)).append(',').append(0).append(',').append(0).append(',').append(0).append(',').append(0).append('|');
 
 			cache_as = paquete.toString();
 		}
@@ -556,22 +562,43 @@ public class Personajes implements Entidades
 	public int get_Iniciativa() 
 	{
 		float fact = 4;
-		int vida_maxima = puntos_vida_maxima - raza.get_Vida_Base();
-		int vida = puntos_vida - raza.get_Vida_Base();
+		int vida_maxima = puntos_vida_maxima - raza.get_Vida_base();
+		int vida = puntos_vida - raza.get_Vida_base();
 		if (raza.get_Id() == 11)//sacrogito
 			fact = 8;
 		int iniciativa = 0;
-
+		
 		if (vida_maxima > 0) 
 		{
 			iniciativa += vida_maxima / fact;
 			fact = (float) vida / vida_maxima;
 			iniciativa *= fact;
 		}
-
 		if (iniciativa < 0)
 			iniciativa = 0;
 		return 0;
+	}
+	
+	public int get_Pods_Utilizados() 
+	{
+		int pods_utilizados = 0;
+		
+		for(Items objeto : items.values())
+			pods_utilizados += Math.abs(objeto.get_Item_modelo().get_Pods() * objeto.get_Cantidad());
+		
+		return pods_utilizados;
+	}
+	
+	public int get_Pods_Maximos() 
+	{
+		int pods = stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_PODS);
+		pods += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA) * 5;
+		pods += stats.get_Equipo().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA) * 5;
+		pods += stats.get_Dones().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA) * 5;
+		
+		if (pods < raza.get_Pods_base())
+			pods = raza.get_Pods_base();
+		return pods;
 	}
 
 	public int get_Grado_Alas()

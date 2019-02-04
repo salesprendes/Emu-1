@@ -1,75 +1,80 @@
 package objetos.entidades.personajes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map.Entry;
 
-import juego.enums.Efectos;
+import objetos.entidades.caracteristicas.Stats;
 import objetos.items.ItemsModelo;
-import objetos.items.ItemsModeloEfecto;
 
 public class Items
 {
 	private int id, cantidad;
-	private final ItemsModelo item_modelo;
-	final private List<ItemsModeloEfecto> efectos;
+	private final ItemsModelo item_modelo; 
+	private Stats stats;
 	private byte posicion_inventario = -1;
 	
-	public Items (final int _id, final int id_modelo, final int _cantidad, final byte _posicion_inventario, List<ItemsModeloEfecto> _efectos)
+	public Items (final int _id, final int id_modelo, final int _cantidad, final byte _posicion_inventario, final String _stats)
 	{
 		id = _id;
 		item_modelo = ItemsModelo.get_Items_Cargados(id_modelo);
 		cantidad = _cantidad;
 		posicion_inventario = _posicion_inventario;
-		efectos = _efectos;
+		stats = new Stats();
+		get_Convertir_String_A_Stats(_stats);
 	}
 	
 	public String get_Item_String()
 	{	
 		final String posicion = posicion_inventario == -1 ? "" : Integer.toHexString(posicion_inventario);
-		return new StringBuilder(40).append(Integer.toHexString(id)).append('~').append(Integer.toHexString(item_modelo.get_Id())).append('~').append(Integer.toHexString(cantidad)).append('~').append(posicion).append('~').append(serializar(efectos)).toString();
+		return new StringBuilder(40).append(Integer.toHexString(id)).append('~').append(Integer.toHexString(item_modelo.get_Id())).append('~').append(Integer.toHexString(cantidad)).append('~').append(posicion).append('~').append(get_Convertir_Stats_A_String()).toString();
+	}
+	
+	public ItemsModelo get_Item_modelo()
+	{
+		return item_modelo;
 	}
 
-	public List<ItemsModeloEfecto> get_Efectos()
+	public int get_Cantidad()
 	{
-		return efectos;
+		return cantidad;
 	}
-	
-	public static String serializar(final List<ItemsModeloEfecto> valor)
+
+	public void set_Cantidad(final int _cantidad)
 	{
-		StringBuilder sb = new StringBuilder(valor.size() * 8);//total valor * linea de stats limite
-	
-		if (valor != null || !valor.isEmpty()) 
+		cantidad = _cantidad;
+	}
+
+	public void get_Convertir_String_A_Stats(final String stats_string)
+	{
+		for(final String stat : stats_string.split(","))
 		{
-			for (ItemsModeloEfecto efecto : valor) 
+			if (!stat.isEmpty())
 			{
-	            if (sb.length() > 0)
-	                sb.append(',');
-	            
-	            sb.append(Integer.toString(efecto.get_Efecto().get_Id(), 16)).append('#').append(Integer.toString(efecto.get_Minimo(), 16)).append('#').append(Integer.toString(efecto.get_Maximo(), 16)).append('#').append(Integer.toString(efecto.get_Especial(), 16)).append('#').append(efecto.get_Texto());
-	        }
-        }
-		
-		return sb.toString();
-	}
-
-	public static List<ItemsModeloEfecto> deserializar(String serializador)
-	{
-		if (serializador == null || serializador.isEmpty()) 
-		{
-            return new ArrayList<>();
-        }
-		
-		List<ItemsModeloEfecto> efectos = new ArrayList<ItemsModeloEfecto>();
-		
-		for (String separador : serializador.split(",")) 
-		{
-			String[] args = separador.split("#", 5);
-			
-			if (args.length < 4)
-                throw new IllegalArgumentException("no se puede desarializar el efecto: " + serializador);
-			
-			efectos.add(new ItemsModeloEfecto(Efectos.get_Id(Integer.parseInt(args[0], 16)), Integer.parseInt(args[1], 16), Integer.parseInt(args[2], 16), Integer.parseInt(args[3], 16), args.length > 4 ? args[4] : ""));
+				try 
+				{
+					final String[] separador = stat.split("#");
+					int id_stat = ItemsModelo.get_Stat_Similar(Integer.parseInt(separador[0], 16));
+					final int valor = Integer.parseInt(separador[1], 16);
+					
+					stats.get_Agregar_Stat_Id(id_stat, valor);
+				}
+				catch(final Exception e){};
+			}
 		}
-		return efectos;
+	}
+	
+	public String get_Convertir_Stats_A_String()
+	{
+		final StringBuilder string_stats = new StringBuilder();
+		
+		for(final Entry<Integer, Integer> stat : stats.get_Stats().entrySet())
+		{
+			if(string_stats.length() > 0)
+				string_stats.append(',');
+			final String jet = "0d0+" + stat.getValue();
+			
+			string_stats.append(Integer.toString(stat.getKey(), 16)).append('#').append(Integer.toString(stat.getValue(), 16)).append("#0#0#").append(jet);
+		}
+		
+		return string_stats.toString();
 	}
 }

@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
 import main.consola.Consola;
-import objetos.entidades.personajes.Items;
 import objetos.items.ItemsModelo;
 
 public class Items_DB extends DatabaseManager
@@ -22,8 +21,8 @@ public class Items_DB extends DatabaseManager
 			
 			while(query.get_Rs().next())
 			{
-				//id (1), tipo(2), nivel(4), stats(5), pods(6), kamas(7), set(8), es_magueable(8), es_etereo(9), stats_armas(10), condiciones(11)
-				new ItemsModelo(query.get_Rs().getInt(1), query.get_Rs().getByte(2), query.get_Rs().getShort(4), Items.deserializar(query.get_Rs().getString(5)), query.get_Rs().getShort(6), query.get_Rs().getInt(7), query.get_Rs().getShort(8), query.get_Rs().getBoolean(9), query.get_Rs().getBoolean(10), query.get_Rs().getString(11), query.get_Rs().getString(12));
+				//id (1), tipo(2), nivel(4), stats(5), pods(6), kamas(7), es_magueable(8), es_etereo(9), stats_armas(10), condiciones(11)
+				new ItemsModelo(query.get_Rs().getInt(1), query.get_Rs().getByte(2), query.get_Rs().getShort(4), query.get_Rs().getString(5), query.get_Rs().getShort(6), query.get_Rs().getInt(7), query.get_Rs().getBoolean(8), query.get_Rs().getBoolean(9), query.get_Rs().getString(10), query.get_Rs().getString(11));
 			}
 			cerrar(query);
 		}

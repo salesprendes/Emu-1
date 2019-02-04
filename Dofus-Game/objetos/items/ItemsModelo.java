@@ -1,33 +1,56 @@
 package objetos.items;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import juego.enums.TipoStats;
 
 public class ItemsModelo
 {
 	final private int id, kamas;
 	final private byte tipo;
-	final private short nivel, pods, set;
-	final private List<ItemsModeloEfecto> efectos;
-	final private String condiciones, informacion_armas;
+	private byte coste_pa, bonus_golpe_critico;
+	final private short nivel, pods;
+	private short porcentaje_golpe_critico;
+	final private String condiciones, informacion_armas, stats;
 	final private boolean es_magueable, es_eterea;
+	private boolean es_dos_manos;
 
 	private static final Map<Integer, ItemsModelo> items_cargados = new HashMap<Integer, ItemsModelo>();
 
-	public ItemsModelo(final int _id, final byte _tipo, final short _nivel, final List<ItemsModeloEfecto> _efectos, final short _pods, final int _kamas, final short _set, final boolean _es_magueable, final boolean _es_eterea, final String _informacion_armas, final String _condiciones)
+	public ItemsModelo(final int _id, final byte _tipo, final short _nivel, final String _stats, final short _pods, final int _kamas, final boolean _es_magueable, final boolean _es_eterea, final String _informacion_armas, final String _condiciones)
 	{
 		id = _id;
 		tipo = _tipo;
 		nivel = _nivel;
-		efectos = _efectos;
+		stats = _stats;
 		pods = _pods;
 		kamas = _kamas;
-		set = _set;
 		es_magueable = _es_magueable;
 		es_eterea = _es_eterea;
 		informacion_armas = _informacion_armas;
 		condiciones = _condiciones;
+		
+		if (!stats.isEmpty())
+		{
+			try 
+			{
+				if (!_informacion_armas.isEmpty()) 
+				{
+					final String[] separador = _informacion_armas.split(",");
+					bonus_golpe_critico = Byte.parseByte(separador[0]);
+					coste_pa = Byte.parseByte(separador[1]);
+					//byte alcanze_minimo = Byte.parseByte(separador[2]);
+					//byte alcanze_maximo = Byte.parseByte(separador[3]);
+					porcentaje_golpe_critico = Short.parseShort(separador[4]);
+					//short porcentaje_fallo_critico = Short.parseShort(separador[5]);
+					//boolean lanzado_en_linea = Boolean.parseBoolean(separador[6]);
+					//boolean necesita_linea_vision = Boolean.parseBoolean(separador[7]);
+					es_dos_manos = Boolean.parseBoolean(separador[8]);
+				}
+			}
+			catch (final Exception e){}
+		}
 		
 		items_cargados.put(id, this);
 	}
@@ -46,11 +69,6 @@ public class ItemsModelo
 	{
 		return kamas;
 	}
-	
-	public short get_Set()
-	{
-		return set;
-	}
 
 	public short get_Nivel()
 	{
@@ -66,6 +84,21 @@ public class ItemsModelo
 	{
 		return tipo;
 	}
+	
+	public byte get_Bonus_golpe_critico()
+	{
+		return bonus_golpe_critico;
+	}
+
+	public void set_Bonus_golpe_critico(byte bonus_golpe_critico)
+	{
+		this.bonus_golpe_critico = bonus_golpe_critico;
+	}
+	
+	public String get_Stats()
+	{
+		return stats;
+	}
 
 	public boolean get_Es_magueable()
 	{
@@ -76,15 +109,59 @@ public class ItemsModelo
 	{
 		return es_eterea;
 	}
-
-	public List<ItemsModeloEfecto> get_Efectos()
+	
+	public short get_Porcentaje_golpe_critico()
 	{
-		return efectos;
+		return porcentaje_golpe_critico;
+	}
+
+	public void set_Porcentaje_golpe_critico(short porcentaje_golpe_critico)
+	{
+		this.porcentaje_golpe_critico = porcentaje_golpe_critico;
 	}
 
 	public String get_Informacion_armas()
 	{
 		return informacion_armas;
+	}
+	
+	public boolean get_Es_dos_manos()
+	{
+		return es_dos_manos;
+	}
+
+	public void set_Es_dos_manos(boolean es_dos_manos)
+	{
+		this.es_dos_manos = es_dos_manos;
+	}
+	
+	public byte get_Coste_pa()
+	{
+		return coste_pa;
+	}
+
+	public void set_Coste_pa(byte coste_pa)
+	{
+		this.coste_pa = coste_pa;
+	}
+	
+	public static int get_Stat_Similar(int statID) 
+	{
+		switch (statID) 
+		{
+			case TipoStats.AGREGAR_PA2:
+				return TipoStats.AGREGAR_PA;
+				
+			case TipoStats.AGREGAR_DANOS2:
+				return TipoStats.AGREGAR_DANOS;
+				
+			case TipoStats.AGREGAR_PM2:
+				return TipoStats.AGREGAR_PM;
+				
+			case TipoStats.AGREGAR_DANOS_DEVUELTOS:
+				return TipoStats.AGREGAR_REENVIA_DANOS;
+		}
+		return statID;
 	}
 
 	public static Map<Integer, ItemsModelo> get_Items_Cargados()
