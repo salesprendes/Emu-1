@@ -1,5 +1,7 @@
 package juego.paquetes.cuenta;
 
+import java.util.stream.Collectors;
+
 import juego.JuegoSocket;
 import juego.enums.EstadosJuego;
 import juego.paquetes.GestorPaquetes;
@@ -8,6 +10,7 @@ import main.Configuracion;
 import main.Main;
 import objetos.cuentas.Cuentas;
 import objetos.cuentas.Migracion;
+import objetos.entidades.personajes.Personajes;
 
 @Paquete("AL")
 public class ListaPersonajes implements GestorPaquetes
@@ -38,8 +41,8 @@ public class ListaPersonajes implements GestorPaquetes
 				else
 				{
 					final StringBuilder paquete_enviado = new StringBuilder();
-					paquete_enviado.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size());
-					cuenta.get_Personajes().forEach(personajes -> paquete_enviado.append(personajes.get_Paquete_Alk()));
+					paquete_enviado.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size()).append('|');
+					paquete_enviado.append(cuenta.get_Personajes().stream().map(Personajes::get_Paquete_Alk).collect(Collectors.joining("|")));
 
 					socket.enviar_Paquete(paquete_enviado.toString());
 					socket.set_Estado_Juego(EstadosJuego.SELECCION_PERSONAJE);

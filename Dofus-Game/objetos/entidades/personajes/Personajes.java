@@ -31,7 +31,7 @@ import objetos.mapas.Mapas;
 public class Personajes implements Entidades
 {
 	private int id, emote_tiempo = 360000; // superara 32767 (4 bytes)
-	private int color_1, color_2, color_3, puntos_stats, puntos_hechizos, puntos_vida, puntos_vida_maxima; // superara 32767 (4 bytes)
+	private int color_1, color_2, color_3, puntos_stats, puntos_hechizos, puntos_vida, puntos_vida_maxima, vida_antes_sentado; // superara 32767 (4 bytes)
 	private short nivel, gfx, tamano; // no superara el maximo permitido 32767 (2 bytes)
 	private final short servidor;
 	private byte emote_activo, titulo, sexo; //No superara los 258 (1 byte)
@@ -39,7 +39,7 @@ public class Personajes implements Entidades
 	private String nombre; //maximo 20 caracteres restringido por database
 	private Razas raza;
 	final private Cuentas cuenta; //referencia a la cuenta del personaje
-	private boolean es_mercante = false;
+	private boolean es_mercante = false, esta_sentado = false;
 	private Mapas mapa;
 	private Celdas celda;
 	final private Derechos derechos;
@@ -409,6 +409,11 @@ public class Personajes implements Entidades
 		puntos_vida_maxima = (nivel-1) * 5 + raza.get_Vida_base() + stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_VITALIDAD) + stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_VIDA);
 	}
 
+	public boolean get_Esta_sentado()
+	{
+		return esta_sentado;
+	}
+
 	public BaseStats get_Stats()
 	{
 		return stats;
@@ -495,19 +500,16 @@ public class Personajes implements Entidades
 
 	public String get_Paquete_Alk()
 	{
-		final StringBuilder personaje = new StringBuilder(20);
+		final StringJoiner personaje = new StringJoiner(";");
 
-		personaje.append('|');
-		personaje.append(id).append(';');
-		personaje.append(get_Nombre(true)).append(';');
-		personaje.append(nivel).append(';');
-		personaje.append(gfx).append(';');
-		personaje.append(String.join(";", get_Array_Colores()));
-		personaje.append("").append(';');//objetos
-		personaje.append(es_mercante ? 1 : 0).append(';');//mercante
-		personaje.append(servidor).append(';');
-		personaje.append(';');//DeathCount
-		personaje.append(';');//LevelMax
+		personaje.add(Integer.toString(id));
+		personaje.add(get_Nombre(true));
+		personaje.add(Integer.toString(nivel));
+		personaje.add(Integer.toString(gfx));
+		personaje.add(String.join(";", get_Array_Colores()));
+		personaje.add(get_String_Objetos_Gm());//objetos
+		personaje.add(Integer.toString(es_mercante ? 1 : 0));//mercante
+		personaje.add(Integer.toString(servidor));
 
 		return personaje.toString();
 	}
@@ -692,6 +694,27 @@ public class Personajes implements Entidades
 	{
 		iniciar_Timer_Recuperar_Vida();
 		recuperar_vida.stop();
+	}
+	
+	public void setSentado(final boolean sentado) 
+	{
+		esta_sentado = sentado;
+		if (esta_sentado)
+			vida_antes_sentado = puntos_vida;
+
+		final int tiempo = esta_sentado ? 1000 : 2000;
+		iniciar_Timer_Recuperar_Vida();
+		recuperar_vida.setDelay(tiempo);
+		
+		if (get_Esta_Conectado()) 
+		{
+			if (!esta_sentado)
+				cuenta.get_Juego_socket().enviar_Paquete("ILF" + (puntos_vida - vida_antes_sentado));
+			cuenta.get_Juego_socket().enviar_Paquete("ILS" + tiempo);
+		}
+		
+		if (!sentado && (emote_activo == 1 || emote_activo == 19)) 
+			emote_activo = 0;// no hay emote
 	}
 
 	public void get_Teleport(final short mapa_destino_id, final short celda_destino_id)

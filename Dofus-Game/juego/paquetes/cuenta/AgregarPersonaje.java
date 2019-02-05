@@ -1,6 +1,7 @@
 package juego.paquetes.cuenta;
 
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import juego.JuegoSocket;
 import juego.enums.EstadosJuego;
@@ -74,8 +75,8 @@ public class AgregarPersonaje implements GestorPaquetes
 					socket.enviar_Paquete("AAK");
 					
 					final StringBuilder paquete_alk = new StringBuilder();
-					paquete_alk.append("ALK" + cuenta.get_Fecha_abono() + '|').append(cuenta.get_Personajes().size());
-					cuenta.get_Personajes().forEach(personajes -> paquete_alk.append(personajes.get_Paquete_Alk()));
+					paquete_alk.append("ALK" + cuenta.get_Fecha_abono() + '|').append(cuenta.get_Personajes().size()).append('|');
+					paquete_alk.append(cuenta.get_Personajes().stream().map(Personajes::get_Paquete_Alk).collect(Collectors.joining("|")));
 					socket.enviar_Paquete(paquete_alk.toString());
 					
 					socket.enviar_Paquete("TB");

@@ -1,5 +1,7 @@
 package juego.fila;
 
+import java.util.stream.Collectors;
+
 import juego.JuegoSocket;
 import juego.enums.EstadosJuego;
 import main.Configuracion;
@@ -8,6 +10,7 @@ import main.Main;
 import main.consola.Consola;
 import objetos.cuentas.Cuentas;
 import objetos.cuentas.Migracion;
+import objetos.entidades.personajes.Personajes;
 
 final public class FilaServer extends Thread implements Runnable
 {
@@ -76,8 +79,8 @@ final public class FilaServer extends Thread implements Runnable
 	private String get_Paquete_Lista_Personajes(Cuentas cuenta)
 	{
 		final StringBuilder paquete = new StringBuilder();
-		paquete.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size());
-		cuenta.get_Personajes().forEach(personaje -> paquete.append(personaje.get_Paquete_Alk()));
+		paquete.append("ALK" + cuenta.get_Fecha_abono() + "|").append(cuenta.get_Personajes().size()).append('|');
+		paquete.append(cuenta.get_Personajes().stream().map(Personajes::get_Paquete_Alk).collect(Collectors.joining("|")));
 		
 		return paquete.toString();
 	}
