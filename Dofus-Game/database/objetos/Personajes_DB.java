@@ -31,10 +31,10 @@ public class Personajes_DB extends DatabaseManager
 		{
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes WHERE servidor_id = " + Configuracion.SERVIDOR_ID +";");
 
-			TreeMap<Integer, Integer> stats_principales;
+			TreeMap<Short, Integer> stats_principales;
 			while(query.get_Rs().next())
 			{
-				stats_principales = new TreeMap<Integer, Integer>();
+				stats_principales = new TreeMap<Short, Integer>();
 				stats_principales.put(TipoStats.AGREGAR_VITALIDAD, query.get_Rs().getInt(16));
 				stats_principales.put(TipoStats.AGREGAR_FUERZA, query.get_Rs().getInt(17));
 				stats_principales.put(TipoStats.AGREGAR_SABIDURIA, query.get_Rs().getInt(18));

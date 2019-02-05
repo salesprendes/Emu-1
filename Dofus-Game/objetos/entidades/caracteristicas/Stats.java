@@ -9,18 +9,20 @@ import objetos.entidades.personajes.Personajes;
 
 public class Stats
 {
-	private Map<Integer, Integer> stats_id = new TreeMap<Integer, Integer>();
+	private Map<Short, Integer> stats_id = new TreeMap<Short, Integer>();
 	private ArrayList<String> stats_hechizos;
 	private ArrayList<String> stats_repetidos;
 	private Map<Integer, String> stats_textos;
 
 	public Stats(){}
 	
-	public void set_Stats_Base(final Map<Integer, Integer> _stats, final Personajes _personaje) 
+	public void set_Stats_Base(final Map<Short, Integer> _stats, final Personajes _personaje) 
 	{
-		stats_id.clear();
 		if (_stats != null)
+		{
+			stats_id.clear();
 			stats_id.putAll(_stats);
+		}
 		
 		if(_personaje != null)
 		{
@@ -28,101 +30,102 @@ public class Stats
 			stats_id.put(TipoStats.AGREGAR_PA, _personaje.get_Nivel() < 100 ? puntos_accion : puntos_accion + 1);
 			stats_id.put(TipoStats.AGREGAR_PM, (int) _personaje.get_Raza().get_Pm_Base());
 			stats_id.put(TipoStats.AGREGAR_PROSPECCION, (int) _personaje.get_Raza().get_Prospeccion_base());
-			stats_id.put(TipoStats.AGREGAR_PODS, _personaje.get_Raza().get_Pods_base());
+			stats_id.put(TipoStats.AGREGAR_PODS, (int) _personaje.get_Raza().get_Pods_base());
 			stats_id.put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
 			stats_id.put(TipoStats.AGREGAR_INICIATIVA, (int) _personaje.get_Raza().get_Iniciativa_base());
 		}
 	}
 
-	public void fijarStat(int statID, int valor) 
+	public void set_Fijar_Stat(short stat_id, int valor) 
 	{
 		if (valor < 0)
 		{
-			int exStatID = statID;
-			statID = TipoStats.get_Stat_Opuesto(statID);
-			if (statID != exStatID)
+			final int anterior_stat_id = stat_id;
+			stat_id = TipoStats.get_Stat_Opuesto(stat_id);
+			
+			if (stat_id != anterior_stat_id)
 				valor = -valor;
 		}
 		if (valor <= 0)
-			stats_id.remove(statID);
+			stats_id.remove(stat_id);
 		else
-			stats_id.put(statID, valor);
+			stats_id.put(stat_id, valor);
 	}
 
-	public void get_Agregar_Stat_Id(final int stat_id, final int valor)
+	public void get_Agregar_Stat_Id(final short stat_id, final int valor)
 	{
 		if (stats_id.get(stat_id) != null)
-			fijarStat(stat_id, stats_id.get(stat_id) + valor);
+			set_Fijar_Stat(stat_id, stats_id.get(stat_id) + valor);
 		else
-			fijarStat(stat_id, valor);
+			set_Fijar_Stat(stat_id, valor);
 	}
 	
-	public int get_Mostrar_Stat_Complemento(final int statID) 
+	public int get_Mostrar_Stat_Complemento(final short statID) 
 	{
-		int val = get_Mostrar_Stat(statID);
+		int valor = get_Mostrar_Stat(statID);
 		switch (statID) 
 		{
 			case TipoStats.AGREGAR_RES_FIJA_PVP_TIERRA:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_TIERRA);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_TIERRA);
 			break;
 				
 			case TipoStats.AGREGAR_RES_FIJA_PVP_AGUA:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_AGUA);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_AGUA);
 			break;
 				
 			case TipoStats.AGREGAR_RES_FIJA_PVP_AIRE:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_AIRE);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_AIRE);
 			break;
 				
 			case TipoStats.AGREGAR_RES_FIJA_PVP_FUEGO:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_FUEGO);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_FUEGO);
 			break;
 				
 			case TipoStats.AGREGAR_RES_FIJA_PVP_NEUTRAL:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_NEUTRAL);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_FIJA_NEUTRAL);
 			break;
 				
 			case TipoStats.AGREGAR_RES_PORC_PVP_TIERRA:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_TIERRA);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_TIERRA);
 			break;
 				
 			case TipoStats.AGREGAR_RES_PORC_PVP_AGUA :
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_AGUA);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_AGUA);
 			break;
 				
 			case TipoStats.AGREGAR_RES_PORC_PVP_AIRE :
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_AIRE);
-				break;
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_AIRE);
+			break;
 				
 			case TipoStats.AGREGAR_RES_PORC_PVP_FUEGO :
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_FUEGO);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_FUEGO);
 			break;
 				
 			case TipoStats.AGREGAR_RES_PORC_PVP_NEUTRAL:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_NEUTRAL);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_RES_PORC_NEUTRAL);
 			break;
 				
 			case TipoStats.AGREGAR_ESQUIVA_PERD_PA:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_SABIDURIA) / 4;
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_SABIDURIA) / 4;
 			break;
 				
 			case TipoStats.AGREGAR_ESQUIVA_PERD_PM:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_SABIDURIA) / 4;
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_SABIDURIA) / 4;
 			break;
 				
 			case TipoStats.AGREGAR_PROSPECCION:
-				val += get_Mostrar_Stat(TipoStats.AGREGAR_SUERTE) / 10;
-				val = (int)Math.ceil(val);
+				valor += get_Mostrar_Stat(TipoStats.AGREGAR_SUERTE) / 10;
+				valor = (int)Math.ceil(valor);
 			break;
 				
 			default :
-				val = get_Mostrar_Stat(statID);
+				valor = get_Mostrar_Stat(statID);
 			break;
 		}
-		return val;
+		return valor;
 	}
 	
-	public int get_Mostrar_Stat(final int statID) 
+	public int get_Mostrar_Stat(final short statID) 
 	{
 		int valor = 0;
 		if (stats_id.get(statID) != null)
@@ -175,24 +178,24 @@ public class Stats
 					valor -= stats_id.get(TipoStats.RETIRAR_SABIDURIA);
 			break;
 			
-			case TipoStats.AGREGAR_INTELIGENCIA :
+			case TipoStats.AGREGAR_INTELIGENCIA:
 				if (stats_id.get(TipoStats.RETIRAR_INTELIGENCIA) != null)
 					valor -= stats_id.get(TipoStats.RETIRAR_INTELIGENCIA);
 
 				if (stats_id.get(TipoStats.AGREGA_STAT_INTELIGENCIA) != null)
-					valor += stats_id.get(611);
+					valor += stats_id.get(TipoStats.AGREGA_STAT_INTELIGENCIA);
 			break;
 		}
 		
 		return valor;
 	}
 	
-	public Map<Integer, Integer> get_Stats()
+	public Map<Short, Integer> get_Stats()
 	{
 		return stats_id;
 	}
 	
-	public boolean get_Stat_Id(final int stat) 
+	public boolean get_Stat_Id(final short stat) 
 	{
 		return stats_id.get(stat) != null;
 	}

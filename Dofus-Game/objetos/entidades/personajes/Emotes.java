@@ -10,7 +10,7 @@ final public class Emotes
 	}
 	
 	//true para agregar, false para quitarlo.
-	public boolean get_Modificar_Emote(final Tipo_Emotes emote, final boolean metodo)
+	public boolean get_Modificar_Emote(final Emote emote, final boolean metodo)
 	{
 		final int valor = (int) Math.pow(2, emote.get_Emote() - 1);
 		
@@ -37,7 +37,7 @@ final public class Emotes
 		return emotes;
 	}
 
-	public enum Tipo_Emotes
+	public enum Emote
 	{
 		SENTARSE (1),
 		SENAL_CON_LA_MANO (2),
@@ -62,7 +62,7 @@ final public class Emotes
 
 		private int emote;
 
-		private Tipo_Emotes(final int _emote)
+		private Emote(final int _emote)
 		{
 			emote = _emote;
 		}

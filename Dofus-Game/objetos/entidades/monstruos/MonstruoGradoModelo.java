@@ -10,7 +10,7 @@ public class MonstruoGradoModelo
 	private final MonstruosModelo monstruo_modelo;
 	private final Stats stats = new Stats();
 	
-	private static int[] stats_ordenados =
+	private static short[] stats_ordenados =
 	{
 		TipoStats.AGREGAR_RES_PORC_NEUTRAL, TipoStats.AGREGAR_RES_PORC_TIERRA,
 		TipoStats.AGREGAR_RES_PORC_FUEGO, TipoStats.AGREGAR_RES_PORC_AGUA, TipoStats.AGREGAR_RES_PORC_AIRE,

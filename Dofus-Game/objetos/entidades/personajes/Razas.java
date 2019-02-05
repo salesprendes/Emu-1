@@ -49,7 +49,7 @@ final public class Razas
 		return iniciativa_base;
 	}
 
-	public int get_Pods_base()
+	public short get_Pods_base()
 	{
 		return pods_base;
 	}

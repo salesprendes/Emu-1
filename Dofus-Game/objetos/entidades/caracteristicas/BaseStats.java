@@ -27,7 +27,7 @@ public class BaseStats
 			boost.clear();
 	}
 
-	public boolean get_Tiene_Stat_Id(final int statID)
+	public boolean get_Tiene_Stat_Id(final short statID)
 	{
 		boolean b = false;
 		
@@ -45,7 +45,7 @@ public class BaseStats
 		return b;
 	}
 
-	public int get_Stat_Mostrar_Complemento(final int statID)
+	public int get_Stat_Mostrar_Complemento(final short statID)
 	{
 		int valor = 0;
 		if (base != null)
@@ -60,7 +60,7 @@ public class BaseStats
 		return valor;
 	}
 
-	public int get_Stat_Para_Mostrar(final int statID)
+	public int get_Stat_Para_Mostrar(final short statID)
 	{
 		int valor = 0;
 		

@@ -43,6 +43,16 @@ public class Items
 		cantidad = _cantidad;
 	}
 
+	public byte get_Posicion_inventario()
+	{
+		return posicion_inventario;
+	}
+
+	public void set_Posicion_inventario(final byte _posicion_inventario)
+	{
+		posicion_inventario = _posicion_inventario;
+	}
+
 	public void get_Convertir_String_A_Stats(final String stats_string)
 	{
 		for(final String stat : stats_string.split(","))
@@ -52,7 +62,7 @@ public class Items
 				try 
 				{
 					final String[] separador = stat.split("#");
-					int id_stat = ItemsModelo.get_Stat_Similar(Integer.parseInt(separador[0], 16));
+					final short id_stat = ItemsModelo.get_Stat_Similar(Short.parseShort(separador[0], 16));
 					final int valor = Integer.parseInt(separador[1], 16);
 					
 					stats.get_Agregar_Stat_Id(id_stat, valor);
@@ -66,7 +76,7 @@ public class Items
 	{
 		final StringBuilder string_stats = new StringBuilder();
 		
-		for(final Entry<Integer, Integer> stat : stats.get_Stats().entrySet())
+		for(final Entry<Short, Integer> stat : stats.get_Stats().entrySet())
 		{
 			if(string_stats.length() > 0)
 				string_stats.append(',');

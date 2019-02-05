@@ -145,7 +145,7 @@ public class ItemsModelo
 		this.coste_pa = coste_pa;
 	}
 	
-	public static int get_Stat_Similar(int statID) 
+	public static short get_Stat_Similar(short statID) 
 	{
 		switch (statID) 
 		{
