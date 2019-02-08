@@ -15,31 +15,31 @@ import main.util.Crypt;
 import objetos.entidades.hechizos.EfectoArea;
 import objetos.entidades.hechizos.EfectoModelo;
 import objetos.entidades.hechizos.HechizoModelo;
-import objetos.entidades.hechizos.Rango;
+import objetos.entidades.hechizos.HechizoRango;
 import objetos.entidades.hechizos.HechizoStats;
 
 public class Hechizos_DB extends DatabaseManager
 {
-	final static public int EFECTOS_NORMALES = 0;
-	final static public int EFECTOS_CRITICOS = 1;
-	final static public int COSTE_PA = 2;
-	final static public int RANGO_MINIMO = 3;
-	final static public int RANGO_MAXIMO = 4;
-	final static public int PROBABILIDAD_CRITICO = 5;
-	final static public int PROBABILIDAD_FALLO = 6;
-	final static public int LANZADO_SOLAMENTE_LINEA = 7;
-	final static public int LINEA_DE_VISION = 8;
-	final static public int CELDA_LIBRE = 9;
-	final static public int RANGO_MODIFICABLE = 10;
-	final static public int TIPO_HECHIZO = 11;
-	final static public int LANZAMIENTOS_POR_TURNO = 12;
-	final static public int LANZAMIENTOS_POR_OBJETIVO = 13;
-	final static public int LANZAMIENTOS_DELAY = 14;
-	final static public int AREAS_DE_EFECTO = 15;
-	final static public int ESTADOS_NECESARIOS = 16;
-	final static public int ESTADOS_PROHIBIDOS = 17;
-	final static public int NIVEL_REQUERIDO = 18;
-	final static public int ACABA_TURNO_FALLO_CRITICO = 19;
+	final static public byte EFECTOS_NORMALES = 0;
+	final static public byte EFECTOS_CRITICOS = 1;
+	final static public byte COSTE_PA = 2;
+	final static public byte RANGO_MINIMO = 3;
+	final static public byte RANGO_MAXIMO = 4;
+	final static public byte PROBABILIDAD_CRITICO = 5;
+	final static public byte PROBABILIDAD_FALLO = 6;
+	final static public byte LANZADO_SOLAMENTE_LINEA = 7;
+	final static public byte LINEA_DE_VISION = 8;
+	final static public byte CELDA_LIBRE = 9;
+	final static public byte RANGO_MODIFICABLE = 10;
+	final static public byte TIPO_HECHIZO = 11;
+	final static public byte LANZAMIENTOS_POR_TURNO = 12;
+	final static public byte LANZAMIENTOS_POR_OBJETIVO = 13;
+	final static public byte LANZAMIENTOS_DELAY = 14;
+	final static public byte AREAS_DE_EFECTO = 15;
+	final static public byte ESTADOS_NECESARIOS = 16;
+	final static public byte ESTADOS_PROHIBIDOS = 17;
+	final static public byte NIVEL_REQUERIDO = 18;
+	final static public byte ACABA_TURNO_FALLO_CRITICO = 19;
 
 	public Hechizos_DB(HikariDataSource database_conexion) 
 	{
@@ -75,7 +75,7 @@ public class Hechizos_DB extends DatabaseManager
 
 		try 
 		{
-			return verificar(new HechizoStats(efectos(separador[EFECTOS_NORMALES]), efectos(separador[EFECTOS_CRITICOS]), get_integro(separador[COSTE_PA]), get_Rango_Hechizo(separador[RANGO_MINIMO], separador[RANGO_MAXIMO]), get_integro(separador[PROBABILIDAD_CRITICO]), get_integro(separador[PROBABILIDAD_FALLO]), get_Booleano(separador[LANZADO_SOLAMENTE_LINEA]), get_Booleano(separador[LINEA_DE_VISION]), get_Booleano(separador[CELDA_LIBRE]), get_Booleano(separador[RANGO_MODIFICABLE]), get_integro(separador[TIPO_HECHIZO]), get_integro(separador[LANZAMIENTOS_POR_TURNO]), get_integro(separador[LANZAMIENTOS_POR_OBJETIVO]), get_integro(separador[LANZAMIENTOS_DELAY]), get_Areas(separador[AREAS_DE_EFECTO]), get_Estados(separador[ESTADOS_NECESARIOS]), get_Estados(separador[ESTADOS_PROHIBIDOS]), get_integro(separador[NIVEL_REQUERIDO]), get_Booleano(separador[ACABA_TURNO_FALLO_CRITICO])));
+			return verificar(new HechizoStats(efectos(separador[EFECTOS_NORMALES]), efectos(separador[EFECTOS_CRITICOS]), get_Byte(separador[COSTE_PA]), get_Rango_Hechizo(separador[RANGO_MINIMO], separador[RANGO_MAXIMO]), get_Short(separador[PROBABILIDAD_CRITICO]), get_Short(separador[PROBABILIDAD_FALLO]), get_Booleano(separador[LANZADO_SOLAMENTE_LINEA]), get_Booleano(separador[LINEA_DE_VISION]), get_Booleano(separador[CELDA_LIBRE]), get_Booleano(separador[RANGO_MODIFICABLE]), get_Byte(separador[TIPO_HECHIZO]), get_Byte(separador[LANZAMIENTOS_POR_TURNO]), get_Byte(separador[LANZAMIENTOS_POR_OBJETIVO]), get_Byte(separador[LANZAMIENTOS_DELAY]), get_Areas(separador[AREAS_DE_EFECTO]), get_Estados(separador[ESTADOS_NECESARIOS]), get_Estados(separador[ESTADOS_PROHIBIDOS]), get_Integro(separador[NIVEL_REQUERIDO]), get_Booleano(separador[ACABA_TURNO_FALLO_CRITICO])));
 		} 
 		catch (RuntimeException e) 
 		{
@@ -102,14 +102,24 @@ public class Hechizos_DB extends DatabaseManager
 	private EfectoModelo efecto(final String efecto) 
 	{
 		String[] parametros = efecto.split(Pattern.quote(";"), 7);
-		return new EfectoModelo(get_integro(parametros[0]), get_integro(parametros[1]), get_integro(parametros[2]), get_integro(parametros[3]), get_integro(parametros[4]), get_integro(parametros[5]), parametros.length == 7 ? parametros[6] : null);
+		return new EfectoModelo(get_Integro(parametros[0]), get_Integro(parametros[1]), get_Integro(parametros[2]), get_Integro(parametros[3]), get_Integro(parametros[4]), get_Integro(parametros[5]), parametros.length == 7 ? parametros[6] : null);
 	}
 
-	private int get_integro(final String valor) 
+	private int get_Integro(final String valor) 
 	{
 		return valor.isEmpty() ? 0 : Integer.parseInt(valor);
 	}
-
+	
+	private byte get_Byte(final String valor) 
+	{
+		return valor.isEmpty() ? 0 : Byte.parseByte(valor);
+	}
+	
+	private short get_Short(final String valor) 
+	{
+		return valor.isEmpty() ? 0 : Short.parseShort(valor);
+	}
+	
 	private boolean get_Booleano(final String valor) 
 	{
 		return valor.equals("true");
@@ -130,9 +140,9 @@ public class Hechizos_DB extends DatabaseManager
 		return areas;
 	}
 
-	private Rango get_Rango_Hechizo(final String minimo, final String maximo) 
+	private HechizoRango get_Rango_Hechizo(final String minimo, final String maximo) 
 	{
-		return new Rango(get_integro(minimo), get_integro(maximo));
+		return new HechizoRango(get_Byte(minimo), get_Byte(maximo));
 	}
 
 	public String serializar_EfectoArea(final EfectoArea valor) 

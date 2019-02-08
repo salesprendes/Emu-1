@@ -9,12 +9,10 @@ public class ItemsModelo
 {
 	final private int id, kamas;
 	final private byte tipo;
-	private byte coste_pa, bonus_golpe_critico;
 	final private short nivel, pods;
-	private short porcentaje_golpe_critico;
-	final private String condiciones, informacion_armas, stats;
+	final private String condiciones, stats;
 	final private boolean es_magueable, es_eterea;
-	private boolean es_dos_manos;
+	private ArmasModelo informacion_armas;
 
 	private static final Map<Integer, ItemsModelo> items_cargados = new HashMap<Integer, ItemsModelo>();
 
@@ -28,7 +26,6 @@ public class ItemsModelo
 		kamas = _kamas;
 		es_magueable = _es_magueable;
 		es_eterea = _es_eterea;
-		informacion_armas = _informacion_armas;
 		condiciones = _condiciones;
 		
 		if (!stats.isEmpty())
@@ -38,18 +35,13 @@ public class ItemsModelo
 				if (!_informacion_armas.isEmpty()) 
 				{
 					final String[] separador = _informacion_armas.split(",");
-					bonus_golpe_critico = Byte.parseByte(separador[0]);
-					coste_pa = Byte.parseByte(separador[1]);
-					//byte alcanze_minimo = Byte.parseByte(separador[2]);
-					//byte alcanze_maximo = Byte.parseByte(separador[3]);
-					porcentaje_golpe_critico = Short.parseShort(separador[4]);
-					//short porcentaje_fallo_critico = Short.parseShort(separador[5]);
-					//boolean lanzado_en_linea = Boolean.parseBoolean(separador[6]);
-					//boolean necesita_linea_vision = Boolean.parseBoolean(separador[7]);
-					es_dos_manos = Boolean.parseBoolean(separador[8]);
+					informacion_armas = new ArmasModelo(Byte.parseByte(separador[0]), Byte.parseByte(separador[1]), Byte.parseByte(separador[2]), Byte.parseByte(separador[3]), Short.parseShort(separador[4]), Short.parseShort(separador[5]), Boolean.parseBoolean(separador[6]), Boolean.parseBoolean(separador[7]), Boolean.parseBoolean(separador[8]));
 				}
 			}
-			catch (final Exception e){}
+			catch (final Exception e)
+			{
+				System.out.println("Error al crear el arma id: " + id);
+			}
 		}
 		
 		items_cargados.put(id, this);
@@ -85,16 +77,6 @@ public class ItemsModelo
 		return tipo;
 	}
 	
-	public byte get_Bonus_golpe_critico()
-	{
-		return bonus_golpe_critico;
-	}
-
-	public void set_Bonus_golpe_critico(byte bonus_golpe_critico)
-	{
-		this.bonus_golpe_critico = bonus_golpe_critico;
-	}
-	
 	public String get_Stats()
 	{
 		return stats;
@@ -110,41 +92,11 @@ public class ItemsModelo
 		return es_eterea;
 	}
 	
-	public short get_Porcentaje_golpe_critico()
-	{
-		return porcentaje_golpe_critico;
-	}
-
-	public void set_Porcentaje_golpe_critico(short porcentaje_golpe_critico)
-	{
-		this.porcentaje_golpe_critico = porcentaje_golpe_critico;
-	}
-
-	public String get_Informacion_armas()
+	public ArmasModelo get_Informacion_armas()
 	{
 		return informacion_armas;
 	}
-	
-	public boolean get_Es_dos_manos()
-	{
-		return es_dos_manos;
-	}
 
-	public void set_Es_dos_manos(boolean es_dos_manos)
-	{
-		this.es_dos_manos = es_dos_manos;
-	}
-	
-	public byte get_Coste_pa()
-	{
-		return coste_pa;
-	}
-
-	public void set_Coste_pa(byte coste_pa)
-	{
-		this.coste_pa = coste_pa;
-	}
-	
 	public static short get_Stat_Similar(short statID) 
 	{
 		switch (statID) 
@@ -162,6 +114,25 @@ public class ItemsModelo
 				return TipoStats.AGREGAR_REENVIA_DANOS;
 		}
 		return statID;
+	}
+	
+	public int get_Tipo_Objevivo() 
+	{
+		try 
+		{
+			for (final String separador : stats.split(","))
+			{
+				final String[] stats = separador.split("#");
+				final int stat_id = Integer.parseInt(stats[0], 16);
+				if (stat_id == 973)
+					return Integer.parseInt(stats[3], 16);
+			}
+		} 
+		catch (final Exception e)
+		{
+			return 113;
+		}
+		return 113;
 	}
 
 	public static Map<Integer, ItemsModelo> get_Items_Cargados()

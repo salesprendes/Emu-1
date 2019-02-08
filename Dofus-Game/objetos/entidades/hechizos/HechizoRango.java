@@ -2,11 +2,11 @@ package objetos.entidades.hechizos;
 
 import java.util.Objects;
 
-public class Rango
+public class HechizoRango
 {
-	final private int minimo, maximo;
+	final private byte minimo, maximo;
 
-    public Rango(final int _min, final int _max) 
+    public HechizoRango(final byte _min, final byte _max) 
     {
         minimo = _min;
         maximo = _max;
@@ -27,14 +27,14 @@ public class Rango
         return rango >= minimo && rango <= maximo;
     }
     
-    public Rango get_Rango_Modificado(int rango)
+    public HechizoRango get_Rango_Modificado(byte rango)
     {
         if (rango == 0 || (minimo == maximo && rango < 0))
             return this;
 
-        final int rango_nuevo = maximo + rango;
+        final byte rango_nuevo = (byte) (maximo + rango);
 
-        return new Rango(minimo, rango_nuevo < minimo ? minimo : rango_nuevo);
+        return new HechizoRango(minimo, rango_nuevo < minimo ? minimo : rango_nuevo);
     }
     
     public String toString() 
@@ -44,10 +44,10 @@ public class Rango
     
     public boolean equals(Object clase) 
     {
-        if (!(clase instanceof Rango))
+        if (!(clase instanceof HechizoRango))
             return false;
 
-        Rango otro = (Rango) clase;
+        HechizoRango otro = (HechizoRango) clase;
 
         return otro.minimo == minimo && otro.maximo == maximo;
     }
