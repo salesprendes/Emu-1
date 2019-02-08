@@ -12,7 +12,7 @@ import objetos.items.tipos.Objevivo;
 public class Items
 {
 	private int id, cantidad;
-	protected final ItemsModelo item_modelo; 
+	protected ItemsModelo item_modelo; 
 	private Stats stats;
 	private byte posicion_inventario = -1;
 	private ArrayList<EfectoModelo> efectos_normales;
@@ -49,6 +49,11 @@ public class Items
 	
 		final String posicion = posicion_inventario == -1 ? "" : Integer.toHexString(posicion_inventario);
 		return new StringBuilder(40).append(Integer.toHexString(id)).append('~').append(Integer.toHexString(item_modelo.get_Id())).append('~').append(Integer.toHexString(cantidad)).append('~').append(posicion).append('~').append(get_Convertir_Stats_A_String()).toString();
+	}
+
+	public int get_Id()
+	{
+		return id;
 	}
 
 	public ItemsModelo get_Item_modelo()
