@@ -8,6 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import database.objetos.Alineamientos_DB;
 import database.objetos.Cuentas_DB;
 import database.objetos.Experiencia_DB;
+import database.objetos.Hechizos_DB;
 import database.objetos.Items_DB;
 import database.objetos.Mapas_DB;
 import database.objetos.Monstruos_DB;
@@ -29,6 +30,7 @@ public class ConexionPool
 	private Experiencia_DB experiencia;
 	private Items_DB items;
 	private Monstruos_DB monstruos;
+	private Hechizos_DB hechizos;
 	
 	public void iniciar_Database() 
 	{
@@ -37,6 +39,7 @@ public class ConexionPool
 		mapas = new Mapas_DB(game_database);
 		alineamientos = new Alineamientos_DB(game_database);
 		experiencia = new Experiencia_DB(game_database);
+		hechizos = new Hechizos_DB(game_database);
 		razas = new Razas_DB(game_database);
 		items = new Items_DB(game_database);
 		monstruos = new Monstruos_DB(game_database);
@@ -67,6 +70,11 @@ public class ConexionPool
 		return experiencia;
 	}
 	
+	public Hechizos_DB get_Hechizos()
+	{
+		return hechizos;
+	}
+
 	public Items_DB get_Items()
 	{
 		return items;

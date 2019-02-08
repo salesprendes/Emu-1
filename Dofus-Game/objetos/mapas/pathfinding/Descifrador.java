@@ -120,7 +120,7 @@ public class Descifrador
 			path_codificado.append(Crypt.get_codificar_String(path.get(i).get_Celda().get_Id(), 2));
 		}
 		
-		path.set_Tiempo_recorrido(tiempo);
+		path.set_Tiempo_Recorrido_Sin_Pelea(tiempo);
 		return path_codificado.toString();
 	}
 

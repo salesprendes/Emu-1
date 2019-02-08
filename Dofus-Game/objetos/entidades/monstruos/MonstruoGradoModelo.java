@@ -46,13 +46,13 @@ public class MonstruoGradoModelo
 			catch (final Exception e) {}
 		}
 		
-		if (stats.get_Stats().get(TipoStats.AGREGAR_VITALIDAD) == null) 
+		if (stats.get_Stats().get(TipoStats.AGREGAR_VITALIDAD) == null)
 			stats.get_Stats().put(TipoStats.AGREGAR_VITALIDAD, 50 * nivel);
-		if (stats.get_Stats().get(TipoStats.AGREGAR_PA) == null) 
+		if (stats.get_Stats().get(TipoStats.AGREGAR_PA) == null)
 			stats.get_Stats().put(TipoStats.AGREGAR_PA, 6);
-		if (stats.get_Stats().get(TipoStats.AGREGAR_PM) == null) 
+		if (stats.get_Stats().get(TipoStats.AGREGAR_PM) == null)
 			stats.get_Stats().put(TipoStats.AGREGAR_PM, 3);
-		if (stats.get_Stats().get(TipoStats.AGREGAR_CRIATURAS_INVOCABLES) == null) 
+		if (stats.get_Stats().get(TipoStats.AGREGAR_CRIATURAS_INVOCABLES) == null)
 			stats.get_Stats().put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
 	}
 

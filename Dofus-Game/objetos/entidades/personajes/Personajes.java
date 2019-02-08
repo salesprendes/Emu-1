@@ -534,6 +534,10 @@ public class Personajes implements Entidades
 			personaje.append(emote_activo).append(';');
 			personaje.append(emote_tiempo).append(';');
 			
+			personaje.append(";;");//nombre, emblema gremio
+			personaje.append(restricciones.get_Convertir_Base36()).append(';');
+			personaje.append(";;");
+			
 			cache_gm = personaje.toString();
 		}
 		return new StringBuilder().append(celda.get_Id()).append(';').append(orientacion.ordinal()).append(';').append(cache_gm).toString();
@@ -551,9 +555,9 @@ public class Personajes implements Entidades
 
 			get_Actualizar_Vida();
 			paquete.append(puntos_vida).append(',').append(puntos_vida_maxima).append('|');
-			paquete.append(10000).append(',').append(servidor == 22 ? 1 : 10000).append('|');//energia
-			paquete.append(get_Iniciativa()).append('|');//iniciativa
-			paquete.append(stats.get_Stat_Mostrar_Complemento(TipoStats.AGREGAR_PROSPECCION)).append('|');//prospeccion
+			paquete.append(10000).append(',').append(servidor == 22 ? 1 : 10000).append('|');
+			paquete.append(get_Iniciativa()).append('|');
+			paquete.append(stats.get_Stat_Mostrar_Complemento(TipoStats.AGREGAR_PROSPECCION)).append('|');
 			
 			final short[] array_stats =
 			{
@@ -583,9 +587,23 @@ public class Personajes implements Entidades
 		float fact = 4;
 		int vida_maxima = puntos_vida_maxima - raza.get_Vida_base();
 		int vida = puntos_vida - raza.get_Vida_base();
-		if (raza.get_Id() == 11)//sacrogito
+		if (raza.get_Id() == 11)//raza sacrogito
 			fact = 8;
 		int iniciativa = 0;
+		
+		iniciativa += stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_INICIATIVA);
+		iniciativa += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_AGILIDAD);
+		iniciativa += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_INTELIGENCIA);
+		iniciativa += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_SUERTE);
+		iniciativa += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA);
+		iniciativa += stats.get_Equipo().get_Mostrar_Stat(TipoStats.AGREGAR_AGILIDAD);
+		iniciativa += stats.get_Equipo().get_Mostrar_Stat(TipoStats.AGREGAR_INTELIGENCIA);
+		iniciativa += stats.get_Equipo().get_Mostrar_Stat(TipoStats.AGREGAR_SUERTE);
+		iniciativa += stats.get_Equipo().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA);
+		iniciativa += stats.get_Dones().get_Mostrar_Stat(TipoStats.AGREGAR_AGILIDAD);
+		iniciativa += stats.get_Dones().get_Mostrar_Stat(TipoStats.AGREGAR_INTELIGENCIA);
+		iniciativa += stats.get_Dones().get_Mostrar_Stat(TipoStats.AGREGAR_SUERTE);
+		iniciativa += stats.get_Dones().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA);
 		
 		if (vida_maxima > 0) 
 		{
@@ -595,7 +613,7 @@ public class Personajes implements Entidades
 		}
 		if (iniciativa < 0)
 			iniciativa = 0;
-		return 0;
+		return iniciativa;
 	}
 	
 	public int get_Pods_Utilizados() 
@@ -663,7 +681,7 @@ public class Personajes implements Entidades
 			public void actionPerformed(ActionEvent e) 
 			{
 				if(emote_tiempo > 0) 
-					emote_tiempo = emote_tiempo - 1000;
+					emote_tiempo -= 1000;
 				
 				if(emote_tiempo <= 0) 
 				{
@@ -746,13 +764,13 @@ public class Personajes implements Entidades
 	{
 		if (cache_gm_objetos.isEmpty())
 		{
-			final StringBuilder objetos = new StringBuilder();
+			final StringJoiner objetos = new StringJoiner(",");
 			
-			objetos.append(get_Gm_Objeto_Posicion(PosicionInventario.ARMA.get_Posicion())).append(',');
-			objetos.append(get_Gm_Objeto_Posicion(PosicionInventario.SOMBRERO.get_Posicion())).append(',');
-			objetos.append(get_Gm_Objeto_Posicion(PosicionInventario.CAPA.get_Posicion())).append(',');
-			objetos.append(get_Gm_Objeto_Posicion(PosicionInventario.MASCOTA.get_Posicion())).append(',');
-			objetos.append(get_Gm_Objeto_Posicion(PosicionInventario.ESCUDO.get_Posicion())).append(',');
+			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.ARMA.get_Posicion()));
+			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.SOMBRERO.get_Posicion()));
+			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.CAPA.get_Posicion()));
+			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.MASCOTA.get_Posicion()));
+			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.ESCUDO.get_Posicion()));
 			
 			cache_gm_objetos = objetos.toString();
 		}

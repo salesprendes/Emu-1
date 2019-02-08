@@ -8,6 +8,7 @@ import main.consola.Consola;
 import objetos.cuentas.Cuentas;
 import objetos.entidades.Experiencia;
 import objetos.entidades.alineamientos.AlineamientosModelo;
+import objetos.entidades.hechizos.HechizoModelo;
 import objetos.entidades.monstruos.MonstruosModelo;
 import objetos.entidades.monstruos.MonstruosRaza;
 import objetos.entidades.monstruos.MonstruosSuperRaza;
@@ -120,6 +121,10 @@ public class Main
 		Consola.print("Cargando las experiencias: ");
 		database.get_Experiencia().get_Cargar_Todas_Experiencia();
 		Consola.println(Experiencia.get_Experiencias_Cargadas().size() + " experiencias cargadas");
+		
+		Consola.print("Cargando los hechizos: ");
+		database.get_Hechizos().get_Cargar_Todos_Hechizos();
+		Consola.println(HechizoModelo.get_hechizos_Cargados().size() + " hechizos cargados");
 		
 		Consola.print("Cargando alineamientos: ");
 		database.get_Alineamientos().get_Cargar_Todos_Alineamientos();

@@ -80,7 +80,7 @@ public class Desplazamiento implements JuegoAcciones
 	{
 		long tiempo_local = (System.currentTimeMillis() - tiempo_inicio) + personaje.get_Cuenta().get_Juego_socket().get_ping();
 
-		if(pathfinding.get_Tiempo_recorrido() <= tiempo_local)
+		if(pathfinding.get_Tiempo_Recorrido_Sin_Pelea() <= tiempo_local)
 		{
 			Celdas celda_destino = pathfinding.celda_objetivo();
 			personaje.set_Celda(celda_destino != null ? celda_destino : personaje.get_Celda());

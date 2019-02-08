@@ -40,6 +40,7 @@ final public class TipoStats
 	public static final short AGREGAR_PROSPECCION = 176;
 	public static final short RETIRAR_PROSPECCION = 177;
 	public static final short AGREGAR_CURAS = 178;
+	public static final short RETIRAR_CURAS = 179;
 	public static final short AGREGAR_CRIATURAS_INVOCABLES = 182;
 	public static final short AGREGAR_RES_PORC_TIERRA = 210;
 	public static final short AGREGAR_RES_PORC_AGUA = 211;

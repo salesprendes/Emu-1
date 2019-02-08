@@ -12,9 +12,9 @@ public class Stats
 	private Map<Short, Integer> stats_id = new TreeMap<Short, Integer>();
 	private ArrayList<String> stats_hechizos;
 	private ArrayList<String> stats_repetidos;
-	private Map<Integer, String> stats_textos;
+	private Map<Integer, String> stats_texto;
 
-	public Stats(){}
+	public Stats(){}//CONSTRUCTOR BASE
 	
 	public void set_Stats_Base(final Map<Short, Integer> _stats, final Personajes _personaje) 
 	{
@@ -185,6 +185,11 @@ public class Stats
 				if (stats_id.get(TipoStats.AGREGA_STAT_INTELIGENCIA) != null)
 					valor += stats_id.get(TipoStats.AGREGA_STAT_INTELIGENCIA);
 			break;
+			
+			case TipoStats.AGREGAR_CURAS:
+				if (stats_id.get(TipoStats.RETIRAR_CURAS) != null) 
+					valor -= stats_id.get(TipoStats.RETIRAR_CURAS);
+			break;
 		}
 		
 		return valor;
@@ -200,11 +205,55 @@ public class Stats
 		return stats_id.get(stat) != null;
 	}
 	
+	public void set_Stat_Hechizo(String str) 
+	{
+		if (stats_hechizos == null)
+			stats_hechizos = new ArrayList<>();
+		
+		stats_hechizos.add(str);
+	}
+	
+	public void set_Stat_Repetido(String str) 
+	{
+		if (stats_repetidos == null)
+			stats_repetidos = new ArrayList<>();
+		stats_repetidos.add(str);
+	}
+	
+	public void set_Stat_Texto(int statID, String str, boolean completo) 
+	{
+		if (stats_texto == null)
+			stats_texto = new TreeMap<>();
+		
+		if (str.isEmpty())
+			stats_texto.remove(statID);
+		else
+			stats_texto.put(statID, completo ? str.split("#", 2)[1] : str);
+	}
+	
+	public ArrayList<String> get_Stat_Repetidos() 
+	{
+		return stats_repetidos;
+	}
+	
+	public ArrayList<String> get_Stat_Hechizo()
+	{
+		return stats_hechizos;
+	}
+	
+	public String get_Stat_Texto(final int stat)
+	{
+		if (stats_texto == null || stats_texto.get(stat) == null) 
+			return "";
+		
+		return stats_texto.get(stat);
+	}
+	
 	public void clear() 
 	{
 		stats_id.clear();
 		stats_hechizos = null;
 		stats_repetidos = null;
-		stats_textos = null;
+		stats_texto = null;
 	}
 }

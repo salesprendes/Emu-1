@@ -12,7 +12,7 @@ public class PathFinding implements Collection<Camino>
 {
 	final private Descifrador decodificador;
     final private List<Camino> pasos;
-    private int tiempo_recorrido;
+    private int tiempo_recorrido_fuera_pelea;
     
     public PathFinding(Descifrador _decodificador, List<Camino> _pasos) 
     {
@@ -44,14 +44,14 @@ public class PathFinding implements Collection<Camino>
         return nuevo_camino;
     }
 
-	public int get_Tiempo_recorrido()
+	public int get_Tiempo_Recorrido_Sin_Pelea()
 	{
-		return tiempo_recorrido;
+		return tiempo_recorrido_fuera_pelea;
 	}
 
-	public void set_Tiempo_recorrido(int _tiempo_recorrido)
+	public void set_Tiempo_Recorrido_Sin_Pelea(final int _tiempo_recorrido)
 	{
-		tiempo_recorrido = _tiempo_recorrido;
+		tiempo_recorrido_fuera_pelea = _tiempo_recorrido;
 	}
 
 	public boolean add(Camino paso)
