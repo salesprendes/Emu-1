@@ -85,6 +85,18 @@ public class Formulas
 		return null;
 	}
 	
+	public static boolean get_Comprar_fechas(final String fecha, final long tiempo) 
+	{
+		final Calendar hoy = GregorianCalendar.getInstance();
+		final long hoy_milisegundos = hoy.getTimeInMillis();
+
+		hoy.clear();
+		final String[] separador_fecha = fecha.split("-");
+		hoy.set(Integer.parseInt(separador_fecha[0]), Integer.parseInt(separador_fecha[1]), Integer.parseInt(separador_fecha[2]), Integer.parseInt(separador_fecha[3]), Integer.parseInt(separador_fecha[4]));
+
+		return hoy.getTimeInMillis() + tiempo >= hoy_milisegundos;
+	}
+	
 	public static String get_Nueva_Fecha(final String separador) 
 	{
 		final Calendar hoy = Calendar.getInstance();

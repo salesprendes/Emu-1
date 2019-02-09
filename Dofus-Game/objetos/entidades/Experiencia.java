@@ -79,10 +79,10 @@ public class Experiencia
 	
 	public static long get_Experiencia_Personajes(int nivel) 
 	{
-		if (nivel >= 200)
+		if (nivel > experiencias_cargadas.size())
 			return Long.MAX_VALUE;
 		
-		else if (nivel < 1) 
+		else if (nivel < 1)
 			nivel = 1;
 		
 		return experiencias_cargadas.get(nivel).get_Personajes();

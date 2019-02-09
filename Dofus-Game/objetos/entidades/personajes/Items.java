@@ -13,7 +13,7 @@ public class Items
 {
 	private int id, cantidad;
 	protected ItemsModelo item_modelo; 
-	private Stats stats;
+	protected Stats stats;
 	private byte posicion_inventario = -1;
 	private ArrayList<EfectoModelo> efectos_normales;
 	protected boolean es_objevivo = false;

@@ -193,4 +193,9 @@ public class Celdas
     {
         return Math.abs(X - destino.X) + Math.abs(Y - destino.Y);
     }
+
+    public boolean equals(Celdas celda) 
+    {
+    	return celda != null? id == celda.id : false;
+    }
 }

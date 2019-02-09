@@ -32,6 +32,22 @@ public class Objevivo extends Items
 		objeto_base.get_Stats().set_Stat_Texto(805, Formulas.get_Nueva_Fecha("#"), true);
 		es_objevivo = true;
 	}
+	
+	public Objevivo(final Items objeto, final byte _apariencia, final byte _nivel, final int _experiencia, final byte _estado, final int _experiencia_ganada, final String _fecha_ultima_comida, final int _unido_objeto_id, final int _tipo)
+	{
+		//constructor padre
+		super(objeto.get_Id(), objeto.get_Item_modelo().get_Id(), objeto.get_Cantidad(), objeto.get_Posicion_inventario(), objeto.get_Convertir_Stats_A_String());
+
+		nivel = _nivel;
+		experiencia = _experiencia;
+		tipo = _tipo;
+		apariencia = _apariencia;
+		estado = _estado;
+		experiencia_ganada = _experiencia_ganada;
+		fecha_ultima_comida = _fecha_ultima_comida;
+		unido_objeto_id = _unido_objeto_id;
+		es_objevivo = true;
+	}
 
 	public void get_Stats(final String Stats) 
 	{
@@ -64,6 +80,32 @@ public class Objevivo extends Items
 		}
 	}
 	
+	public boolean get_Puede_Alimentar_Objevivo() 
+	{
+		long minimo_tiempo_comida = 43200000;
+		
+		try 
+		{
+			String fecha = fecha_ultima_comida;
+			if (fecha.contains("-"))
+			{
+				if (!Formulas.get_Comprar_fechas(fecha, minimo_tiempo_comida))
+					return true;
+			} 
+			else 
+			{
+				fecha = Formulas.get_Fecha_Stats(("325#" + stats.get_Stat_Texto(805)).split("#"));
+				if (!Formulas.get_Comprar_fechas(fecha, minimo_tiempo_comida))
+					return true;
+			}
+		} 
+		catch (final Exception e)
+		{
+			return false;
+		}
+		return false;
+	}
+	
 	public void agregar_experiencia_ganada(final int numero) 
 	{
 		experiencia_ganada += numero;
@@ -73,8 +115,8 @@ public class Objevivo extends Items
 	{
 		if (nivel > 20)
 			return;
-		nivel += 1;
 		
+		nivel += 1;
 		if (agregar_experiencia)
 			experiencia = Experiencia.get_Experiencia_Objevivos(nivel);
 	}
@@ -160,5 +202,35 @@ public class Objevivo extends Items
 	public void set_Esta_fusionado(final boolean _esta_fusionado)
 	{
 		esta_fusionado = _esta_fusionado;
+	}
+	
+	public int get_Tipo() 
+	{
+		return tipo;
+	}
+	
+	public int get_Unido_objeto_id()
+	{
+		return unido_objeto_id;
+	}
+
+	public void set_Unido_objeto_id(int unido_objeto_id)
+	{
+		this.unido_objeto_id = unido_objeto_id;
+	}
+
+	public static Objevivo get_Crear_Objevivo(final int id, final int modelo, final int cantidad, final byte posicion, final Stats stats, final ArrayList<EfectoModelo> efectos) 
+	{
+		return new Objevivo(id, modelo, cantidad, posicion, stats, efectos);
+	}
+
+	public byte get_Apariencia()
+	{
+		return apariencia;
+	}
+
+	public void set_Apariencia(byte apariencia)
+	{
+		this.apariencia = apariencia;
 	}
 }

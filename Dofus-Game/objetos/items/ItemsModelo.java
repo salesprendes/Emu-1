@@ -28,7 +28,7 @@ public class ItemsModelo
 		es_eterea = _es_eterea;
 		condiciones = _condiciones;
 		
-		if (!stats.isEmpty())
+		if (!stats.isEmpty() && get_Es_Arma(tipo))
 		{
 			try 
 			{
@@ -134,6 +134,30 @@ public class ItemsModelo
 		}
 		return 113;
 	}
+	
+	public boolean get_Es_Arma(final short tipo_objeto) 
+	{
+        switch (tipo_objeto) 
+        {
+            case 2://Arco
+            case 3://Varita
+            case 4://Baston
+            case 5://Daga
+            case 6://Espada
+            case 7://Martillo
+            case 8://Pala
+            case 19://Hacha
+            case 20://Herramienta
+            case 21://Pico
+            case 22://Guadaña
+            case 83://Piedra de alma
+            case 102://Ballesta
+            case 114://Arma magica
+            return true;
+        }
+        return false;
+    }
+
 
 	public static Map<Integer, ItemsModelo> get_Items_Cargados()
 	{

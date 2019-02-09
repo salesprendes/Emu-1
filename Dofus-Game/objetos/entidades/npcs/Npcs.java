@@ -25,7 +25,7 @@ public class Npcs implements Entidades
 		final StringJoiner npc = new StringJoiner(";");
 		
 		npc.add(Short.toString(celda_id));
-		npc.add(Byte.toString((byte) orientacion.ordinal()));
+		npc.add(Integer.toString(orientacion.ordinal()));
 		npc.add("0");
 		npc.add(Integer.toString(id));
 		

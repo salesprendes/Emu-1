@@ -53,9 +53,9 @@ public class Personajes implements Entidades
 	private final Map<Integer, Items> items = new ConcurrentHashMap<Integer, Items>();
 
 	/** Caches **/
-	private String cache_gm = "";
-	private String cache_gm_objetos = "";
-	private String cache_as = "";
+	private String cache_gm;
+	private String cache_gm_objetos;
+	private String cache_as;
 
 	/** Condiciones **/
 	
@@ -65,13 +65,11 @@ public class Personajes implements Entidades
 
 	private static final ConcurrentHashMap<Integer, Personajes> personajes_cargados = new ConcurrentHashMap<Integer, Personajes>();
 
-	public Personajes(final int _id, final String _nombre_personaje, final int _color_1, final int _color_2, final int _color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final Map<Short, Integer> _stats, final int _emotes, final String _canales, final int cuenta_id, final int derecho_id, final short restriccion_id, final short servidor_id)
+	public Personajes(final int _id, final String _nombre_personaje, final int color_1, final int color_2, final int color_3, final short _nivel, final short _gfx, final short _tamano, final short mapa_id, final short _celda_id, final byte _sexo, final long _experiencia, final long _kamas, final byte _porcentaje_vida, final byte _raza_id, final Map<Short, Integer> _stats, final int _emotes, final String _canales, final int cuenta_id, final int derecho_id, final short restriccion_id, final short servidor_id)
 	{
 		id = _id;
 		nombre = _nombre_personaje;
-		color_1 = _color_1;
-		color_2 = _color_2;
-		color_3 = _color_3;
+		set_Colores(color_1, color_2, color_3);
 		nivel = _nivel;
 		gfx = _gfx;
 		tamano = _tamano;
@@ -534,7 +532,7 @@ public class Personajes implements Entidades
 			personaje.append(emote_activo).append(';');
 			personaje.append(emote_tiempo).append(';');
 			
-			personaje.append(";;");//nombre, emblema gremio
+			personaje.append(";;");//nombre, emblema del gremio
 			personaje.append(restricciones.get_Convertir_Base36()).append(';');
 			personaje.append(";;");
 			
