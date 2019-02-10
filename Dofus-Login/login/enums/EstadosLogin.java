@@ -1,0 +1,11 @@
+package login.enums;
+
+public enum EstadosLogin 
+{
+	VERSION,
+	NOMBRE_CUENTA,
+	PASSWORD_CUENTA,
+	CREACION_APODO,
+	FILA_ESPERA,
+	LISTA_SERVIDORES
+}
