@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 31/01/2019 03:52:52
+ Date: 10/02/2019 22:34:46
 */
 
 SET NAMES utf8mb4;
@@ -89,9 +89,9 @@ CREATE TABLE `personajes`  (
   `tamano` int(4) NOT NULL DEFAULT 100 COMMENT 'tamaño del gfx (short maximo 32767)',
   `mapa_id` int(5) NOT NULL,
   `celda_id` int(4) NOT NULL DEFAULT 0,
-  `sexo` tinyint(1) NOT NULL COMMENT 'sexo del personaje 0 = masculino, 1 = femenino',
+  `sexo` bit(1) NOT NULL DEFAULT b'0' COMMENT 'sexo del personaje 0 = masculino, 1 = femenino',
   `experiencia` bigint(30) NOT NULL DEFAULT 0,
-  `kamas` bigint(30) NULL DEFAULT 0,
+  `kamas` bigint(30) NOT NULL DEFAULT 0,
   `porcentaje_vida` tinyint(3) NOT NULL DEFAULT 100,
   `raza_id` tinyint(2) NOT NULL COMMENT 'raza vinculado a raza',
   `vitalidad` int(11) NOT NULL DEFAULT 0,
@@ -117,10 +117,10 @@ CREATE TABLE `personajes`  (
 -- ----------------------------
 -- Records of personajes
 -- ----------------------------
-INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', 11568205, 11568205, 11568205, 200, 10, 100, 7411, 250, 0, 0, 0, 100, 5, 900, 900, 900, 900, 900, 900, 1, '*p?:', 1, 8192, 8, 601);
-INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 10, 20, 100, 7411, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 2, 8192, 8, 601);
-INSERT INTO `personajes` VALUES (3, 'test', -1, -1, -1, 1, 10, 100, 7411, 122, 1, 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 1, '*p?:', 3, 8192, 8, 601);
-INSERT INTO `personajes` VALUES (4, 'Aidemu', 15461139, 0, 0, 1, 91, 100, 10292, 299, 1, 0, 0, 100, 9, 0, 0, 0, 0, 0, 0, 1, '*p?:', 1, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (1, 'xX-Aidemu-Xx', 11568205, 11568205, 11568205, 200, 10, 100, 7411, 250, b'0', 0, 67676767, 100, 5, 900, 900, 900, 900, 900, 900, 7667711, '*p?:', 1, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (2, 'test-personaje', -1, -1, -1, 10, 20, 100, 7411, 122, b'1', 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 7667711, '*p?:', 2, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (3, 'test', -1, -1, -1, 1, 10, 100, 7411, 122, b'1', 0, 0, 100, 1, 0, 0, 0, 0, 0, 0, 7667711, '*p?:', 3, 8192, 8, 601);
+INSERT INTO `personajes` VALUES (4, 'Aidemu', 15461139, 0, 0, 1, 91, 100, 10292, 299, b'1', 0, 0, 100, 9, 0, 0, 0, 0, 0, 0, 7667711, '*p?:', 1, 8192, 8, 601);
 
 -- ----------------------------
 -- Table structure for personajes_alineamientos
