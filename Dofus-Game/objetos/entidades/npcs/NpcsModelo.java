@@ -1,9 +1,7 @@
 package objetos.entidades.npcs;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -17,7 +15,7 @@ final public class NpcsModelo
 	private short gfx, foto, X, Y;
 	private int color_1, color_2, color_3, pregunta;
 	private String accesorios = "";
-	private List<ItemsModelo> objetos_vendidos;
+	private final ItemsModelo[] objetos_vendidos;
 
 	final public static Map<Short, NpcsModelo> npcs_cargados = new HashMap<Short, NpcsModelo>();
 	
@@ -41,19 +39,23 @@ final public class NpcsModelo
 
 		if (!_ventas.isEmpty()) 
 		{
-			objetos_vendidos = new ArrayList<ItemsModelo>();
 			ItemsModelo item_modelo;
-			for (final String obj : _ventas.split(Pattern.quote(",")))
+			String[] objetos = _ventas.split(Pattern.quote(","));
+			objetos_vendidos = new ItemsModelo[objetos.length];
+			
+			for(int i = 0; i < objetos_vendidos.length; ++i)
 			{
 				try 
 				{
-					item_modelo = ItemsModelo.get_Items_Cargados(Short.parseShort(obj));
+					item_modelo = ItemsModelo.get_Items_Cargados(Short.parseShort(objetos[i]));
 					if (item_modelo != null)
-						objetos_vendidos.add(item_modelo);
+						objetos_vendidos[i] = item_modelo;
 				}
 				catch (final NumberFormatException e) {}
 			}
 		}
+		else
+			objetos_vendidos = new ItemsModelo[0];
 		
 		npcs_cargados.put(id, this);
 	}
@@ -138,7 +140,7 @@ final public class NpcsModelo
 		this.color_3 = color_3;
 	}
 
-	public List<ItemsModelo> get_Objetos_vendidos()
+	public ItemsModelo[] get_Objetos_vendidos()
 	{
 		return objetos_vendidos;
 	}
@@ -160,7 +162,7 @@ final public class NpcsModelo
 	
 	public boolean get_Tiene_Objeto(int id) 
 	{
-        return objetos_vendidos.stream().filter(objeto -> objeto.get_Id() == id).findFirst().isPresent();
+        return Arrays.stream(objetos_vendidos).filter(objeto -> objeto.get_Id() == id).findFirst().isPresent();
     }
 	
 	public String[] get_Array_Colores() 

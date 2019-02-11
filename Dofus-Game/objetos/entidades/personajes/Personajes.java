@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.Timer;
 
+import juego.JuegoSocket;
 import juego.acciones.JuegoAccion;
 import juego.enums.EstadosJuego;
 import juego.enums.PosicionInventario;
@@ -444,9 +445,10 @@ public class Personajes implements Entidades
 			cuenta.get_Juego_socket().enviar_Paquete("Im0153;" + cuenta.get_Ip());
 			posicion.get_Mapa().get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
 			
+			cuenta.get_Juego_socket().get_Detener_Buffering();
+			
 			iniciar_Timer_Recuperar_Vida();
 			recuperar_vida.restart();
-			cuenta.get_Juego_socket().get_Detener_Buffering();
 		}
 		else
 		{
@@ -513,7 +515,7 @@ public class Personajes implements Entidades
 			personaje.append(alineamiento != null ? (alineamiento.get_Deshonor() > 0 ? 1 : 0) : 0).append(';');
 			personaje.append(String.join(";", get_Array_Colores())).append(';');//3 - colores
 			personaje.append(get_String_Objetos_Gm()).append(';');
-			personaje.append(stats.get_Equipo().get_Stat_Id(TipoStats.AURA) ? stats.get_Equipo().get_Mostrar_Stat(TipoStats.AURA) : ((nivel / 100))).append(';');;
+			personaje.append(stats.get_Equipo().get_Stat_Id(TipoStats.AURA) ? stats.get_Equipo().get_Mostrar_Stat(TipoStats.AURA) : (nivel / 100)).append(';');;
 			personaje.append(emote_activo).append(';');
 			personaje.append(emote_tiempo).append(';');
 			
@@ -726,19 +728,20 @@ public class Personajes implements Entidades
 			Celdas celda = mapa_destino.get_Celda(celda_destino_id);
 			if(celda != null)
 			{
+				JuegoSocket socket = cuenta.get_Juego_socket();
 				if(mapa_destino.get_Sub_area().get_Area().get_Necesita_Abono() && !(cuenta.get_Fecha_abono() > 0))
 				{
-					cuenta.get_Juego_socket().enviar_Paquete("BP+10");
-					cuenta.get_Juego_socket().enviar_Paquete("Im131");
+					socket.enviar_Paquete("BP+10");
+					socket.enviar_Paquete("Im131");
 					return;
 				}
+				
 				posicion.get_Mapa().get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|-" + id));
 				posicion.set_Mapa(mapa_destino);
-				set_Celda(posicion.get_Mapa().get_Celda(celda_destino_id));
-
-				cuenta.get_Juego_socket().enviar_Paquete("GA;2;" + id + ';');
-				cuenta.get_Juego_socket().enviar_Paquete("GDM|" + posicion.get_Mapa().get_Id() + '|' + posicion.get_Mapa().get_Fecha() + '|' + posicion.get_Mapa().get_Key());
-				posicion.get_Mapa().get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
+				set_Celda(mapa_destino.get_Celda(celda_destino_id));
+				socket.enviar_Paquete("GA;2;" + id + ';');
+				socket.enviar_Paquete("GDM|" + mapa_destino.get_Id() + '|' + mapa_destino.get_Fecha() + '|' + mapa_destino.get_Key());
+				mapa_destino.get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
 			}
 		}
 	}

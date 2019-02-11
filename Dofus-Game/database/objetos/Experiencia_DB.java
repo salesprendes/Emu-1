@@ -28,7 +28,7 @@ public class Experiencia_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
 	}
 }

@@ -4,33 +4,32 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import juego.enums.TipoDirecciones;
 import objetos.entidades.Entidades;
+import objetos.mapas.interactivo.Interactivo;
 
-public class Celdas 
+public final class Celdas 
 {
-	private final short id, layer_objeto_2_num, layer_objeto_1_num;
+	private final short id;
 	private final Mapas mapa;
 	private CopyOnWriteArrayList<Entidades> entidades;
-	private final byte X, Y, ground_slope, layer_ground_num, layer_ground_rot, ground_nivel, tipo_movimiento, layer_objeto_1_rot;
-	private final boolean layer_objeto_1_flip, layer_objeto_2_flip, layer_objeto_2_interactivo, esta_activa, es_linea_de_vista, layer_ground_flip;
+	private final byte X, Y, nivel, slope;
+	private final byte movimiento;
+	private final Interactivo objeto_interactivo;
+	private final boolean es_linea_de_vista, esta_activa;
 	
-	public Celdas(final short _id, final Mapas _mapa, final boolean _esta_activa, final boolean _es_linea_de_vista, final byte _layer_ground_num, final byte _ground_slope, final short _layer_objeto_1_num, final short _layer_objeto_2_num, final byte _layer_ground_rot, final byte _ground_nivel, final byte _tipo_movimiento, final boolean _layer_ground_flip, final byte _layer_objeto_1_rot, final boolean _layer_objeto_1_flip, final boolean _layer_objeto_2_flip, final boolean _layer_objeto_2_interactivo)
+	public Celdas(final short _id, final Mapas _mapa, final boolean _esta_activa, final byte tipo_movimiento, final byte _nivel, final byte _slope, final boolean linea_de_vista, final short objeto_interactivo_id)
 	{
 		id = _id;
 		mapa = _mapa;
-		es_linea_de_vista = _es_linea_de_vista;
 		esta_activa = _esta_activa;
-		layer_ground_num = _layer_ground_num;
-		ground_slope = _ground_slope;
-		layer_objeto_1_num = _layer_objeto_1_num;
-		layer_objeto_2_num = _layer_objeto_2_num;
-		layer_ground_rot = _layer_ground_rot;
-		ground_nivel = _ground_nivel;
-		tipo_movimiento = _tipo_movimiento;
-		layer_ground_flip = _layer_ground_flip;
-		layer_objeto_1_rot = _layer_objeto_1_rot;
-		layer_objeto_1_flip = _layer_objeto_1_flip;
-		layer_objeto_2_flip = _layer_objeto_2_flip;
-		layer_objeto_2_interactivo = _layer_objeto_2_interactivo;
+		movimiento = tipo_movimiento;
+		nivel = _nivel;
+		slope = _slope;
+		es_linea_de_vista = linea_de_vista;
+		
+		if(objeto_interactivo_id != -1)
+			objeto_interactivo = new Interactivo(objeto_interactivo_id, mapa, this);
+		else
+			objeto_interactivo = null;
 		
 		final byte ancho = mapa.get_Anchura();
 		final int _loc5 = id / (ancho * 2 - 1);
@@ -59,55 +58,10 @@ public class Celdas
 	{
 		return Y;
 	}
-
-	public byte get_Ground_Slope() 
-	{
-		return ground_slope;
-	}
-
-	public byte get_Layer_Ground_Num() 
-	{
-		return layer_ground_num;
-	}
 	
-	public short get_Layer_Objeto_1_Num() 
+	public byte get_Movimiento()
 	{
-		return layer_objeto_1_num;
-	}
-
-	public short get_layer_Objeto_2_Num() 
-	{
-		return layer_objeto_2_num;
-	}
-	
-	public byte get_Layer_Ground_Rot() 
-	{
-		return layer_ground_rot;
-	}
-
-	public byte get_Ground_nivel() 
-	{
-		return ground_nivel;
-	}
-
-	/**
-     * - 0 significa que no se puede caminar
-     * - 1 significa caminable, pero no en un camino
-     * - 2 a 5 significa diferentes niveles de celdas caminables. Más grande es el movimiento, más bajo es el peso en el path.
-     */
-	public byte get_Tipo_Movimiento() 
-	{
-		return tipo_movimiento;
-	}
-
-	public boolean get_Es_Layer_Ground_Flip() 
-	{
-		return layer_ground_flip;
-	}
-
-	public boolean get_Esta_Activa() 
-	{
-		return esta_activa;
+		return movimiento;
 	}
 
 	public boolean get_Es_Linea_De_Vista() 
@@ -115,31 +69,26 @@ public class Celdas
 		return es_linea_de_vista;
 	}
 
-	public byte get_Layer_objeto_1_Rot() 
-	{
-		return layer_objeto_1_rot;
-	}
-
-	public boolean get_Es_Layer_objeto_1_Flip() 
-	{
-		return layer_objeto_1_flip;
-	}
-
-	public boolean get_Es_Layer_objeto_2_Flip() 
-	{
-		return layer_objeto_2_flip;
-	}
-
-	public boolean get_Es_Layer_objeto_2_Interactivo() 
-	{
-		return layer_objeto_2_interactivo;
-	}
-	
 	public boolean get_Es_Caminable() 
 	{
-        return esta_activa && tipo_movimiento > 1;
+        return esta_activa && movimiento != 0 && movimiento != 1;
     }
 	
+	public byte get_Nivel()
+	{
+		return nivel;
+	}
+
+	public byte get_Slope()
+	{
+		return slope;
+	}
+
+	public Interactivo get_Objeto_interactivo()
+	{
+		return objeto_interactivo;
+	}
+
 	public void get_Agregar_Entidad(Entidades entidad, boolean agregar_mapa) 
 	{
         if (entidades == null)

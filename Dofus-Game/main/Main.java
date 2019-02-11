@@ -22,6 +22,7 @@ import objetos.mapas.Areas;
 import objetos.mapas.Mapas;
 import objetos.mapas.SubAreas;
 import objetos.mapas.SuperAreas;
+import objetos.mapas.interactivo.InteractivoModelo;
 
 public class Main 
 {
@@ -97,6 +98,10 @@ public class Main
 		database.get_Mapas().get_Cargar_Todas_Sub_Areas();
 		Consola.println(SubAreas.get_Sub_Areas_Cargadas().size() + " sub-areas cargadas");
 		
+		Consola.print("Cargando objetos interactivos: ");
+		database.get_Mapas().get_Cargar_Todos_Interactivos_Modelos();
+		Consola.println(InteractivoModelo.get_Interactivos_Modelos_Cargados().size() + " objetos interactivos cargados");
+		
 		Consola.print("Cargando los mapas: ");
 		database.get_Mapas().get_Cargar_Todos_Mapas();
 		Consola.println(Mapas.get_Mapas_Cargados().size() + " mapas cargados");
@@ -152,7 +157,7 @@ public class Main
 		Consola.println(NpcsModelo.get_Npcs_Cargados().size() + " npcs modelo cargados");
 		
 		Consola.print("Cargando npcs ubicacion: ");
-		Consola.println(database.get_Npcs().get_Cargar_Npcs_Ubicacion() + " npcs ubicacion cargados");
+		Consola.println(database.get_Npcs().get_Cargar_Todos_Npcs_Ubicacion() + " npcs ubicacion cargados");
 	}
 	
 	public static void cerrar_Emulador()

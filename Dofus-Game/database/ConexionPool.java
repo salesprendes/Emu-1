@@ -39,12 +39,8 @@ public class ConexionPool
 	{
 		cargar_Configuracion();
 		
-		Consola.print("Conectando a la base de datos del login: ");
-		if(comprobar_conexion(login_database))
-			Consola.println("correcta");
-		
-		Consola.print("Conectando a la base de datos del game: ");
-		if(comprobar_conexion(game_database))
+		Consola.print("Comprobando conexión a la base de datos: ");
+		if(comprobar_conexion(game_database) && comprobar_conexion(login_database))
 			Consola.println("correcta");
 			
 		cuentas = new Cuentas_DB(login_database);
@@ -111,37 +107,41 @@ public class ConexionPool
 
 	public void cargar_Configuracion()
 	{
-		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl("jdbc:mysql://" + Configuracion.DATABASE_IP_LOGIN + "/" + Configuracion.DATABASE_NOMBRE_LOGIN);
-		config.setUsername(Configuracion.DATABASE_USUARIO_LOGIN);
-		config.setPassword(Configuracion.DATABASE_PASSWORD_LOGIN);
-		config.setMaximumPoolSize(10);
-		config.setMinimumIdle(1);
-		config.setPoolName("Pool-Login");
-		config.addDataSourceProperty("useSSL", false);
-		config.addDataSourceProperty("cachePrepStmts", true);
-		config.addDataSourceProperty("prepStmtCacheSize", 250);
-		config.addDataSourceProperty("prepStmtCacheSqlLimit", 1024);
-		config.addDataSourceProperty("useServerPrepStmts", true);
-		config.addDataSourceProperty("cacheServerConfiguration", true);
-		config.addDataSourceProperty("useLocalSessionState", true);
-		login_database = new HikariDataSource(config);
-		
-		config = new HikariConfig();
-		config.setJdbcUrl("jdbc:mysql://" + Configuracion.DATABASE_IP_GAME + "/" + Configuracion.DATABASE_NOMBRE_GAME);
-		config.setUsername(Configuracion.DATABASE_USUARIO_GAME);
-		config.setPassword(Configuracion.DATABASE_PASSWORD_GAME);
-		config.setMaximumPoolSize(16);
-		config.setMinimumIdle(2);
-		config.setPoolName("Pool-Game");
-		config.addDataSourceProperty("useSSL", false);
-		config.addDataSourceProperty("cachePrepStmts", true);
-		config.addDataSourceProperty("prepStmtCacheSize", 256);
-		config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
-		config.addDataSourceProperty("useServerPrepStmts", true);
-		config.addDataSourceProperty("cacheServerConfiguration", true);
-		config.addDataSourceProperty("useLocalSessionState", true);
-		game_database = new HikariDataSource(config);
+		try
+		{
+			HikariConfig config = new HikariConfig();
+			config.setJdbcUrl("jdbc:mysql://" + Configuracion.DATABASE_IP + "/" + Configuracion.DATABASE_NOMBRE_LOGIN);
+			config.setUsername(Configuracion.DATABASE_USUARIO);
+			config.setPassword(Configuracion.DATABASE_PASSWORD);
+			config.setMaximumPoolSize(10);
+			config.setMinimumIdle(1);
+			config.setPoolName("Pool-Login");
+			config.addDataSourceProperty("useSSL", false);
+			config.addDataSourceProperty("cachePrepStmts", true);
+			config.addDataSourceProperty("prepStmtCacheSize", 250);
+			config.addDataSourceProperty("prepStmtCacheSqlLimit", 1024);
+			config.addDataSourceProperty("useServerPrepStmts", true);
+			config.addDataSourceProperty("cacheServerConfiguration", true);
+			config.addDataSourceProperty("useLocalSessionState", true);
+			login_database = new HikariDataSource(config);
+			
+			config = new HikariConfig();
+			config.setJdbcUrl("jdbc:mysql://" + Configuracion.DATABASE_IP + "/" + Configuracion.DATABASE_NOMBRE_GAME);
+			config.setUsername(Configuracion.DATABASE_USUARIO);
+			config.setPassword(Configuracion.DATABASE_PASSWORD);
+			config.setMaximumPoolSize(16);
+			config.setMinimumIdle(2);
+			config.setPoolName("Pool-Game");
+			config.addDataSourceProperty("useSSL", false);
+			config.addDataSourceProperty("cachePrepStmts", true);
+			config.addDataSourceProperty("prepStmtCacheSize", 256);
+			config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+			config.addDataSourceProperty("useServerPrepStmts", true);
+			config.addDataSourceProperty("cacheServerConfiguration", true);
+			config.addDataSourceProperty("useLocalSessionState", true);
+			game_database = new HikariDataSource(config);
+		}
+		catch (final Exception e) {}
 	}
 	
 	public boolean comprobar_conexion(HikariDataSource dataSource)
@@ -152,10 +152,10 @@ public class ConexionPool
 			conexion.close();
 			return true;
 		} 
-		catch (Exception e) 
+		catch (final Exception e) 
 		{
-			Consola.println("incorrecta");
-			System.exit(0);
+			Consola.println("Impossible conectarse a la base de datos revisar configuración");
+			System.exit(1);
 			return false;
 		}
 	}

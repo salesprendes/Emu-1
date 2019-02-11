@@ -24,8 +24,8 @@ public class Alineamientos_DB extends DatabaseManager
 
 			while(query.get_Rs().next())
 			{
-				//Id(1), Area(2), Especial(3)
-				new AlineamientosModelo(query.get_Rs().getByte(1), Areas.get_Areas_Cargadas(query.get_Rs().getShort(2)), query.get_Rs().getBoolean(3));
+				//Id(1), Area(2), Zaapis(3), Especial(4)
+				new AlineamientosModelo(query.get_Rs().getByte(1), Areas.get_Areas_Cargadas(query.get_Rs().getShort(2)), query.get_Rs().getString(3), query.get_Rs().getBoolean(4));
 			}
 			cerrar(query);
 		}

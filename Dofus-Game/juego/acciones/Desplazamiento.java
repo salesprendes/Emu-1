@@ -10,12 +10,12 @@ import objetos.mapas.pathfinding.PathFinding;
 
 public class Desplazamiento implements JuegoAcciones
 {
-	private final int id;
+	private final short id;
 	private final long tiempo_inicio;
 	private final Personajes personaje;
 	private PathFinding pathfinding;
 
-	public Desplazamiento(final int _id, final Personajes _personaje, final PathFinding _pathfinding) 
+	public Desplazamiento(final short _id, final Personajes _personaje, final PathFinding _pathfinding) 
 	{
 		id = _id;
 		personaje = _personaje;

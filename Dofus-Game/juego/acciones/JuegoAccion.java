@@ -9,10 +9,11 @@ import objetos.mapas.pathfinding.Descifrador;
 
 public class JuegoAccion
 {
-	private final ArrayList<JuegoAcciones> acciones_actuales = new ArrayList<JuegoAcciones>();
+	private final ArrayList<JuegoAcciones> acciones = new ArrayList<JuegoAcciones>();
     private final Personajes personaje;
     private TipoEstadoAcciones estado;
     private boolean esta_ocupado;
+	private byte contador;
     
     public JuegoAccion(Personajes _personaje)
     {
@@ -41,7 +42,7 @@ public class JuegoAccion
     
     public JuegoAcciones get_Accion_Desde_Id(int accion_id)
     {
-        for(JuegoAcciones ga : acciones_actuales)
+        for(JuegoAcciones ga : acciones)
         {
             if(ga.get_Accion_id() == accion_id)
                 return ga;
@@ -54,16 +55,21 @@ public class JuegoAccion
     	get_Crear_Accion(accion_id, "");
     }
     
-    public synchronized void get_Crear_Accion(short accion_id, String args)
+    public synchronized void get_Crear_Accion(final short accion_id, final String args)
     {
     	JuegoAcciones juego_accion;
-    	int id = get_Siguiente_Accion_Id();
+    	short id = get_Siguiente_Accion_Id();
+    	System.out.println(id);
     	
     	switch (accion_id)
     	{
     		case 1:
     			juego_accion = new Desplazamiento(id, personaje, new Descifrador(personaje.get_Localizacion().get_Mapa()).get_Descodificado(args, personaje.get_Localizacion().get_Celda()));
             break;
+            
+    		case 500:
+    			juego_accion = new MapaAccion(id, personaje, args);
+    		break;
             
     		default:
     			 Consola.println("La accion id " + accion_id + " no existe");
@@ -72,17 +78,17 @@ public class JuegoAccion
     	set_Accion(juego_accion);
     }
     
-    public void set_Accion(JuegoAcciones juego_accion)
+    public void set_Accion(JuegoAcciones accion)
     {
-    	acciones_actuales.add(juego_accion);
-        if(acciones_actuales.size() == 1 )
-        	get_Iniciar_Accion(juego_accion);
+    	acciones.add(accion);
+        if(acciones.size() == 1)
+        	get_Iniciar_Accion(accion);
     }
     
     protected void get_Iniciar_Accion(JuegoAcciones juego_accion) 
     {
         if (!juego_accion.get_Esta_Iniciado())
-        	acciones_actuales.remove(juego_accion);
+        	acciones.remove(juego_accion);
     }
     
     public void get_Finalizar_Accion(int accion_id, final boolean tiene_error)
@@ -92,20 +98,20 @@ public class JuegoAccion
     
     public synchronized void get_Finalizar_Accion(int accion_id, boolean tiene_error, String args)
     {
-    	JuegoAcciones juego_accion = acciones_actuales.get(accion_id);
+    	JuegoAcciones juego_accion = acciones.get(accion_id);
     	
-        if(juego_accion != null) 
+        if(juego_accion != null)
         {
             if (!tiene_error)
             {
             	juego_accion.get_Correcto(args);
             	estado = TipoEstadoAcciones.ESPERANDO;
             	
-                if (acciones_actuales.size() > acciones_actuales.indexOf(juego_accion) + 1)
-                	get_Iniciar_Accion(acciones_actuales.get(acciones_actuales.indexOf(juego_accion) + 1));
+                if (acciones.size() > acciones.indexOf(juego_accion) + 1)
+                	get_Iniciar_Accion(acciones.get(acciones.indexOf(juego_accion) + 1));
                 
-                if(acciones_actuales.contains(juego_accion))
-                	acciones_actuales.remove(juego_accion);
+                if(acciones.contains(juego_accion))
+                	acciones.remove(juego_accion);
             } 
             else
             {
@@ -116,22 +122,15 @@ public class JuegoAccion
     
     public void get_Cancelar_Acciones(String args)
     {
-        for (JuegoAcciones acciones : acciones_actuales)
-        {
+        for (JuegoAcciones acciones : acciones)
         	acciones.get_Cancelar(args);
-        }
-        acciones_actuales.clear();
+        
+        acciones.clear();
         estado = TipoEstadoAcciones.ESPERANDO;
     }
     
-    public int get_Siguiente_Accion_Id()
+    public byte get_Siguiente_Accion_Id()
     {
-        int contador = 0;
-        for(JuegoAcciones action : acciones_actuales)
-        {
-            if(action.get_Id() > contador)
-            	contador = action.get_Id() + 1;
-        }
-        return contador;
+        return acciones.size() > 0 ? contador++ : contador;
     }
 }

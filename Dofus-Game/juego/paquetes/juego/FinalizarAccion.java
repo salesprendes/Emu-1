@@ -14,10 +14,10 @@ public class FinalizarAccion implements GestorPaquetes
 		try	
 		{
 			boolean tiene_error = paquete.charAt(2) != 'K';
-			int accion_id;
 			String[] infos = paquete.substring(3).split(Pattern.quote("|"));
 
-			accion_id = Integer.parseInt(infos[0]);
+			int accion_id = Integer.parseInt(infos[0]);
+			System.out.println(accion_id);
 			socket.get_Personaje().get_Juego_Acciones().get_Finalizar_Accion(accion_id, tiene_error, infos.length > 1 ? infos[1]: "");
 		}
 		catch(Exception e) 

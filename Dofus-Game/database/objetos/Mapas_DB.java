@@ -8,6 +8,7 @@ import objetos.mapas.Areas;
 import objetos.mapas.Mapas;
 import objetos.mapas.SubAreas;
 import objetos.mapas.SuperAreas;
+import objetos.mapas.interactivo.InteractivoModelo;
 
 public class Mapas_DB extends DatabaseManager
 {
@@ -32,7 +33,7 @@ public class Mapas_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
 	}
 	
@@ -51,7 +52,7 @@ public class Mapas_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
 	}
 	
@@ -71,7 +72,7 @@ public class Mapas_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
 	}
 	
@@ -90,7 +91,26 @@ public class Mapas_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
+		}
+	}
+	
+	public void get_Cargar_Todos_Interactivos_Modelos()
+	{
+		try
+		{
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM mapas_interactivos;");
+
+			while(query.get_Rs().next())
+			{
+				//id(1), nombre(2), gfx(3), tipo(4), accion(5), recarga(6), duracion(7), caminable(8), skill(9)
+				new InteractivoModelo(query.get_Rs().getShort(1), query.get_Rs().getString(3), query.get_Rs().getByte(4), query.get_Rs().getByte(5), query.get_Rs().getInt(6), query.get_Rs().getShort(7), query.get_Rs().getByte(8), query.get_Rs().getString(9));
+			}
+			cerrar(query);
+		}
+		catch (final Exception e)
+		{
+			Consola.println("error sql: " + e);
 		}
 	}
 }

@@ -49,7 +49,7 @@ public class Personajes_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class Personajes_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
 	}
 	
@@ -89,24 +89,26 @@ public class Personajes_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
 	}
 	
 	public boolean get_Comprobar_Existe_Nombre_Personaje(final String nombre_personaje, final short servidor_id) 
 	{
-		boolean existe_personaje = false;
 		try 
 		{
+			boolean existe_personaje = false;
 			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM personajes WHERE nombre = '" + nombre_personaje + "' AND servidor_id = " + servidor_id + ";");
 			existe_personaje = query.get_Rs().next();
+			
 			cerrar(query);
+			return existe_personaje;
 		} 
 		catch (final Exception e)
 		{
-			Consola.println("ERROR SQL: " + e.toString());
+			Consola.println("error sql: " + e);
 		}
-		return existe_personaje;
+		return false;
 	}
 	
 	public void get_Eliminar_Personaje_Id(final int personaje_id,  final Cuentas cuenta)

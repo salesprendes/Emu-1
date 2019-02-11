@@ -99,15 +99,15 @@ public class Descifrador
 			TipoDirecciones direccion = celda_anterior.get_Direccion(celda_siguiente);
 			tiempo += 25 / (esta_con_montura ? direccion.get_Velocidad_Montura() : esta_caminando ? direccion.get_Velocidad_Caminando() : direccion.get_Velocidad_Corriendo());
 			
-			if (celda_anterior.get_Ground_nivel() < celda_siguiente.get_Ground_nivel())
+			if (celda_anterior.get_Nivel() < celda_siguiente.get_Nivel())
 				tiempo += 100;
-			else if (celda_siguiente.get_Ground_nivel() > celda_anterior.get_Ground_nivel())
+			else if (celda_siguiente.get_Nivel() > celda_anterior.get_Nivel())
 				tiempo -= 100;
-			else if (celda_anterior.get_Ground_Slope() != celda_siguiente.get_Ground_Slope())
+			else if (celda_anterior.get_Slope() != celda_siguiente.get_Slope())
 			{
-				if (celda_anterior.get_Ground_Slope() == 1)
+				if (celda_anterior.get_Slope() == 1)
 					tiempo += 100;
-				else if (celda_siguiente.get_Ground_Slope() == 1)
+				else if (celda_siguiente.get_Slope() == 1)
 					tiempo -= 100;
 			}
 			

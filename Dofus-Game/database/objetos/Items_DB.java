@@ -28,7 +28,7 @@ public class Items_DB extends DatabaseManager
 		}
 		catch (final Exception e)
 		{
-			Consola.println("Error: " + e);
+			Consola.println("error sql: " + e);
 		}
 	}
 }

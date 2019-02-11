@@ -11,7 +11,7 @@ import main.consola.Consola;
 import main.util.Compresor;
 import main.util.Formulas;
 import objetos.entidades.Entidades;
-import objetos.entidades.npcs.Npcs;
+import objetos.entidades.npcs.NpcsUbicacion;
 import objetos.entidades.personajes.Personajes;
 
 public class Mapas 
@@ -50,6 +50,7 @@ public class Mapas
 			return;
 		}
 		celdas = Compresor.get_Descomprimir_Celdas(data, this);
+		
 		mapas_cargados.put(id, this);
 	}
 
@@ -133,23 +134,36 @@ public class Mapas
 		return entidades.stream().filter(personaje -> personaje != null && personaje instanceof Personajes).map(personaje -> (Personajes) personaje).collect(Collectors.toList());
 	}
 	
-	public Collection<Npcs> get_Npcs()
+	public void get_Enviar_Personajes_Mapa(final String paquete) 
+	{
+		get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete(data));
+    }
+	
+	public Collection<NpcsUbicacion> get_Npcs()
 	{
 		if (entidades == null)
-			return new CopyOnWriteArrayList<Npcs>();
-		return entidades.stream().filter(npc -> npc != null && npc instanceof Npcs).map(npc -> (Npcs) npc).collect(Collectors.toList());
+			return new CopyOnWriteArrayList<NpcsUbicacion>();
+		return entidades.stream().filter(npc -> npc != null && npc instanceof NpcsUbicacion).map(npc -> (NpcsUbicacion) npc).collect(Collectors.toList());
 	}
 
 	public String get_Paquete_Gm_Jugadores()
 	{
-		StringBuilder paquete = new StringBuilder("GM");
+		if(get_Personajes().isEmpty())
+			return "";
+		
+		StringBuilder paquete = new StringBuilder(30 * get_Personajes().size());
+		paquete.append("GM");
 		get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(jugador -> paquete.append("|+").append(jugador.get_Paquete_Gm()));
 		return paquete.toString();
 	}
 	
 	public String get_Paquete_Gm_Npcs()
 	{
-		StringBuilder paquete = new StringBuilder("GM");
+		if(get_Npcs().isEmpty())
+			return "";
+			
+		StringBuilder paquete = new StringBuilder(30 * get_Npcs().size());
+		paquete.append("GM");
 		get_Npcs().forEach(npc -> paquete.append("|+").append(npc.get_Paquete_Gm()));
 		return paquete.toString();
 	}
