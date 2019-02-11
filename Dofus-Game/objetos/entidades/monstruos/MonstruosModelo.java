@@ -3,6 +3,7 @@ package objetos.entidades.monstruos;
 import java.util.HashMap;
 import java.util.Map;
 
+import main.consola.Consola;
 import objetos.entidades.alineamientos.AlineamientosModelo;
 
 public class MonstruosModelo
@@ -39,7 +40,7 @@ public class MonstruosModelo
 		}
 		catch (final Exception e) 
 		{
-			System.out.println("monstruo: " + id + " tiene error en el grado numero: " + grados[(contador_grado + 1)]);
+			Consola.println("monstruo: " + id + " tiene error en el grado numero: " + grados[(contador_grado + 1)]);
 		}
 		colores = _colores;
 		

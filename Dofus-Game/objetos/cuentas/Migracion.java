@@ -18,7 +18,7 @@ final public class Migracion
 	{
 		cuenta_id = _cuenta_id;
 		
-		for(final String servidor : _servidores.split("\\,"))
+		for(final String servidor : _servidores.split(Pattern.quote(",")))
 		{
 			if(!servidores.contains(Integer.parseInt(servidor)))
 				servidores.add(Integer.parseInt(servidor));

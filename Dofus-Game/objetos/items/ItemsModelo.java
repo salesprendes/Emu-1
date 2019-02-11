@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import juego.enums.TipoStats;
+import main.consola.Consola;
 
 public class ItemsModelo
 {
@@ -37,7 +38,7 @@ public class ItemsModelo
 			}
 			catch (final Exception e)
 			{
-				System.out.println("Error al crear el arma id: " + id);
+				Consola.println("Error al crear el arma id: " + id);
 			}
 		}
 		items_cargados.put(id, this);

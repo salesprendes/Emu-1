@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import main.consola.Consola;
@@ -21,6 +22,7 @@ public class Mapas
 	private final String fecha, data, key, celdas_pelea;
 	private Celdas[] celdas;
 	private CopyOnWriteArrayList<Entidades> entidades;
+	private final AtomicInteger generar_id = new AtomicInteger(-100);
 
 	private static final ConcurrentHashMap<Short, Mapas> mapas_cargados = new ConcurrentHashMap<Short, Mapas>();
 
@@ -151,6 +153,11 @@ public class Mapas
 		get_Npcs().forEach(npc -> paquete.append("|+").append(npc.get_Paquete_Gm()));
 		return paquete.toString();
 	}
+	
+	public int get_Siguiente_Id_Entidad() 
+	{
+        return generar_id.incrementAndGet();
+    }
 	
 	public void get_Agregar_Entidad(Entidades entidad) 
 	{

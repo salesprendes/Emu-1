@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import objetos.items.ItemsModelo;
 
@@ -15,7 +16,7 @@ final public class NpcsModelo
 	private final byte sexo;
 	private short gfx, foto, X, Y;
 	private int color_1, color_2, color_3, pregunta;
-	private StringBuilder accesorios;
+	private String accesorios = "";
 	private List<ItemsModelo> objetos_vendidos;
 
 	final public static Map<Short, NpcsModelo> npcs_cargados = new HashMap<Short, NpcsModelo>();
@@ -32,11 +33,7 @@ final public class NpcsModelo
 		final String[] separador_accesorios = _accesorios.split(Pattern.quote(","), 5);
 		if (separador_accesorios.length == 5)
 		{
-			accesorios = new StringBuilder();
-			for (final String accesorio : separador_accesorios)
-			{
-				accesorios.append(Integer.toHexString(Short.parseShort(accesorio))).append(',');
-			}
+			accesorios = Arrays.stream(separador_accesorios).map(accesorio -> Integer.toHexString(Short.parseShort(accesorio))).collect(Collectors.joining(","));
 		}
 		
 		foto = _foto;
@@ -158,7 +155,7 @@ final public class NpcsModelo
 
 	public String get_Accesorios()
 	{
-		return accesorios != null ? accesorios.toString() : "";
+		return accesorios;
 	}
 	
 	public boolean get_Tiene_Objeto(int id) 

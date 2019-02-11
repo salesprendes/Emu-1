@@ -20,7 +20,7 @@ final public class Cuentas
 	private JuegoSocket juego_socket;
 	private boolean esta_baneado, fila_espera = false;
 	private Personajes personaje_jugando;
-	private final Map<Integer, Personajes> personajes = new TreeMap<Integer, Personajes>();
+	private Map<Integer, Personajes> personajes;
 	private Nodo nodo_fila;
 	
 	final static SimpleDateFormat formato_fecha = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
@@ -132,6 +132,9 @@ final public class Cuentas
 	
 	public Collection<Personajes> get_Personajes() 
 	{
+		if(personajes == null)
+			personajes = new TreeMap<Integer, Personajes>();
+		
 		return personajes.values();
 	}
 	
@@ -167,6 +170,8 @@ final public class Cuentas
 
 	public void agregar_Personaje(final Personajes personaje)
 	{
+		if(personajes == null)
+			personajes = new TreeMap<Integer, Personajes>();
 		if (!personajes.containsKey(personaje.get_Id()))
 		{
 			personajes.put(personaje.get_Id(), personaje);
@@ -175,6 +180,8 @@ final public class Cuentas
 	
 	public void eliminar_Personaje(final int id_personaje)
 	{
+		if(personajes == null)
+			personajes = new TreeMap<Integer, Personajes>();
 		if (personajes.containsKey(id_personaje))
 		{
 			personajes.remove(id_personaje);

@@ -148,8 +148,11 @@ public class Main
 		Consola.println(MonstruosModelo.get_Monstruos_Modelo_Cargados().size() + " monstruo modelo cargados");
 		
 		Consola.print("Cargando npcs modelo: ");
-		database.get_Npcs().get_Cargar_Todos_Npcs_Modelo();;
+		database.get_Npcs().get_Cargar_Todos_Npcs_Modelo();
 		Consola.println(NpcsModelo.get_Npcs_Cargados().size() + " npcs modelo cargados");
+		
+		Consola.print("Cargando npcs ubicacion: ");
+		Consola.println(database.get_Npcs().get_Cargar_Npcs_Ubicacion() + " npcs ubicacion cargados");
 	}
 	
 	public static void cerrar_Emulador()

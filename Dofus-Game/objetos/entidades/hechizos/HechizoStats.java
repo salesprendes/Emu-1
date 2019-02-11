@@ -1,5 +1,6 @@
 package objetos.entidades.hechizos;
 
+import java.util.Collection;
 import java.util.List;
 
 public class HechizoStats
@@ -10,8 +11,8 @@ public class HechizoStats
 	final private HechizoRango rango;
     final private boolean es_lanzado_linea, necesita_linea_de_vget_ion, necesita_celda_libre, es_rango_modificable, acaba_turno_fallo_critico;
     final private int[] estados_necesarios, estados_prohibidos;
-    final private List<EfectoModelo> efectos_normales;
-    final private List<EfectoModelo> efectos_criticos;
+    final private Collection<EfectoModelo> efectos_normales;
+    final private Collection<EfectoModelo> efectos_criticos;
     final private List<EfectoArea> areas_de_efecto;
     
     public HechizoStats(List<EfectoModelo> _efectos_normales, List<EfectoModelo> _efectos_criticos, final byte _coste_pa, HechizoRango _rango, short _probabilidad_golpe_critico, short _probabilidad_fallo, boolean _es_lanzado_linea, final boolean _necesita_linea_de_vget_ion, final boolean _necesita_celda_libre, final boolean _es_rango_modificable, final byte _tipo_hechizo, final byte _lanzamientos_por_turno, final byte _lanzamientos_por_objetivo, final byte _lanzamientos_delay, List<EfectoArea> _areas_de_efecto, int[] _estados_necesarios, int[] _estados_prohibidos, final int _nivel_requerido, boolean _acaba_turno_fallo_critico) 
@@ -37,12 +38,12 @@ public class HechizoStats
         acaba_turno_fallo_critico = _acaba_turno_fallo_critico;
     }
     
-    public List<EfectoModelo> get_Efectos_normales()
+    public Collection<EfectoModelo> get_Efectos_normales()
 	{
 		return efectos_normales;
 	}
 
-	public List<EfectoModelo> get_Efectos_criticos()
+	public Collection<EfectoModelo> get_Efectos_criticos()
 	{
 		return efectos_criticos;
 	}

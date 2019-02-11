@@ -28,6 +28,7 @@ public class EfectoArea
 		return tipo.name() + "(" + tamano + ")";
 	}
 
+	@Override
 	public boolean equals(Object o) 
 	{
 		if (this == o)

@@ -137,7 +137,7 @@ public class Celdas
 	
 	public boolean get_Es_Caminable() 
 	{
-        return esta_activa && tipo_movimiento > 1 && tipo_movimiento != 2;
+        return esta_activa && tipo_movimiento > 1;
     }
 	
 	public void get_Agregar_Entidad(Entidades entidad, boolean agregar_mapa) 

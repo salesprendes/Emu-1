@@ -4,7 +4,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
 import main.consola.Consola;
+import objetos.entidades.npcs.Npcs;
 import objetos.entidades.npcs.NpcsModelo;
+import objetos.mapas.Mapas;
 
 public class Npcs_DB extends DatabaseManager
 {
@@ -15,11 +17,9 @@ public class Npcs_DB extends DatabaseManager
 	
 	public void get_Cargar_Todos_Npcs_Modelo()
 	{
-		Ejecucion_Query query = null;
-	
 		try
 		{
-			query = ejecutar_Query_Select("SELECT * FROM npcs_modelo;");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM npcs_modelo;");
 
 			while(query.get_Rs().next())
 			{
@@ -32,9 +32,33 @@ public class Npcs_DB extends DatabaseManager
 		{
 			Consola.println("error sql: " + e);
 		}
-		finally 
+	}
+	
+	public short get_Cargar_Npcs_Ubicacion()
+	{
+		try
 		{
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM npcs_ubicacion;");
+			short contador = 0;
+			
+			//mapa(1), celda(2), npc_modelo(3), orientacion(4), nombre(5)
+			while(query.get_Rs().next())
+			{
+				final NpcsModelo npc_modelo = NpcsModelo.get_Npcs_Cargados(query.get_Rs().getShort(3));
+				if(npc_modelo != null)
+				{
+					Mapas mapa = Mapas.get_Mapas_Cargados(query.get_Rs().getShort(1));
+					mapa.get_Agregar_Entidad(new Npcs(npc_modelo, mapa.get_Siguiente_Id_Entidad(), mapa.get_Celda(query.get_Rs().getShort(2)), query.get_Rs().getByte(4)));
+				}
+				contador++;	
+			}
 			cerrar(query);
+			return contador;
 		}
+		catch (final Exception e)
+		{
+			Consola.println("error sql: " + e);
+		}
+		return 0;
 	}
 }

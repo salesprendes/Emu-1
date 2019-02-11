@@ -26,10 +26,5 @@ public interface Entidades
 		{
             return -ordinal();
         }
-		
-		public int get_Sprite_Id(final int entidad_id) 
-		{
-            return -(100 * entidad_id + ordinal());
-        }
     }
 }

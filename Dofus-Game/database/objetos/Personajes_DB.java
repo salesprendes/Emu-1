@@ -154,7 +154,7 @@ public class Personajes_DB extends DatabaseManager
 				//Stats
 				statement.setInt(15, 0);//vitalidad(16)
 				statement.setInt(16, 0);//sabiduria(17)
-				statement.setInt(17, 0);// fuerza(18)
+				statement.setInt(17, 0);//fuerza(18)
 				statement.setInt(18, 0);//inteligencia(19)
 				statement.setInt(19, 0);//suerte(20)
 				statement.setInt(20, 0);//agilidad(21)
@@ -173,12 +173,12 @@ public class Personajes_DB extends DatabaseManager
 					if (generatedKeys.next())
 						personaje.set_Id(generatedKeys.getInt(1));
 		            else
-		                throw new SQLException("La creación del personaje falló, no se encontro ID");
+		                throw new SQLException("La creación del personaje falló");
 				}
 			}
 			catch(final SQLException e)
 			{
-				System.out.println(e);
+				Consola.println("error sql: " + e);
 				try
 				{
 					if (conexion != null) 

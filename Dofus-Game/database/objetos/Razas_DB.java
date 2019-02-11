@@ -15,11 +15,9 @@ public class Razas_DB extends DatabaseManager
 	
 	public void get_Cargar_Todas_Razas()
 	{
-		Ejecucion_Query query = null;
-		
 		try
 		{
-			query = ejecutar_Query_Select("SELECT * FROM razas;");
+			final Ejecucion_Query query = ejecutar_Query_Select("SELECT * FROM razas;");
 
 			while(query.get_Rs().next())
 			{
@@ -31,10 +29,6 @@ public class Razas_DB extends DatabaseManager
 		catch (final Exception e)
 		{
 			Consola.println("ERROR SQL: " + e.toString());
-		}
-		finally 
-		{
-			cerrar(query);
 		}
 	}
 }

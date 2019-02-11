@@ -37,6 +37,7 @@ public class Especialidades
 				catch (Exception e) {}
 			}
 		}
+		
 		especialidades_cargadas.put(id, this);
 	}
 	
