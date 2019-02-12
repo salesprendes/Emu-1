@@ -1,15 +1,14 @@
 package objetos.mapas.interactivo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import com.google.common.primitives.Ints;
+import com.google.common.primitives.Shorts;
 
 public class InteractivoModelo
 {
 	private final int recarga;
 	private final short id, duracion;
-	private final int[] gfx, habilidades;
+	private final short[] gfx, habilidades;
 	private final byte caminable, tipo, accion;
 
 	private static ArrayList<InteractivoModelo> interactivos_modelo_cargados = new ArrayList<InteractivoModelo>();
@@ -19,9 +18,17 @@ public class InteractivoModelo
 		id = _id;
 		
 		if (!_gfx.equals("-1") && !_gfx.isEmpty())
-			gfx = Arrays.stream(_gfx.split(",")).mapToInt(Integer::parseInt).toArray();
+		{
+			String[] separador = _gfx.split(",");
+			gfx = new short[separador.length];
+			
+			for(byte i = 0; i < gfx.length; ++i)
+			{
+				gfx[i] = Short.parseShort(separador[i]);
+			}
+		}
 		else
-			gfx = new int[0];
+			gfx = new short[0];
 		
 		tipo = _tipo;
 		accion = _accion;
@@ -30,9 +37,17 @@ public class InteractivoModelo
 		caminable = _caminable;
 		
 		if (!_habilidades.equals("-1") && !_habilidades.isEmpty())
-			habilidades = Arrays.stream(_habilidades.split(",")).mapToInt(Integer::parseInt).toArray();
+		{
+			String[] separador = _habilidades.split(",");
+			habilidades = new short[separador.length];
+			
+			for(byte i = 0; i < habilidades.length; ++i)
+			{
+				habilidades[i] = Short.parseShort(separador[i]);
+			}
+		}
 		else
-			habilidades = new int[0];
+			habilidades = new short[0];
 		
 		interactivos_modelo_cargados.add(this);
 	}
@@ -52,12 +67,12 @@ public class InteractivoModelo
 		return duracion;
 	}
 	
-	public int[] get_Gfx()
+	public short[] get_Gfx()
 	{
 		return gfx;
 	}
 	
-	public int[] get_Habilidades()
+	public short[] get_Habilidades()
 	{
 		return habilidades;
 	}
@@ -82,11 +97,11 @@ public class InteractivoModelo
 		return (caminable & 2) == 2;
 	}
 	
-	public static InteractivoModelo get_Modelo_Por_Gfx(final int gfx) 
+	public static InteractivoModelo get_Modelo_Por_Gfx(final short gfx_id) 
 	{
 		for (final InteractivoModelo interactivo : interactivos_modelo_cargados) 
 		{
-			if (Ints.contains(interactivo.get_Gfx(), gfx))
+			if (Shorts.contains(interactivo.get_Gfx(), gfx_id))
 				return interactivo;
 		}
 		return null;

@@ -1,6 +1,5 @@
 package objetos.entidades.alineamientos;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +8,7 @@ import objetos.mapas.Areas;
 final public class AlineamientosModelo
 {
 	private final byte id;
-	private final int[] zaapis;
+	private final short[] zaapis;
 	private final Areas area;
 	private final boolean es_especial;
 
@@ -21,9 +20,17 @@ final public class AlineamientosModelo
 		area = _area;
 		
 		if (!_zaapis.equals("-1") && !_zaapis.isEmpty())
-			zaapis = Arrays.stream(_zaapis.split(",")).mapToInt(Integer::parseInt).toArray();
+		{
+			String[] separador = _zaapis.split(",");
+			zaapis = new short[separador.length];
+			
+			for(byte i = 0; i < zaapis.length; ++i)
+			{
+				zaapis[i] = Short.parseShort(separador[i]);
+			}
+		}
 		else
-			zaapis = new int[0];
+			zaapis = new short[0];
 
 		es_especial = _es_especial;
 		alineamientos_cargados.put(id, this);
@@ -39,7 +46,7 @@ final public class AlineamientosModelo
 		return area;
 	}
 
-	public int[] get_Zaapis()
+	public short[] get_Zaapis()
 	{
 		return zaapis;
 	}

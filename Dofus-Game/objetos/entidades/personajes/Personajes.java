@@ -355,6 +355,11 @@ public class Personajes implements Entidades
 	{
 		return (byte) (alineamiento != null ? (alineamiento.get_Esta_Activado() ? 1 : 0) : 0);
 	}
+	
+	public boolean get_Alineamiento_Es_Especial()
+	{
+		return alineamiento != null ? alineamiento.get_Alineamiento().get_Es_especial() : true;
+	}
 
 	public void set_Alineamiento(Alineamientos _alineamiento)
 	{

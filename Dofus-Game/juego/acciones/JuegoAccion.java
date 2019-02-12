@@ -59,8 +59,7 @@ public class JuegoAccion
     {
     	JuegoAcciones juego_accion;
     	short id = get_Siguiente_Accion_Id();
-    	System.out.println(id);
-    	
+
     	switch (accion_id)
     	{
     		case 1:

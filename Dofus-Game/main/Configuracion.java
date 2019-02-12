@@ -14,7 +14,7 @@ import juego.paquetes.GestorPaquetes;
 import juego.paquetes.Paquete;
 import main.consola.Consola;
 
-public class Configuracion 
+public class Configuracion
 {
 	private static Properties propiedades;
 	private final static Map<String, GestorPaquetes> paquetes_emulador = new HashMap<String, GestorPaquetes>();
@@ -110,7 +110,7 @@ public class Configuracion
 			Consola.println("Error en la configuracion: " + e.getMessage());
 		}
 	}
-
+	
 	public static void cargar_Paquetes()
 	{
 		Reflections reflections = new Reflections("juego.paquetes");

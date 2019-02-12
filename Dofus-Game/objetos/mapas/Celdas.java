@@ -2,9 +2,13 @@ package objetos.mapas;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.google.common.primitives.Shorts;
+
 import juego.enums.TipoDirecciones;
 import objetos.entidades.Entidades;
+import objetos.entidades.personajes.Personajes;
 import objetos.mapas.interactivo.Interactivo;
+import objetos.mapas.interactivo.InteractivoModelo;
 
 public final class Celdas 
 {
@@ -136,6 +140,57 @@ public final class Celdas
     		return Y < celda_comparacion.Y ? TipoDirecciones.ARRIBA : TipoDirecciones.IZQUIERDA;
 		else
 			return null;
+    }
+    
+    public boolean get_Verificar_Habilidad(final short accion_id)
+    {
+    	for (final InteractivoModelo interactivo : InteractivoModelo.get_Interactivos_Modelos_Cargados()) 
+		{
+			if (Shorts.contains(interactivo.get_Habilidades(), accion_id))
+			{
+				if (Shorts.contains(interactivo.get_Gfx(), objeto_interactivo.get_Gfx()))
+				{
+					if (interactivo.get_Tipo() == 1)
+						return objeto_interactivo.get_Estado() == 1;
+					else
+						return true;
+				}
+				else
+					return false;
+			}
+		}
+    	return false;
+    }
+    
+    public boolean get_Iniciar_Accion(Personajes personaje, final short accion_id, final short juego_accion_id, final short celda_id)
+    {
+    	if (objeto_interactivo == null)
+    		return false;
+
+    	switch(accion_id)
+    	{
+    		case 157://Zaapi
+    			if (personaje.get_Alineamiento_Deshonor() >= 3) 
+    			{
+    				personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("Im183");
+    				return false;
+    			}
+    			//Mercenarios: pueden utilizar todos a precio reducido
+    			//brakmars: solo la ciudad de brakmar
+    			//bontarianos: solo ciudad de bonta
+    			//neutrales: los dos a precio * 2
+    			if((personaje.get_Alineamiento_Id() != 0 || personaje.get_Alineamiento_Es_Especial()))
+    			{
+    				StringBuilder lista_zaapis = new StringBuilder();
+    			}
+    		break;
+    	}
+    	return false;
+    }
+    
+    public void get_Finalizar_Accion(Personajes personaje, int accion_id)
+    {
+    	
     }
     
     public int get_Distancia(Celdas destino)

@@ -30,6 +30,11 @@ public class Interactivo
 		
 		es_utilizable = true;
 	}
+	
+	public short get_Gfx()
+	{
+		return gfx;
+	}
 
 	public InteractivoModelo get_Modelo()
 	{

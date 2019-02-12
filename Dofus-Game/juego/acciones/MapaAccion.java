@@ -22,7 +22,11 @@ public class MapaAccion implements JuegoAcciones
 		{
 			celda = Short.parseShort(args.split(";")[0]);
 			accion = Short.parseShort(args.split(";")[1]);
-			return true;
+			
+			if(!personaje.get_Localizacion().get_Mapa().get_Celda(celda).get_Verificar_Habilidad(accion))
+				return false;
+			
+			return personaje.get_Localizacion().get_Mapa().get_Celda(celda).get_Iniciar_Accion(personaje, accion, id, celda);
 		} 
 		catch(Exception e) 
 		{
@@ -37,16 +41,16 @@ public class MapaAccion implements JuegoAcciones
 
 	public void get_Correcto(String args)
 	{
-
+		personaje.get_Localizacion().get_Mapa().get_Celda(celda).get_Finalizar_Accion(personaje, accion);
 	}
 
 	public int get_Id()
 	{
-		return 0;
+		return id;
 	}
 
 	public int get_Accion_id()
 	{
-		return 0;
+		return 500;
 	}
 }
