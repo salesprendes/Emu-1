@@ -75,7 +75,7 @@ public final class Celdas
 
 	public boolean get_Es_Caminable() 
 	{
-        return esta_activa && movimiento != 0 && movimiento != 1;
+        return esta_activa && movimiento > 1;
     }
 	
 	public byte get_Nivel()
@@ -162,7 +162,7 @@ public final class Celdas
     	return false;
     }
     
-    public boolean get_Iniciar_Accion(Personajes personaje, final short accion_id, final short juego_accion_id, final short celda_id)
+    public boolean get_Iniciar_Accion(Personajes personaje, final short accion_id, final short celda_id)
     {
     	if (objeto_interactivo == null)
     		return false;
@@ -175,22 +175,19 @@ public final class Celdas
     				personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("Im183");
     				return false;
     			}
-    			//Mercenarios: pueden utilizar todos a precio reducido
-    			//brakmars: solo la ciudad de brakmar
-    			//bontarianos: solo ciudad de bonta
-    			//neutrales: los dos a precio * 2
-    			if((personaje.get_Alineamiento_Id() != 0 || personaje.get_Alineamiento_Es_Especial()))
-    			{
-    				StringBuilder lista_zaapis = new StringBuilder();
-    			}
+    			personaje.get_Zaapi_Lista_Wc();
     		break;
     	}
-    	return false;
+    	return true;
     }
     
     public void get_Finalizar_Accion(Personajes personaje, int accion_id)
     {
-    	
+    	switch (accion_id) 
+    	{
+    		case 157:
+    		break;
+    	}
     }
     
     public int get_Distancia(Celdas destino)

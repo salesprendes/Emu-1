@@ -39,7 +39,7 @@ final public class ComunicadorSocket extends Thread implements Runnable
 		}
 		catch (final IOException e)
 		{
-			System.out.println("Error en ComunicadorSocket: " + e);
+			Consola.println("Error en ComunicadorSocket: " + e);
 			cerrar_Conexion_Comunicador();
 		}
 	}
@@ -105,7 +105,7 @@ final public class ComunicadorSocket extends Thread implements Runnable
 						break;
 						
 						default:
-							System.out.println("El paquete " + paquete + " no existe");
+							Consola.println("El paquete " + paquete + " no existe");
 						break;
 					}
 				}
@@ -160,13 +160,13 @@ final public class ComunicadorSocket extends Thread implements Runnable
 					break;
 					
 					default:
-						System.out.println("El paquete " + paquete + " no existe");
+						Consola.println("El paquete " + paquete + " no existe");
 					break;
 				}
 			break;
 			
 			default:
-				System.out.println("El paquete " + paquete + " no existe");
+				Consola.println("El paquete " + paquete + " no existe");
 			break;
 		}
 	}

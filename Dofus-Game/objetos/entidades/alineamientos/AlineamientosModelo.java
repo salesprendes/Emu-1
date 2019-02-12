@@ -10,11 +10,10 @@ final public class AlineamientosModelo
 	private final byte id;
 	private final short[] zaapis;
 	private final Areas area;
-	private final boolean es_especial;
 
 	private static final Map<Byte, AlineamientosModelo> alineamientos_cargados = new HashMap<Byte, AlineamientosModelo>();
 	
-	public AlineamientosModelo(final byte _id, final Areas _area, final String _zaapis, boolean _es_especial)
+	public AlineamientosModelo(final byte _id, final Areas _area, final String _zaapis)
 	{
 		id = _id;
 		area = _area;
@@ -32,7 +31,6 @@ final public class AlineamientosModelo
 		else
 			zaapis = new short[0];
 
-		es_especial = _es_especial;
 		alineamientos_cargados.put(id, this);
 	}
 
@@ -49,11 +47,6 @@ final public class AlineamientosModelo
 	public short[] get_Zaapis()
 	{
 		return zaapis;
-	}
-
-	public boolean get_Es_especial() 
-	{
-		return es_especial;
 	}
 	
 	public static Map<Byte, AlineamientosModelo> get_Alineamientos_Cargados()

@@ -10,20 +10,18 @@ import objetos.mapas.pathfinding.PathFinding;
 
 public class Desplazamiento implements JuegoAcciones
 {
-	private final short id;
 	private final long tiempo_inicio;
 	private final Personajes personaje;
 	private PathFinding pathfinding;
 
-	public Desplazamiento(final short _id, final Personajes _personaje, final PathFinding _pathfinding) 
+	public Desplazamiento(final Personajes _personaje, final PathFinding _pathfinding) 
 	{
-		id = _id;
 		personaje = _personaje;
 		pathfinding = _pathfinding;
 		tiempo_inicio = System.currentTimeMillis();
 	}
 
-	public synchronized boolean get_Esta_Iniciado()
+	public synchronized boolean get_Puede_Hacer_Accion()
 	{
 		if(pathfinding == null || personaje.get_Juego_Acciones().get_Estado() != TipoEstadoAcciones.ESPERANDO)
 		{
@@ -47,36 +45,12 @@ public class Desplazamiento implements JuegoAcciones
 			return false;
 		}
 		
-		personaje.get_Localizacion().get_Mapa().get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(pj -> pj.get_Cuenta().get_Juego_socket().enviar_Paquete("GA" + id + ';' + get_Accion_id() + ';' + personaje.get_Id() + ';' + pathfinding.get_Codificar(false)));
+		personaje.get_Localizacion().get_Mapa().get_Enviar_Personajes_Mapa("GA1;1;" + personaje.get_Id() + ';' + pathfinding.get_Codificar(false));
 		personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.DESPLAZANDO);
 		return true;
 	}
 	
-	public synchronized void get_Cancelar(String args)
-	{
-		if (!args.isEmpty()) 
-		{
-			try 
-			{
-				short celda_id = Short.parseShort(args);
-				
-				pathfinding.stream().filter(camino -> camino.get_Celda().get_Id() == celda_id).forEach(camino -> 
-				{
-					personaje.set_Celda(camino.get_Celda());
-					personaje.get_Localizacion().set_Orientacion(camino.get_Direccion());
-				});
-				
-				personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("BN");
-			}
-			catch(NumberFormatException e) 
-			{
-				personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("BN");
-				return;
-			}
-        }
-	}
-	
-	public synchronized void get_Correcto(String args)
+	public synchronized void get_Accion_Correcta(String args)
 	{
 		long tiempo_local = (System.currentTimeMillis() - tiempo_inicio) + personaje.get_Cuenta().get_Juego_socket().get_ping();
 
@@ -89,13 +63,25 @@ public class Desplazamiento implements JuegoAcciones
 		}
 	}
 	
-	public int get_Id()
+	public synchronized void get_Accion_Fallida(String args)
 	{
-		return id;
-	}
-	
-	public int get_Accion_id()
-	{
-		return 1;
+		if (!args.isEmpty()) 
+		{
+			try 
+			{
+				short celda_id = Short.parseShort(args);
+				
+				pathfinding.stream().filter(camino -> camino.get_Celda().get_Id() == celda_id).forEach(camino -> 
+				{
+					personaje.set_Celda(camino.get_Celda());
+					personaje.get_Localizacion().set_Orientacion(camino.get_Direccion());
+				});
+			}
+			catch(NumberFormatException e) 
+			{
+				personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("BN");
+				return;
+			}
+        }
 	}
 }

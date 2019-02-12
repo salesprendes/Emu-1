@@ -136,7 +136,7 @@ public class Mapas
 	
 	public void get_Enviar_Personajes_Mapa(final String paquete) 
 	{
-		get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete(data));
+		get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete(paquete));
     }
 	
 	public Collection<NpcsUbicacion> get_Npcs()

@@ -29,10 +29,10 @@ public class Configuracion
 	public static short POBLACION_RECOMENDADA = 1000, POBLACION_MEDIA_ALTA = 500, POBLACION_ALTA = 300, POBLACION_BAJA = 200, POBLACION_COMPLETA = 20;
 	
 	/** ACCESO DATABASE **/
-	public static String DATABASE_IP_LOGIN = "127.0.0.1";
-	public static int DATABASE_PUERTO_LOGIN = 3306;
-	public static String DATABASE_USUARIO_LOGIN = "root";
-	public static String DATABASE_PASSWORD_LOGIN = "";
+	public static String DATABASE_IP = "127.0.0.1";
+	public static int DATABASE_PUERTO = 3306;
+	public static String DATABASE_USUARIO = "root";
+	public static String DATABASE_PASSWORD = "";
 	public static String DATABASE_NOMBRE_LOGIN = "dofus_global";
 	
 	public static boolean cargar_Configuracion()
@@ -45,12 +45,12 @@ public class Configuracion
 			//Puertos
 			PUERTO_LOGIN		=	Integer.valueOf(propiedades.getProperty("PUERTO_LOGIN"));
 			PUERTO_COMUNICADOR	=	Integer.valueOf(propiedades.getProperty("PUERTO_COMUNICADOR"));
-			DATABASE_PUERTO_LOGIN	=	Integer.valueOf(propiedades.getProperty("DATABASE_PUERTO_LOGIN"));
-
+			
 			//Acceso Database
-			DATABASE_IP_LOGIN		=	propiedades.getProperty("DATABASE_IP_LOGIN");
-			DATABASE_USUARIO_LOGIN	=	propiedades.getProperty("DATABASE_USUARIO_LOGIN");
-			DATABASE_PASSWORD_LOGIN	=	propiedades.getProperty("DATABASE_PASSWORD_LOGIN");
+			DATABASE_IP				=	propiedades.getProperty("DATABASE_IP");
+			DATABASE_USUARIO		=	propiedades.getProperty("DATABASE_USUARIO");
+			DATABASE_PASSWORD		=	propiedades.getProperty("DATABASE_PASSWORD");
+			DATABASE_PUERTO			=	Integer.valueOf(propiedades.getProperty("DATABASE_PUERTO"));
 			DATABASE_NOMBRE_LOGIN	=	propiedades.getProperty("DATABASE_NOMBRE_LOGIN");
 
 			//Otros
@@ -84,10 +84,10 @@ public class Configuracion
 			propiedades.setProperty("PUERTO_LOGIN", Integer.toString(PUERTO_LOGIN));
 			propiedades.setProperty("PUERTO_COMUNICADOR", Integer.toString(PUERTO_COMUNICADOR));
 			
-			propiedades.setProperty("DATABASE_IP_LOGIN", DATABASE_IP_LOGIN);
-			propiedades.setProperty("DATABASE_PUERTO_LOGIN", Integer.toString(DATABASE_PUERTO_LOGIN));
-			propiedades.setProperty("DATABASE_USUARIO_LOGIN", DATABASE_USUARIO_LOGIN);
-			propiedades.setProperty("DATABASE_PASSWORD_LOGIN", DATABASE_PASSWORD_LOGIN);
+			propiedades.setProperty("DATABASE_IP", DATABASE_IP);
+			propiedades.setProperty("DATABASE_PUERTO", Integer.toString(DATABASE_PUERTO));
+			propiedades.setProperty("DATABASE_USUARIO", DATABASE_USUARIO);
+			propiedades.setProperty("DATABASE_PASSWORD", DATABASE_PASSWORD);
 			propiedades.setProperty("DATABASE_NOMBRE_LOGIN", DATABASE_NOMBRE_LOGIN);
 			
 			propiedades.setProperty("MAXIMOS_LOGINS_FILA_ESPERA", Integer.toString(MAXIMOS_LOGINS_FILA_ESPERA));
@@ -99,6 +99,7 @@ public class Configuracion
 			propiedades.setProperty("POBLACION_COMPLETA", Short.toString(POBLACION_COMPLETA));
 			
 			propiedades.store(new FileOutputStream(archivo_configuracion), "Archivo de configuración");
+			/** Limpiar memoria **/
 			propiedades.clear();
 			propiedades = null;
 			archivo_configuracion = null;

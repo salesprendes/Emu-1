@@ -1,7 +1,8 @@
 package objetos.mapas;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SubAreas 
 {
@@ -10,9 +11,9 @@ public class SubAreas
 	private Areas area;
 	private final ArrayList<Mapas> _mapas = new ArrayList<Mapas>();
 	
-	private static final ConcurrentHashMap<Short, SubAreas> sub_areas_cargadas = new ConcurrentHashMap<Short, SubAreas>();
+	private static final Map<Short, SubAreas> sub_areas_cargadas = new TreeMap<Short, SubAreas>();
 	
-	public SubAreas(final short _id, final boolean _es_conquistable, final short _area) 
+	public SubAreas(final short _id, final boolean _es_conquistable, final byte _area) 
 	{
 		id = _id;
 		es_conquistable = _es_conquistable;
@@ -51,7 +52,7 @@ public class SubAreas
 		_mapas.add(mapa);
 	}
 
-	public static ConcurrentHashMap<Short, SubAreas> get_Sub_Areas_Cargadas() 
+	public static Map<Short, SubAreas> get_Sub_Areas_Cargadas() 
 	{
 		return sub_areas_cargadas;
 	}

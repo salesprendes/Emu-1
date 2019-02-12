@@ -11,7 +11,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 10/02/2019 22:34:46
+ Date: 13/02/2019 00:04:01
 */
 
 SET NAMES utf8mb4;
@@ -87,8 +87,8 @@ CREATE TABLE `personajes`  (
   `nivel` int(4) NOT NULL DEFAULT 1 COMMENT 'nivel del personaje',
   `gfx` int(4) NOT NULL,
   `tamano` int(4) NOT NULL DEFAULT 100 COMMENT 'tamaño del gfx (short maximo 32767)',
-  `mapa_id` int(5) NOT NULL,
-  `celda_id` int(4) NOT NULL DEFAULT 0,
+  `mapa_id` smallint(6) NOT NULL,
+  `celda_id` smallint(3) NOT NULL DEFAULT 0,
   `sexo` bit(1) NOT NULL DEFAULT b'0' COMMENT 'sexo del personaje 0 = masculino, 1 = femenino',
   `experiencia` bigint(30) NOT NULL DEFAULT 0,
   `kamas` bigint(30) NOT NULL DEFAULT 0,

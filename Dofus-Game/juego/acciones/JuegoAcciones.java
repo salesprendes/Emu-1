@@ -2,9 +2,7 @@ package juego.acciones;
 
 public interface JuegoAcciones
 {
-	boolean get_Esta_Iniciado();
-    void get_Cancelar(String args);
-    void get_Correcto(String args);
-    int get_Id();
-    int get_Accion_id();
+	boolean get_Puede_Hacer_Accion();
+    void get_Accion_Fallida(String args);
+    void get_Accion_Correcta(String args);
 }

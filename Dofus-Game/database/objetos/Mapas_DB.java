@@ -26,7 +26,7 @@ public class Mapas_DB extends DatabaseManager
 			while(query.get_Rs().next())
 			{
 				//id(1), Nombre(2), superareaID(3), cementerio(4), necesita_abono(5)
-				final Areas area = new Areas(query.get_Rs().getShort(1), query.get_Rs().getByte(3), query.get_Rs().getString(4), query.get_Rs().getBoolean(5));
+				final Areas area = new Areas(query.get_Rs().getByte(1), query.get_Rs().getByte(3), query.get_Rs().getString(4), query.get_Rs().getBoolean(5));
 				area.get_Super_area().get_Agregar_Area(area);
 			}
 			cerrar(query);
@@ -85,7 +85,7 @@ public class Mapas_DB extends DatabaseManager
 			while(query.get_Rs().next())
 			{
 				//id(1), Nombre(2), es_conquistable(3), area(4)
-				new SubAreas(query.get_Rs().getShort(1), query.get_Rs().getBoolean(3), query.get_Rs().getShort(4));
+				new SubAreas(query.get_Rs().getShort(1), query.get_Rs().getBoolean(3), query.get_Rs().getByte(4));
 			}
 			cerrar(query);
 		}

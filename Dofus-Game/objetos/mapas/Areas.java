@@ -1,17 +1,18 @@
 package objetos.mapas;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Areas 
 {
-	private final short id;
+	private final byte id;
 	private SuperAreas super_area;
 	private short[] cementerio;
 	private final boolean necesita_abono;
 
-	private static final ConcurrentHashMap<Short, Areas> areas_cargadas = new ConcurrentHashMap<Short, Areas>();
+	private static final Map<Byte, Areas> areas_cargadas = new TreeMap<Byte, Areas>();
 
-	public Areas(final short _id, final byte _super_area, final String _cementerio, final boolean _necesita_abono) 
+	public Areas(final byte _id, final byte _super_area, final String _cementerio, final boolean _necesita_abono) 
 	{
 		id = _id;
 		super_area = SuperAreas.get_SuperAreas_Cargadas(_super_area);
@@ -28,7 +29,13 @@ public class Areas
 			cementerio = new short[]{8534, 196};
 		}
 		necesita_abono = _necesita_abono;
+		
 		areas_cargadas.put(id, this);
+	}
+	
+	public byte get_Id()
+	{
+		return id;
 	}
 
 	public SuperAreas get_Super_area() 
@@ -46,12 +53,12 @@ public class Areas
 		return necesita_abono;
 	}
 
-	public static ConcurrentHashMap<Short, Areas> get_Areas_Cargadas()
+	public static Map<Byte, Areas> get_Areas_Cargadas()
 	{
 		return areas_cargadas;
 	}
 
-	public static Areas get_Areas_Cargadas(final short area_id)
+	public static Areas get_Areas_Cargadas(final byte area_id)
 	{
 		return areas_cargadas.get(area_id);
 	}

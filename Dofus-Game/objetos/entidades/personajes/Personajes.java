@@ -25,6 +25,7 @@ import objetos.cuentas.Cuentas;
 import objetos.entidades.Entidades;
 import objetos.entidades.Experiencia;
 import objetos.entidades.Localizacion;
+import objetos.entidades.alineamientos.AlineamientosModelo;
 import objetos.entidades.caracteristicas.BaseStats;
 import objetos.entidades.caracteristicas.Stats;
 import objetos.mapas.Celdas;
@@ -296,7 +297,7 @@ public class Personajes implements Entidades
 		return tamano;
 	}
 
-	public void set_Tamano(short _tamano)
+	public void set_Tamano(final short _tamano)
 	{
 		tamano = _tamano;
 	}
@@ -354,11 +355,6 @@ public class Personajes implements Entidades
 	public byte get_Alineamiento_Tiene_Alas_Activadas()
 	{
 		return (byte) (alineamiento != null ? (alineamiento.get_Esta_Activado() ? 1 : 0) : 0);
-	}
-	
-	public boolean get_Alineamiento_Es_Especial()
-	{
-		return alineamiento != null ? alineamiento.get_Alineamiento().get_Es_especial() : true;
 	}
 
 	public void set_Alineamiento(Alineamientos _alineamiento)
@@ -430,7 +426,7 @@ public class Personajes implements Entidades
 			if (es_mercante)
 			{
 				es_mercante = false;
-				posicion.get_Mapa().get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|-" + id));
+				posicion.get_Mapa().get_Enviar_Personajes_Mapa("GM|-" + id);
 			}
 
 			cuenta.get_Juego_socket().get_Iniciar_Buffering();
@@ -448,8 +444,8 @@ public class Personajes implements Entidades
 			cuenta.get_Juego_socket().enviar_Paquete("Ow" + get_Pods_Utilizados() + '|' + get_Pods_Maximos());//Pods
 			cuenta.get_Juego_socket().enviar_Paquete("Im189");// Im bienvenida dofus
 			cuenta.get_Juego_socket().enviar_Paquete("Im0153;" + cuenta.get_Ip());
-			posicion.get_Mapa().get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
-			
+			posicion.get_Mapa().get_Enviar_Personajes_Mapa("GM|+" + get_Paquete_Gm());
+
 			cuenta.get_Juego_socket().get_Detener_Buffering();
 			
 			iniciar_Timer_Recuperar_Vida();
@@ -741,12 +737,12 @@ public class Personajes implements Entidades
 					return;
 				}
 				
-				posicion.get_Mapa().get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|-" + id));
+				posicion.get_Mapa().get_Enviar_Personajes_Mapa("GM|-" + id);
 				posicion.set_Mapa(mapa_destino);
 				set_Celda(mapa_destino.get_Celda(celda_destino_id));
 				socket.enviar_Paquete("GA;2;" + id + ';');
 				socket.enviar_Paquete("GDM|" + mapa_destino.get_Id() + '|' + mapa_destino.get_Fecha() + '|' + mapa_destino.get_Key());
-				mapa_destino.get_Personajes().stream().filter(personaje -> personaje.get_Esta_Conectado()).forEach(personaje -> personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GM|+" + get_Paquete_Gm()));
+				mapa_destino.get_Enviar_Personajes_Mapa("GM|+" + get_Paquete_Gm());
 			}
 		}
 	}
@@ -814,6 +810,32 @@ public class Personajes implements Entidades
 	{
 		canales = canales.replace(canal.get_Identificador(), "");
 		cuenta.get_Juego_socket().enviar_Paquete("cC-" + canal.get_Identificador());
+	}
+	
+	public void get_Zaapi_Lista_Wc()//Paquete Wc
+	{
+		final byte ciudad = posicion.get_Mapa().get_Sub_area().get_Area().get_Id();
+		final short mapa_id = posicion.get_Mapa().get_Id();
+		StringBuilder str = new StringBuilder(52).append("Wc").append(mapa_id);
+		
+		int precio = 20;
+		if(get_Alineamiento_Id() == 1 || get_Alineamiento_Id() == 3 && ciudad == 7)
+			precio = 10;
+		else if(get_Alineamiento_Id() == 2 || get_Alineamiento_Id() == 3 && ciudad == 11)
+			precio = 10;
+		
+		final short[] lista_zaapis = ciudad == 7 ? AlineamientosModelo.get_Alineamientos_Cargados((byte) 1).get_Zaapis() : AlineamientosModelo.get_Alineamientos_Cargados((byte) 2).get_Zaapis();
+		for(final short mapa : lista_zaapis)
+		{
+			if(Mapas.get_Mapas_Cargados(mapa) != null)
+			{
+				if(mapa != mapa_id)//El mapa actual no se muestra en la lista (oficial)
+				{
+					str.append('|').append(mapa).append(';').append(precio);
+				}
+			}
+		}
+		cuenta.get_Juego_socket().enviar_Paquete(str.toString());
 	}
 
 	public static ConcurrentHashMap<Integer, Personajes> get_Personajes_Cargados()

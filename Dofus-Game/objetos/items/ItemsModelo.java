@@ -150,7 +150,7 @@ public class ItemsModelo
             case 83://Piedra de alma
             case 102://Ballesta
             case 114://Arma magica
-            return true;
+            	return true;
         }
         return false;
     }

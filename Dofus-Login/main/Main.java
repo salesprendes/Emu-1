@@ -19,7 +19,7 @@ final public class Main
 	public static ComunicadorServer servidor_comunicador;
 	public static FilaServer fila_espera_login;
 	public static Consola comandos_consola;
-	private static ConexionPool database = new ConexionPool();
+	private static ConexionPool database;
 	
 	public static void main(String[] args)
 	{
@@ -65,13 +65,28 @@ final public class Main
 		if (estado_emulador == Estados.ENCENDIDO)
 		{
 			if(servidor_comunicador != null)
+			{
 				servidor_comunicador.detener_Server_Socket();
+				Consola.println("Comunicador cerrado.");
+			}
+				
 			if(servidor_login != null)
+			{
 				servidor_login.detener_Server_Socket();
+				Consola.println("ServerSocket login cerrado.");
+			}
+				
 			if(fila_espera_login != null)
+			{
 				fila_espera_login.detener_Fila();
+				Consola.println("Fila de espera cerrada");
+			}
+				
 			if(comandos_consola != null)
+			{
 				comandos_consola.interrupt();
+				Consola.println("Thread Consola interrumpido");
+			}
 			estado_emulador = Estados.APAGADO;
 		}
 		Consola.println("> El emulador esta cerrado.");
