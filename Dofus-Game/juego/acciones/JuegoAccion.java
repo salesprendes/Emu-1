@@ -10,12 +10,13 @@ import objetos.mapas.pathfinding.Descifrador;
 
 public class JuegoAccion
 {
-	final private Queue<JuegoAcciones> acciones = new ArrayDeque<JuegoAcciones>();
-	private final Personajes personaje;
+	final private Queue<JuegoAcciones> acciones;
+	final private Personajes personaje;
     private TipoEstadoAcciones estado;
     
     public JuegoAccion(Personajes _personaje)
     {
+    	acciones = new ArrayDeque<JuegoAcciones>();
     	personaje = _personaje;
     	estado = TipoEstadoAcciones.ESPERANDO;
     }
@@ -48,54 +49,49 @@ public class JuegoAccion
     	estado = _estado;
     }
     
-	public Queue<JuegoAcciones> getAcciones()
-	{
-		return acciones;
-	}
-    
     private synchronized void get_Agregar_Accion(JuegoAcciones accion) 
     {
         acciones.add(accion);
         if(acciones.size() == 1)
         {
-        	if(!accion.get_Puede_Hacer_Accion())
-            	acciones.remove(accion);
+        	if(estado != TipoEstadoAcciones.ESPERANDO)
+    			personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA;0");
+        	else if(!accion.get_Puede_Hacer_Accion())
+        		acciones.remove(accion);
         }
     }
     
-    private synchronized void get_Ejecutar_Siguiente_Accion()
+    private synchronized void get_Ejecutar_Siguiente_Accion(final String args)
     {
-    	while (!acciones.isEmpty()) 
-    	{
-    		JuegoAcciones accion = acciones.remove();
-    		if(accion.get_Puede_Hacer_Accion())
-    			get_Finalizar_Accion(accion, false, "");
-    	}
+    	JuegoAcciones accion = acciones.peek();
+    	boolean puede_hacer_accion = accion.get_Puede_Hacer_Accion();
+    	get_Finalizar_Accion(accion.get_Tipo_Accion(), !puede_hacer_accion, args);
     }
     
-    public synchronized void get_Finalizar_Accion(JuegoAcciones accion, boolean tiene_error, String args) 
+    public synchronized void get_Finalizar_Accion(final short tipo_accion_id, final boolean tiene_error, final String args) 
     {
-        if (accion != null)
+    	JuegoAcciones accion = acciones.peek();
+    	
+        if (accion != null && !tiene_error)
         {
-            if (!tiene_error)
-            {
+            if (accion.get_Tipo_Accion() == tipo_accion_id)
             	accion.get_Accion_Correcta(args);
-            	acciones.remove(accion);
-            	
-            	if (acciones.size() > 0)
-            		get_Ejecutar_Siguiente_Accion();
-            }
             else
-            	get_Cancelar_Acciones(args);
+            	accion.get_Accion_Fallida(args);
+            
+            acciones.remove(accion);
+        	if (!acciones.isEmpty())
+        		get_Ejecutar_Siguiente_Accion(args);
         }
-        estado = TipoEstadoAcciones.ESPERANDO;
+        else
+        	get_Cancelar_Acciones(args);
     }
     
     public void get_Cancelar_Acciones(String args)
     {
-    	for (JuegoAcciones acciones : acciones)
-        	acciones.get_Accion_Fallida(args);
-        
+    	for (JuegoAcciones accion : acciones)
+    		accion.get_Accion_Fallida(args);
+    	
         acciones.clear();
     }
 }

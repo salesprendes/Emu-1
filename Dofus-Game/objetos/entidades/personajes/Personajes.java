@@ -14,7 +14,6 @@ import javax.swing.Timer;
 import juego.JuegoSocket;
 import juego.acciones.JuegoAccion;
 import juego.enums.EstadosJuego;
-import juego.enums.PosicionInventario;
 import juego.enums.TipoCanales;
 import juego.enums.TipoDirecciones;
 import juego.enums.TipoStats;
@@ -753,11 +752,11 @@ public class Personajes implements Entidades
 		{
 			final StringJoiner objetos = new StringJoiner(",");
 			
-			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.ARMA.get_Posicion()));
-			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.SOMBRERO.get_Posicion()));
-			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.CAPA.get_Posicion()));
-			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.MASCOTA.get_Posicion()));
-			objetos.add(get_Gm_Objeto_Posicion(PosicionInventario.ESCUDO.get_Posicion()));
+			objetos.add(get_Gm_Objeto_Posicion((byte)1));//Arma
+			objetos.add(get_Gm_Objeto_Posicion((byte)6));//Sombrero
+			objetos.add(get_Gm_Objeto_Posicion((byte)7));//Capa
+			objetos.add(get_Gm_Objeto_Posicion((byte)8));//Mascota
+			objetos.add(get_Gm_Objeto_Posicion((byte)15));//Escudo
 			
 			cache_gm_objetos = objetos.toString();
 		}

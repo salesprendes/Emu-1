@@ -176,15 +176,18 @@ public final class Celdas
     				return false;
     			}
     			personaje.get_Zaapi_Lista_Wc();
-    		break;
+    		return true;
+    		
+    		default:
+    			return false;
     	}
-    	return true;
     }
     
     public void get_Finalizar_Accion(Personajes personaje, int accion_id)
     {
     	switch (accion_id) 
     	{
+    		case 114:
     		case 157:
     		break;
     	}

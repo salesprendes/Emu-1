@@ -1,5 +1,6 @@
 package juego.acciones;
 
+import juego.enums.TipoEstadoAcciones;
 import objetos.entidades.personajes.Personajes;
 import objetos.mapas.Mapas;
 
@@ -26,7 +27,12 @@ public class MapaAccion implements JuegoAcciones
 			if(!mapa.get_Celda(celda).get_Verificar_Habilidad(accion))
 				return false;
 			
-			return mapa.get_Celda(celda).get_Iniciar_Accion(personaje, accion, celda);
+			if(mapa.get_Celda(celda).get_Iniciar_Accion(personaje, accion, celda))
+			{
+				personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.INTERACCION);
+				return true;
+			}
+			return false;
 		} 
 		catch(Exception e) 
 		{
@@ -36,11 +42,17 @@ public class MapaAccion implements JuegoAcciones
 
 	public synchronized void get_Accion_Fallida(String args)
 	{
-
+		personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.ESPERANDO);
 	}
 
 	public synchronized void get_Accion_Correcta(String args)
 	{
 		personaje.get_Localizacion().get_Mapa().get_Celda(celda).get_Finalizar_Accion(personaje, accion);
+		personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.ESPERANDO);
+	}
+	
+	public short get_Tipo_Accion()
+	{
+		return 500;
 	}
 }

@@ -23,7 +23,7 @@ public class Desplazamiento implements JuegoAcciones
 
 	public synchronized boolean get_Puede_Hacer_Accion()
 	{
-		if(pathfinding == null || personaje.get_Juego_Acciones().get_Estado() != TipoEstadoAcciones.ESPERANDO)
+		if(pathfinding == null)
 		{
 			personaje.get_Cuenta().get_Juego_socket().enviar_Paquete("GA;0");
             return false;
@@ -61,6 +61,7 @@ public class Desplazamiento implements JuegoAcciones
 			personaje.get_Localizacion().set_Orientacion(pathfinding.get_Anterior().get_Direccion());
 			personaje.get_Localizacion().get_Mapa().get_Acciones_Final_Movimiento(personaje);
 		}
+		personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.ESPERANDO);
 	}
 	
 	public synchronized void get_Accion_Fallida(String args)
@@ -83,5 +84,11 @@ public class Desplazamiento implements JuegoAcciones
 				return;
 			}
         }
+		personaje.get_Juego_Acciones().set_Estado(TipoEstadoAcciones.ESPERANDO);
+	}
+	
+	public short get_Tipo_Accion()
+	{
+		return 1;
 	}
 }
