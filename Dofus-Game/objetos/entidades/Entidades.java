@@ -6,6 +6,7 @@ public interface Entidades
 	public TipoEntidades get_Tipo();
 	public Localizacion get_Localizacion();
 	public String get_Paquete_Gm();
+	public void get_Enviar_Paquete(final String paquete);
 	
 	public enum TipoEntidades
     {

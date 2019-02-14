@@ -28,7 +28,7 @@ import objetos.entidades.alineamientos.AlineamientosModelo;
 import objetos.entidades.caracteristicas.BaseStats;
 import objetos.entidades.caracteristicas.Stats;
 import objetos.mapas.Celdas;
-import objetos.mapas.Mapas;
+import objetos.mapas.Mapa;
 
 public class Personajes implements Entidades
 {
@@ -83,12 +83,12 @@ public class Personajes implements Entidades
 		cuenta = Cuentas.get_Cuenta_Cargada(cuenta_id);
 		try 
 		{
-			posicion.set_Mapa(Mapas.get_Mapas_Cargados(mapa_id));
+			posicion.set_Mapa(Mapa.get_Mapas_Cargados(mapa_id));
 			set_Celda(posicion.get_Mapa().get_Celda(_celda_id));
 		}
 		catch (Exception e)
 		{
-			posicion.set_Mapa(Mapas.get_Mapas_Cargados(raza.get_Mapa_id_comienzo()));
+			posicion.set_Mapa(Mapa.get_Mapas_Cargados(raza.get_Mapa_id_comienzo()));
 			set_Celda(posicion.get_Mapa().get_Celda(raza.get_Celda_id_comienzo()));
 		};
 		
@@ -459,11 +459,16 @@ public class Personajes implements Entidades
 
 	public final void get_Crear_Juego()
 	{
-		cuenta.get_Juego_socket().enviar_Paquete("GCK|1|" + get_Nombre(false));
-		cuenta.get_Juego_socket().enviar_Paquete("GDM|" + posicion.get_Mapa().get_Id() + '|' + posicion.get_Mapa().get_Fecha() + '|' + posicion.get_Mapa().get_Key());
-		cuenta.get_Juego_socket().enviar_Paquete(get_Paquete_As());
+		get_Enviar_Paquete("GCK|1|" + get_Nombre(false));
+		get_Enviar_Paquete("GDM|" + posicion.get_Mapa().get_Id() + '|' + posicion.get_Mapa().get_Fecha() + '|' + posicion.get_Mapa().get_Key());
+		get_Enviar_Paquete(get_Paquete_As());
 
 		posicion.get_Celda().get_Agregar_Entidad(this, true);
+	}
+	
+	public void get_Enviar_Paquete(final String paquete)
+	{
+		cuenta.get_Juego_socket().enviar_Paquete(paquete);
 	}
 	
 	/** Constructores Paquetes **/
@@ -722,7 +727,7 @@ public class Personajes implements Entidades
 
 	public void get_Teleport(final short mapa_destino_id, final short celda_destino_id)
 	{
-		Mapas mapa_destino = Mapas.get_Mapas_Cargados(mapa_destino_id);
+		Mapa mapa_destino = Mapa.get_Mapas_Cargados(mapa_destino_id);
 		if(mapa_destino != null)
 		{
 			Celdas celda = mapa_destino.get_Celda(celda_destino_id);
@@ -826,7 +831,7 @@ public class Personajes implements Entidades
 		final short[] lista_zaapis = ciudad == 7 ? AlineamientosModelo.get_Alineamientos_Cargados((byte) 1).get_Zaapis() : AlineamientosModelo.get_Alineamientos_Cargados((byte) 2).get_Zaapis();
 		for(final short mapa : lista_zaapis)
 		{
-			if(Mapas.get_Mapas_Cargados(mapa) != null)
+			if(Mapa.get_Mapas_Cargados(mapa) != null)
 			{
 				if(mapa != mapa_id)//El mapa actual no se muestra en la lista (oficial)
 				{

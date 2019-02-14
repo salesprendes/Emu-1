@@ -71,6 +71,11 @@ public class Interactivo
 		es_utilizable = _es_utilizable;
 	}
 	
+	public boolean get_Es_Caminable()
+	{
+		return modelo != null ? (modelo.get_Caminable() & 2) == 2 : true;
+	}
+	
 	public void get_Utilizar() 
 	{
 		es_utilizable = false;

@@ -92,11 +92,6 @@ public class InteractivoModelo
 		return accion;
 	}
 	
-	public boolean get_Es_Caminable()
-	{
-		return (caminable & 2) == 2;
-	}
-	
 	public static InteractivoModelo get_Modelo_Por_Gfx(final short gfx_id) 
 	{
 		for (final InteractivoModelo interactivo : interactivos_modelo_cargados) 

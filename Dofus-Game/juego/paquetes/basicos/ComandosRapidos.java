@@ -3,7 +3,7 @@ package juego.paquetes.basicos;
 import juego.JuegoSocket;
 import juego.paquetes.GestorPaquetes;
 import juego.paquetes.Paquete;
-import objetos.mapas.Mapas;
+import objetos.mapas.Mapa;
 
 @Paquete("Ba")
 public class ComandosRapidos implements GestorPaquetes
@@ -18,7 +18,7 @@ public class ComandosRapidos implements GestorPaquetes
 				final int X = Integer.parseInt(separador[0]);
 				final int Y = Integer.parseInt(separador[1]);
 				
-				final Mapas mapa = Mapas.get_Mapa_Coordenadas_SubArea(X, Y, socket.get_Personaje().get_Localizacion().get_Mapa().get_Sub_area().get_Area().get_Super_area().get_Id());
+				final Mapa mapa = Mapa.get_Mapa_Coordenadas_SubArea(X, Y, socket.get_Personaje().get_Localizacion().get_Mapa().get_Sub_area().get_Area().get_Super_area().get_Id());
 		
 				socket.get_Personaje().get_Teleport(mapa.get_Id(), mapa.get_Random_Celda().get_Id());
 			

@@ -37,9 +37,9 @@ public class PathFinding implements Collection<Camino>
         for (Camino step : pasos) 
         {
             if (condicion.test(step)) 
-            {
             	nuevo_camino.add(step);
-            }
+            else
+            	return nuevo_camino;
         }
         return nuevo_camino;
     }

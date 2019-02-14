@@ -19,7 +19,7 @@ import objetos.entidades.personajes.Personajes;
 import objetos.entidades.personajes.Razas;
 import objetos.items.ItemsModelo;
 import objetos.mapas.Areas;
-import objetos.mapas.Mapas;
+import objetos.mapas.Mapa;
 import objetos.mapas.SubAreas;
 import objetos.mapas.SuperAreas;
 import objetos.mapas.interactivo.InteractivoModelo;
@@ -104,7 +104,7 @@ public class Main
 		
 		Consola.print("Cargando los mapas: ");
 		database.get_Mapas().get_Cargar_Todos_Mapas();
-		Consola.println(Mapas.get_Mapas_Cargados().size() + " mapas cargados");
+		Consola.println(Mapa.get_Mapas_Cargados().size() + " mapas cargados");
 		
 		Consola.print("Cargando las experiencias: ");
 		database.get_Experiencia().get_Cargar_Todas_Experiencia();

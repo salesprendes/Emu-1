@@ -2,15 +2,15 @@ package objetos.entidades;
 
 import juego.enums.TipoDirecciones;
 import objetos.mapas.Celdas;
-import objetos.mapas.Mapas;
+import objetos.mapas.Mapa;
 
 public class Localizacion
 {
-	private Mapas mapa;
+	private Mapa mapa;
 	private Celdas celda;
 	private TipoDirecciones orientacion;
 	
-	public Localizacion(final Mapas _mapa, final Celdas _celda, final TipoDirecciones _orientacion) 
+	public Localizacion(final Mapa _mapa, final Celdas _celda, final TipoDirecciones _orientacion) 
 	{
 		mapa = _mapa;
 		celda = _celda;
@@ -22,12 +22,12 @@ public class Localizacion
 		orientacion = _orientacion;
 	}
 
-	public Mapas get_Mapa()
+	public Mapa get_Mapa()
 	{
 		return mapa;
 	}
 
-	public void set_Mapa(final Mapas _mapa)
+	public void set_Mapa(final Mapa _mapa)
 	{
 		mapa = _mapa;
 	}

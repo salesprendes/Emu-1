@@ -4,9 +4,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import database.DatabaseManager;
 import main.consola.Consola;
-import objetos.entidades.npcs.NpcsUbicacion;
 import objetos.entidades.npcs.NpcsModelo;
-import objetos.mapas.Mapas;
+import objetos.entidades.npcs.NpcsUbicacion;
+import objetos.mapas.Mapa;
 
 public class Npcs_DB extends DatabaseManager
 {
@@ -47,7 +47,7 @@ public class Npcs_DB extends DatabaseManager
 				final NpcsModelo npc_modelo = NpcsModelo.get_Npcs_Cargados(query.get_Rs().getShort(3));
 				if(npc_modelo != null)
 				{
-					Mapas mapa = Mapas.get_Mapas_Cargados(query.get_Rs().getShort(1));
+					Mapa mapa = Mapa.get_Mapas_Cargados(query.get_Rs().getShort(1));
 					mapa.get_Agregar_Entidad(new NpcsUbicacion(npc_modelo, mapa.get_Siguiente_Id_Entidad(), mapa.get_Celda(query.get_Rs().getShort(2)), query.get_Rs().getByte(4)));
 				}
 				contador++;	

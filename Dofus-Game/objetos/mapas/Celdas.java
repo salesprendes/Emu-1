@@ -13,14 +13,14 @@ import objetos.mapas.interactivo.InteractivoModelo;
 public final class Celdas 
 {
 	private final short id;
-	private final Mapas mapa;
+	private final Mapa mapa;
 	private CopyOnWriteArrayList<Entidades> entidades;
 	private final byte X, Y, nivel, slope;
 	private final byte movimiento;
 	private final Interactivo objeto_interactivo;
 	private final boolean es_linea_de_vista, esta_activa;
 	
-	public Celdas(final short _id, final Mapas _mapa, final boolean _esta_activa, final byte tipo_movimiento, final byte _nivel, final byte _slope, final boolean linea_de_vista, final short objeto_interactivo_id)
+	public Celdas(final short _id, final Mapa _mapa, final boolean _esta_activa, final byte tipo_movimiento, final byte _nivel, final byte _slope, final boolean linea_de_vista, final short objeto_interactivo_id)
 	{
 		id = _id;
 		mapa = _mapa;
@@ -75,7 +75,7 @@ public final class Celdas
 
 	public boolean get_Es_Caminable() 
 	{
-        return esta_activa && movimiento > 1;
+		return (esta_activa && movimiento > 1) || (objeto_interactivo != null ? objeto_interactivo.get_Es_Caminable() : true);
     }
 	
 	public byte get_Nivel()

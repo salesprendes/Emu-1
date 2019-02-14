@@ -2,13 +2,17 @@ package main.util;
 
 import static main.util.Crypt.get_Index_Desde_Hash;
 
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 import main.consola.Consola;
 import objetos.mapas.Celdas;
-import objetos.mapas.Mapas;
+import objetos.mapas.Mapa;
+import objetos.pelea.global.ColorEquipo;
 
 final public class Compresor
 {
-	public static Celdas[] get_Descomprimir_Celdas(final String d, final Mapas mapa) 
+	public static Celdas[] get_Descomprimir_Celdas(final String d, final Mapa mapa) 
 	{
 		int[] data = new int[d.length()];
 		
@@ -76,17 +80,28 @@ final public class Compresor
 		return sb.toString() + fP;
 	}
 	
-	private static Celdas get_Descomprimir_Celda(final short i, final int[] data, final boolean activa, final Mapas mapa) 
+	private static Celdas get_Descomprimir_Celda(final short i, final int[] data, final boolean activa, final Mapa mapa) 
 	{
 		final short id = i;
 		final int index = i * 10;
 		final boolean linea_de_vision = (data[index] & 1) == 1;
-		final boolean tiene_objeto_interactivo = (data[index + 7] & 2) >> 1 == 1;
+		final boolean tiene_objeto_interactivo = (data[index + 7] & 2) >> 1 != 0;
 		final byte tipo_movimiento = (byte) ((data[index + 2] & 56) >> 3);
 		final byte ground_nivel = (byte) (data[index + 1] & 15);
 		final byte ground_slope = (byte) ((data[index + 4] & 60) >> 2);
 		final short layer_objeto_2_num = (short) (((data[index] & 2) << 12) + ((data[index + 7] & 1) << 12) + (data[index + 8] << 6) + data[index + 9]);
 		
 		return new Celdas(id, mapa, activa, tipo_movimiento, ground_nivel, ground_slope, linea_de_vision, tiene_objeto_interactivo ? layer_objeto_2_num : -1);
+	}
+	
+	public static ArrayList<Short> get_Celdas_Pelea(final String celdas_pelea, final ColorEquipo color_equipo) 
+	{
+		String data = celdas_pelea.split(Pattern.quote("|"))[color_equipo.ordinal()];
+		ArrayList<Short> celdas = new ArrayList<Short>();
+
+		for (int i = 0; i < data.length(); i += 2)
+			celdas.add((short) ((get_Index_Desde_Hash(data.charAt(i)) << 6) + get_Index_Desde_Hash(data.charAt(i + 1))));
+
+		return celdas;
 	}
 }

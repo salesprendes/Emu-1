@@ -7,14 +7,14 @@ import main.Main;
 import main.consola.Consola;
 import main.util.Crypt;
 import objetos.mapas.Celdas;
-import objetos.mapas.Mapas;
+import objetos.mapas.Mapa;
 
 public class Descifrador
 {
 	public static char[] direcciones_char = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-	final private Mapas mapa;
+	final private Mapa mapa;
 
-	public Descifrador(Mapas _mapa) 
+	public Descifrador(Mapa _mapa) 
 	{
 		mapa = _mapa;
 	}

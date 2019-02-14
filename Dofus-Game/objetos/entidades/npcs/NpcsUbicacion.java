@@ -60,4 +60,6 @@ public class NpcsUbicacion implements Entidades
 	{
 		return posicion;
 	}
+	
+	public void get_Enviar_Paquete(String paquete){}
 }

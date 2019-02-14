@@ -2,7 +2,7 @@ package juego.acciones;
 
 import juego.enums.TipoEstadoAcciones;
 import objetos.entidades.personajes.Personajes;
-import objetos.mapas.Mapas;
+import objetos.mapas.Mapa;
 
 public class MapaAccion implements JuegoAcciones
 {
@@ -22,7 +22,7 @@ public class MapaAccion implements JuegoAcciones
 		{
 			celda = Short.parseShort(args.split(";")[0]);
 			accion = Short.parseShort(args.split(";")[1]);
-			Mapas mapa = personaje.get_Localizacion().get_Mapa();
+			Mapa mapa = personaje.get_Localizacion().get_Mapa();
 			
 			if(!mapa.get_Celda(celda).get_Verificar_Habilidad(accion))
 				return false;
