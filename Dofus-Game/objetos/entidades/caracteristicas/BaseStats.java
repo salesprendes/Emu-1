@@ -60,7 +60,7 @@ public class BaseStats
 		return valor;
 	}
 
-	public int get_Stat_Para_Mostrar(final short statID)
+	public int get_Total_Stat_Id(final short statID)
 	{
 		int valor = 0;
 		

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import main.consola.Consola;
 import objetos.mapas.Celdas;
 import objetos.mapas.Mapa;
+import objetos.mapas.Mapas;
 import objetos.pelea.global.ColorEquipo;
 
 final public class Compresor
@@ -94,14 +95,14 @@ final public class Compresor
 		return new Celdas(id, mapa, activa, tipo_movimiento, ground_nivel, ground_slope, linea_de_vision, tiene_objeto_interactivo ? layer_objeto_2_num : -1);
 	}
 	
-	public static ArrayList<Short> get_Celdas_Pelea(final String celdas_pelea, final ColorEquipo color_equipo) 
+	public static ArrayList<Celdas> get_Celdas_Pelea(final Mapas mapa_pelea, final String celdas_pelea, final ColorEquipo color_equipo) 
 	{
 		String data = celdas_pelea.split(Pattern.quote("|"))[color_equipo.ordinal()];
-		ArrayList<Short> celdas = new ArrayList<Short>();
+		ArrayList<Celdas> celdas = new ArrayList<Celdas>(mapa_pelea.get_Celdas().length);
 
 		for (int i = 0; i < data.length(); i += 2)
-			celdas.add((short) ((get_Index_Desde_Hash(data.charAt(i)) << 6) + get_Index_Desde_Hash(data.charAt(i + 1))));
+			celdas.add(mapa_pelea.get_Celda((short) ((get_Index_Desde_Hash(data.charAt(i)) << 6) + get_Index_Desde_Hash(data.charAt(i + 1)))));
 
-		return celdas;
-	}
+        return celdas;
+    }
 }

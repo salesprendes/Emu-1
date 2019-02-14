@@ -115,11 +115,6 @@ public class Mapa implements Mapas
 		return celdas;
 	}
 
-	public Celdas get_Celda(final short id)
-	{
-		return celdas[id];
-	}
-
 	public synchronized void get_Acciones_Final_Movimiento(final Personajes personaje)
 	{
 		if (personaje.get_Localizacion().get_Mapa().equals(this))

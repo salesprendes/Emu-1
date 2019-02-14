@@ -29,8 +29,9 @@ import objetos.entidades.caracteristicas.BaseStats;
 import objetos.entidades.caracteristicas.Stats;
 import objetos.mapas.Celdas;
 import objetos.mapas.Mapa;
+import objetos.pelea.Peleador;
 
-public class Personajes implements Entidades
+public class Personajes extends Peleador implements Entidades 
 {
 	private int id, emote_tiempo = 360000; // superara 32767 (4 bytes)
 	private int color_1, color_2, color_3, puntos_stats, puntos_hechizos, puntos_vida, puntos_vida_maxima, vida_antes_sentado; // superara 32767 (4 bytes)
@@ -137,7 +138,7 @@ public class Personajes implements Entidades
 		nombre = _nombre;
 	}
 
-	public int get_Nivel() 
+	public short get_Nivel() 
 	{
 		return nivel;
 	}
@@ -255,6 +256,11 @@ public class Personajes implements Entidades
 	{
 		return cuenta.get_Juego_socket() == null ? false : cuenta.get_Juego_socket().get_Estado_Juego() == EstadosJuego.CONECTADO;
 	}
+	
+	public Entidades get_Entidad()
+	{
+		return this;
+	}
 
 	public TipoEntidades get_Tipo() 
 	{
@@ -321,7 +327,7 @@ public class Personajes implements Entidades
 		return alineamiento;
 	}
 
-	public int get_Alineamiento_Id()
+	public byte get_Alineamiento_Id()
 	{
 		return alineamiento != null ? alineamiento.get_Alineamiento().get_Id() : 0;
 	}
@@ -351,9 +357,9 @@ public class Personajes implements Entidades
 		return alineamiento != null ? (alineamiento.get_Esta_Activado() ? get_Grado_Alas() : 0) : 0;
 	}
 
-	public byte get_Alineamiento_Tiene_Alas_Activadas()
+	public boolean get_Alineamiento_Tiene_Alas_Activadas()
 	{
-		return (byte) (alineamiento != null ? (alineamiento.get_Esta_Activado() ? 1 : 0) : 0);
+		return alineamiento != null ? alineamiento.get_Esta_Activado() : false;
 	}
 
 	public void set_Alineamiento(Alineamientos _alineamiento)
@@ -380,7 +386,7 @@ public class Personajes implements Entidades
 
 	public void get_Actualizar_Vida_Maxima() 
 	{
-		puntos_vida_maxima = (nivel-1) * 5 + raza.get_Vida_base() + stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_VITALIDAD) + stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_VIDA);
+		puntos_vida_maxima = (nivel-1) * 5 + raza.get_Vida_base() + stats.get_Total_Stat_Id(TipoStats.AGREGAR_VITALIDAD) + stats.get_Total_Stat_Id(TipoStats.AGREGAR_VIDA);
 	}
 
 	public boolean get_Esta_sentado()
@@ -517,7 +523,7 @@ public class Personajes implements Entidades
 			personaje.append(sexo).append(';').append(get_Alineamiento_Id()).append(',');//Sexo + Alineacion
 			personaje.append(get_Alineamiento_Orden_Nivel()).append(",").append(get_Alineamiento_Alas_Activadas_Nivel()).append(',');
 			personaje.append(nivel + id).append(',');
-			personaje.append(alineamiento != null ? (alineamiento.get_Deshonor() > 0 ? 1 : 0) : 0).append(';');
+			personaje.append(get_Alineamiento_Deshonor() > 0 ? 1 : 0).append(';');
 			personaje.append(String.join(";", get_Array_Colores())).append(';');//3 - colores
 			personaje.append(get_String_Objetos_Gm()).append(';');
 			personaje.append(stats.get_Equipo().get_Stat_Id(TipoStats.AURA) ? stats.get_Equipo().get_Mostrar_Stat(TipoStats.AURA) : (nivel / 100)).append(';');;
@@ -532,18 +538,35 @@ public class Personajes implements Entidades
 		}
 		return new StringBuilder().append(posicion.get_Celda().get_Id()).append(';').append(posicion.get_Orientacion().ordinal()).append(';').append(cache_gm).toString();
 	}
+	
+	public String get_Paquete_Gm_Pelea()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(raza.get_Id()).append(';');
+		sb.append(gfx).append('^').append(tamano).append(';');
+		sb.append(sexo).append(';');
+		sb.append(nivel).append(';');
+		sb.append(get_Alineamiento_Id()).append(',');
+		sb.append(get_Alineamiento_Orden_Nivel()).append(',');
+		sb.append(get_Alineamiento_Alas_Activadas_Nivel()).append(',');
+		sb.append(id).append(',').append((get_Alineamiento_Deshonor() > 0 ? 1 : 0)).append(';');
+		sb.append(String.join(";", get_Array_Colores())).append(';');//3 - colores
+		sb.append(get_String_Objetos_Gm()).append(';');
+		return sb.toString();
+	}
 
 	public String get_Paquete_As()
 	{
+		get_Actualizar_Vida();
 		if(cache_as.isEmpty())
 		{
 			StringBuilder paquete = new StringBuilder(500);
 
 			paquete.append("As").append(get_Experiencia_Personaje(",")).append('|');
 			paquete.append(kamas).append('|').append(puntos_stats).append('|').append(puntos_hechizos).append('|');
-			paquete.append(get_Alineamiento_Id()).append('~').append(get_Alineamiento_Id()).append(',').append(get_Alineamiento_Orden_Nivel()).append(',').append(get_Grado_Alas()).append(',').append(get_Alineamiento_Honor()).append(',').append(get_Alineamiento_Deshonor()).append(',').append(get_Alineamiento_Tiene_Alas_Activadas()).append('|');
+			paquete.append(get_Alineamiento_Id()).append('~').append(get_Alineamiento_Id()).append(',').append(get_Alineamiento_Orden_Nivel()).append(',').append(get_Grado_Alas()).append(',').append(get_Alineamiento_Honor()).append(',').append(get_Alineamiento_Deshonor()).append(',').append(get_Alineamiento_Tiene_Alas_Activadas() ? "1" : "0").append('|');
 
-			get_Actualizar_Vida();
 			paquete.append(puntos_vida).append(',').append(puntos_vida_maxima).append('|');
 			paquete.append(10000).append(',').append(servidor == 22 ? 1 : 10000).append('|');
 			paquete.append(get_Iniciativa()).append('|');
@@ -565,7 +588,7 @@ public class Personajes implements Entidades
 			};
 
 			for (final short stat : array_stats)
-				paquete.append(stats.get_Base().get_Mostrar_Stat(stat)).append(',').append(stats.get_Equipo().get_Mostrar_Stat(stat)).append(',').append(stats.get_Dones().get_Mostrar_Stat(stat)).append(',').append(stats.get_Boost().get_Mostrar_Stat(stat)).append(',').append(stats.get_Stat_Para_Mostrar(stat)).append('|');
+				paquete.append(stats.get_Base().get_Mostrar_Stat(stat)).append(',').append(stats.get_Equipo().get_Mostrar_Stat(stat)).append(',').append(stats.get_Dones().get_Mostrar_Stat(stat)).append(',').append(stats.get_Boost().get_Mostrar_Stat(stat)).append(',').append(stats.get_Total_Stat_Id(stat)).append('|');
 
 			cache_as = paquete.toString();
 		}
@@ -581,7 +604,7 @@ public class Personajes implements Entidades
 			fact = 8;
 		int iniciativa = 0;
 		
-		iniciativa += stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_INICIATIVA);
+		iniciativa += stats.get_Total_Stat_Id(TipoStats.AGREGAR_INICIATIVA);
 		iniciativa += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_AGILIDAD);
 		iniciativa += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_INTELIGENCIA);
 		iniciativa += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_SUERTE);
@@ -618,7 +641,7 @@ public class Personajes implements Entidades
 	
 	public int get_Pods_Maximos() 
 	{
-		int pods = stats.get_Stat_Para_Mostrar(TipoStats.AGREGAR_PODS);
+		int pods = stats.get_Total_Stat_Id(TipoStats.AGREGAR_PODS);
 		pods += stats.get_Base().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA) * 5;
 		pods += stats.get_Equipo().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA) * 5;
 		pods += stats.get_Dones().get_Mostrar_Stat(TipoStats.AGREGAR_FUERZA) * 5;

@@ -123,6 +123,11 @@ public final class Celdas
         return entidades;
     }
     
+    public boolean get_Esta_Libre() 
+    {
+        return entidades.isEmpty();
+    }
+    
     /**
      * https://github.com/Emudofus/Dofus/blob/1.29/ank/battlefield/utils/Pathfinding.as#L204
      */
@@ -198,8 +203,13 @@ public final class Celdas
         return Math.abs(X - destino.X) + Math.abs(Y - destino.Y);
     }
 
-    public boolean equals(Celdas celda) 
+    public boolean equals(final Celdas celda) 
     {
     	return celda != null? id == celda.id : false;
+    }
+    
+    public boolean equals(short celda_id) 
+    {
+    	return id == celda_id;
     }
 }
