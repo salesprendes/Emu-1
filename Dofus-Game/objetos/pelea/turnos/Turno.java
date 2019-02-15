@@ -35,12 +35,26 @@ public class Turno
     
     public void get_Finalizar_Turno(boolean forzar) 
     {
-    	
     }
     
-    @Override
+    public Peleador get_Luchador()
+	{
+		return luchador;
+	}
+
+	public Timer get_Timer()
+	{
+		return timer;
+	}
+
+	@Override
     public int hashCode() 
     {
         return luchador.get_Id();
     }
+
+	public TimerTask get_Timer_task()
+	{
+		return timer_task;
+	}
 }

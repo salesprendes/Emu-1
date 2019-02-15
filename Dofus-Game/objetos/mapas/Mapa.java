@@ -228,7 +228,7 @@ public class Mapa implements Mapas
 	
 	public Celdas get_Random_Celda() 
 	{
-        return Formulas.get_Random_Celda(Arrays.asList(celdas).stream().filter(cell -> cell.get_Es_Caminable() && cell.get_Entidades().isEmpty()).collect(Collectors.toList()));
+        return Formulas.get_Random_Lista(Arrays.asList(celdas).stream().filter(cell -> cell.get_Es_Caminable() && cell.get_Entidades().isEmpty()).collect(Collectors.toList()));
     }
 	
 	public boolean equals(Mapa mapa) 

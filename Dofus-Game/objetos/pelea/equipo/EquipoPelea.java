@@ -1,11 +1,13 @@
 package objetos.pelea.equipo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import main.util.Compresor;
+import main.util.Formulas;
 import objetos.entidades.personajes.Personajes;
 import objetos.mapas.Celdas;
 import objetos.mapas.Mapa;
@@ -16,6 +18,7 @@ import objetos.pelea.global.ColorEquipo;
 
 public abstract class EquipoPelea extends ArrayList<Peleador>
 {
+	private static final long serialVersionUID = 1;
 	protected final ColorEquipo equipo_color;
 	private Pelea pelea;
 	private Peleador lider_pelea, ultimo_muerto;
@@ -76,13 +79,36 @@ public abstract class EquipoPelea extends ArrayList<Peleador>
         return celdas.stream().anyMatch(celda -> celda.equals(celda_id));
     }
 	
-	public int get_Real_Tamano() 
+	public int get_Numero_Total() 
 	{
         return (int) stream().filter(luchador -> luchador.get_Lider_pelea() == null).count();
     }
 	
-	public int get_Real_Jugadores() 
+	public int get_Numero_Jugadores() 
 	{
         return (int) stream().filter(luchador -> luchador instanceof Personajes).count();
+    }
+	
+	public boolean get_Contiene_Luchador(final Peleador _luchador) 
+	{
+        return stream().filter(luchador -> luchador.equals(_luchador)).count() > 0;
+    }
+	
+	public int get_Nivel_Total() 
+	{
+        return stream().mapToInt(Peleador::get_Nivel).sum();
+    }
+	
+	public void set_Otro_Lider(final Peleador luchador) 
+	{
+		Peleador nuevo_lider = null;
+        while (luchador != nuevo_lider)
+        	nuevo_lider = Formulas.get_Random_Lista(this);
+        lider_pelea = nuevo_lider;
+    }
+	
+	public Iterator<Peleador> iterator() 
+	{
+        return iterator();
     }
 }

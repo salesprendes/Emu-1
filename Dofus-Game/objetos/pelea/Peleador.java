@@ -1,5 +1,7 @@
 package objetos.pelea;
 
+import java.util.Comparator;
+
 import objetos.entidades.Entidades;
 import objetos.entidades.Localizacion;
 import objetos.entidades.caracteristicas.BaseStats;
@@ -26,6 +28,7 @@ public abstract class Peleador
 	public abstract BaseStats get_Stats();
 	public abstract void get_Enviar_Paquete(final String paquete);
 	public abstract String get_Paquete_Gm_Pelea();
+	public abstract int get_Iniciativa();
 	
 	public Peleador get_Lider_pelea()
 	{
@@ -71,6 +74,16 @@ public abstract class Peleador
         	celda.get_Agregar_Entidad(get_Entidad(), false);
         	get_Entidad().get_Localizacion().set_Celda(celda);
         }
+    }
+    
+    public static Comparator<Peleador> get_Comparador_Iniciativa() 
+    {
+        return Comparator.comparingInt(Peleador::get_Iniciativa);
+    }
+    
+    public boolean equals(final Peleador luchador) 
+	{
+        return get_Id() == luchador.get_Id();
     }
 	
 	@Override

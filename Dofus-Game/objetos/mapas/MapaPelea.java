@@ -43,6 +43,11 @@ public class MapaPelea implements Mapas
 		return mapa_modelo.get_Anchura();
 	}
 
+	public Pelea get_Pelea()
+	{
+		return pelea;
+	}
+
 	public Celdas[] get_Celdas()
 	{
 		return celdas;

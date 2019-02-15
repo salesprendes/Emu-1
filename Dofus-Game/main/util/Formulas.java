@@ -8,13 +8,11 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
-import objetos.mapas.Celdas;
-
 public class Formulas
 {
 	private static final AtomicReference<Random> random = new AtomicReference<Random>(new SecureRandom());
 	
-	public static int get_Random(int minimo, int maximo) 
+	public static int get_Random(final int minimo, final int maximo) 
 	{
         if (maximo <= 0)
             return 0;
@@ -22,17 +20,18 @@ public class Formulas
         return ThreadLocalRandom.current().nextInt(minimo, maximo + 1);
     }
 	
-	public static Celdas get_Random_Celda(Collection<Celdas> lista) 
+	@SuppressWarnings("unchecked")
+	public static <C> C get_Random_Lista(final Collection<C> lista) 
 	{
-        return (Celdas) lista.toArray()[random.get().nextInt(lista.size())];
+        return (C) lista.toArray()[random.get().nextInt(lista.size())];
     }
 	
-	public static int get_Comidas_Perdidas(final String ExDate) 
+	public static int get_Comidas_Perdidas(final String antigua_fecha) 
 	{
 		final Calendar actual = GregorianCalendar.getInstance();
 		final long tiempo_actual = actual.getTimeInMillis();
 		actual.clear();
-		final String[] separador = ExDate.split("-");
+		final String[] separador = antigua_fecha.split("-");
 		actual.set(Integer.parseInt(separador[0]), Integer.parseInt(separador[1]), Integer.parseInt(separador[2]), Integer.parseInt(separador[3]), Integer.parseInt(separador[4]));
 		final int diferencia_tiempo = (int) ((tiempo_actual - actual.getTimeInMillis()) / Long.parseLong("259200000"));
 
