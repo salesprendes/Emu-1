@@ -7,6 +7,7 @@ public class MonstruoGradoModelo
 {
 	private final byte grado;
 	private short nivel;
+	private final int base_experiencia;
 	private final MonstruosModelo monstruo_modelo;
 	private final Stats stats = new Stats();
 	
@@ -18,7 +19,7 @@ public class MonstruoGradoModelo
 		TipoStats.AGREGAR_PA, TipoStats.AGREGAR_PM
 	};
 	
-	public MonstruoGradoModelo(final byte _grado, final String _stats, final MonstruosModelo _monstruo_modelo)
+	public MonstruoGradoModelo(final byte _grado, final String _stats, final int experiencia, final MonstruosModelo _monstruo_modelo)
 	{
 		grado = _grado;
 		monstruo_modelo = _monstruo_modelo;
@@ -54,6 +55,8 @@ public class MonstruoGradoModelo
 			stats.get_Stats().put(TipoStats.AGREGAR_PM, 3);
 		if (stats.get_Stats().get(TipoStats.AGREGAR_CRIATURAS_INVOCABLES) == null)
 			stats.get_Stats().put(TipoStats.AGREGAR_CRIATURAS_INVOCABLES, 1);
+		
+		base_experiencia = experiencia;
 	}
 
 	public byte get_Grado()
@@ -69,5 +72,15 @@ public class MonstruoGradoModelo
 	public Stats get_Stats()
 	{
 		return stats;
+	}
+	
+	public short get_Nivel()
+	{
+		return nivel;
+	}
+
+	public int get_Base_experiencia()
+	{
+		return base_experiencia;
 	}
 }

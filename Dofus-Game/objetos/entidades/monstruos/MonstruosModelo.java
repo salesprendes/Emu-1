@@ -2,6 +2,7 @@ package objetos.entidades.monstruos;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import main.consola.Consola;
 import objetos.entidades.alineamientos.AlineamientosModelo;
@@ -16,7 +17,7 @@ public class MonstruosModelo
 
 	public static Map<Integer, MonstruosModelo> monstruos_modelo_cargados = new HashMap<Integer, MonstruosModelo>();
 
-	public MonstruosModelo(final int _id, final int _gfx, final byte _raza, final byte _alineamiento, final Map<Byte, String> _grados, final String _colores)
+	public MonstruosModelo(final int _id, final int _gfx, final byte _raza, final byte _alineamiento, final Map<Byte, String> _grados, final String experiencias, final String _colores)
 	{
 		id = _id;
 		gfx = _gfx;
@@ -29,18 +30,22 @@ public class MonstruosModelo
 
 		byte contador_grado = 0;
 		grados = new MonstruoGradoModelo[_grados.size()];
+		final String[] separador_experiencia = experiencias.split(Pattern.quote("|"));
+		int experiencia;
 		
-		try
+		for(String stats_grado : _grados.values())
 		{
-			for(String stats_grado : _grados.values())
+			try 
 			{
-				grados[contador_grado] = new MonstruoGradoModelo(contador_grado, stats_grado, this);
-				contador_grado++;
+				experiencia = Integer.parseInt(separador_experiencia[contador_grado]);
 			}
-		}
-		catch (final Exception e) 
-		{
-			Consola.println("monstruo: " + id + " tiene error en el grado numero: " + grados[(contador_grado + 1)]);
+			catch (final Exception e) 
+			{
+				Consola.println("monstruo: " + id + " tiene error en la experiencia grado: " + (contador_grado + 1));
+				experiencia = 0;
+			}
+			grados[contador_grado] = new MonstruoGradoModelo(contador_grado, stats_grado, experiencia, this);
+			contador_grado++;
 		}
 		colores = _colores;
 		

@@ -14,6 +14,7 @@ import objetos.entidades.Entidades;
 import objetos.entidades.npcs.NpcsUbicacion;
 import objetos.entidades.personajes.Personajes;
 import objetos.pelea.Pelea;
+import objetos.pelea.PeleaConstructor;
 
 public class Mapa implements Mapas
 {
@@ -21,9 +22,10 @@ public class Mapa implements Mapas
 	private final byte anchura, altura;
 	private final SubAreas sub_area;
 	private final String fecha, data, key, celdas_pelea;
-	private Celdas[] celdas;
+	private final Celdas[] celdas;
 	private CopyOnWriteArrayList<Entidades> entidades;
 	private final AtomicInteger generar_id = new AtomicInteger(-100);
+	private final PeleaConstructor metodos_pelea;
 
 	private static final ConcurrentHashMap<Short, Mapa> mapas_cargados = new ConcurrentHashMap<Short, Mapa>();
 
@@ -40,6 +42,8 @@ public class Mapa implements Mapas
 		x = _x;
 		y = _y;
 		sub_area = SubAreas.get_Sub_Areas_Cargadas(_sub_area);
+		celdas = Compresor.get_Descomprimir_Celdas(data, this);
+		metodos_pelea = new PeleaConstructor(this);
 		try 
 		{
 			sub_area.get_Agregar_Mapa(this);
@@ -50,8 +54,6 @@ public class Mapa implements Mapas
 			System.exit(1);
 			return;
 		}
-		celdas = Compresor.get_Descomprimir_Celdas(data, this);
-		
 		mapas_cargados.put(id, this);
 	}
 
@@ -186,6 +188,11 @@ public class Mapa implements Mapas
 			if (entidades.isEmpty()) 
 				entidades = null;
 		}
+	}
+
+	public PeleaConstructor get_Metodos_pelea()
+	{
+		return metodos_pelea;
 	}
 
 	/** capacidades de los mapas 
